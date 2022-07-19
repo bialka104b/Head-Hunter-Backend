@@ -1,0 +1,34 @@
+{
+  "name": "head-hunter-backend",
+  "version": "1.0.0",
+  "description": "aplikacja backendowa do rekrutacji kandydatów",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "devNode": "node app.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bialka104b/Head-Hunter-Backend.git"
+  },
+  "keywords": [
+    "backend",
+    "node",
+    "in"
+  ],
+  "author": "uczestnicy MEGAK",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bialka104b/Head-Hunter-Backend/issues"
+  },
+  "homepage": "https://github.com/bialka104b/Head-Hunter-Backend#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "mongodb": "^4.8.0",
+    "mongoose": "^6.4.5",
+    "moongoose": "^0.0.5",
+    "nodemon": "^2.0.19"
+  }
+}
