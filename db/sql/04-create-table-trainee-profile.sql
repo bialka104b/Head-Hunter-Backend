@@ -7,14 +7,11 @@ CREATE TABLE trainee_profile
     firstName             VARCHAR(256)        NOT NULL,
     lastName              VARCHAR(256)        NOT NULL,
     githubUsername        VARCHAR(256) UNIQUE NOT NULL,
-    #array of urls:
     portfolioUrls         JSON,
-    #array of urls:
     projectUrls           JSON                NOT NULL,
     bio                   TEXT,
     expectedTypeWork      ENUM ('onsite', 'remote', 'readyToMove','hybrid') DEFAULT NULL,
     targetWorkCity        VARCHAR(256),
-    #array with 4 optional keys: 'uop', 'btb', 'uz', 'uod' (fe&be have to be responsible for a validation):
     expectedContractType  JSON                                              DEFAULT NULL,
     expectedSalary        VARCHAR(256)                                      DEFAULT NULL,
     canTakeApprenticeship BOOLEAN                                           DEFAULT FALSE,
