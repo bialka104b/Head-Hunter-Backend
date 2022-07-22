@@ -1,7 +1,7 @@
-import {NextFunction, Request, Response} from "express";
-import {ValidationError} from "./ValidationError";
+import {NextFunction, Request, Response} from 'express';
+import {ValidationError} from './ValidationError';
 
-const globalErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     res
         .status(err instanceof ValidationError ? 400 : 500)
         .json({
@@ -9,9 +9,4 @@ const globalErrorHandler = (err: Error, req: Request, res: Response, next: NextF
             code: err instanceof ValidationError ? err.code : 500,
             message: err instanceof ValidationError ? err.message : 'Something went wrong.',
         })
-}
-
-export {
-    ValidationError,
-    globalErrorHandler,
 }

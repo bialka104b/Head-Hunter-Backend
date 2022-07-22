@@ -1,5 +1,5 @@
-import * as express from "express"
-import * as cors from "cors"
+import * as express from 'express'
+import * as cors from 'cors'
 import {globalErrorHandler} from './utils/globalErrorHandler';
 
 const app = express();
