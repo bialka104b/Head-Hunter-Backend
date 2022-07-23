@@ -3,6 +3,7 @@ import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
 import {globalErrorHandler} from "./utils/globalErrorHandler";
 import "./authentication/JwtStrategy";
+import {authRouter} from "./routers/authRouter";
 
 
 const app = express();
@@ -13,6 +14,8 @@ app.use(cors())
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.urlencoded({extended: true}))
+
+app.use('/auth', authRouter)
 
 app.use(globalErrorHandler);
 // Assign the PORT 8080 lub IP serwera to our app
