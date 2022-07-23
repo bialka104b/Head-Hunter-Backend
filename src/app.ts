@@ -5,34 +5,32 @@ const cors = require("cors");
 
 require("dotenv").config();
 
-// Middleware
 const app = express();
-app.use(
-	cors({
-		origin: "*",
-		methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
-	}),
-);
-const port = process.env.PORT || 8080;
 
-// Apply CORS policy
+// Middleware
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
+  })
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Conected database
 const pool = mysql.createPool({
-	connectionLimit: 10,
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	database: process.env.DB_NAME,
+  connectionLimit: 10,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  database: process.env.DB_NAME,
 });
 
 pool.getConnection((err, connection) => {
-	if (err) {
-		console.log("Niudane połączenie do bazy", err);
-		throw err;
-	}
-	console.log('Podłączono do bazy "' + process.env.DB_NAME + '"');
+  if (err) {
+    console.log("Niudane połączenie do bazy", err);
+    throw err;
+  }
+  console.log('Podłączono do bazy "' + process.env.DB_NAME + '"');
 });
 
 // Import Router
@@ -45,4 +43,7 @@ app.use("/api/", productsRouter);
 app.use(globalErrorHandler);
 
 // Assign the PORT 8080 or IP server to our app
-app.listen(port, () => console.log(`Server Running on port: http://localhost:${port}`));
+const port = process.env.PORT || 8080;
+app.listen(port, () =>
+  console.log(`Server Running on port: http://localhost:${port}`)
+);
