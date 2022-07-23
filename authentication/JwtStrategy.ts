@@ -2,6 +2,9 @@ import {Strategy} from "passport-jwt";
 import {Request} from "express";
 import * as passport from "passport";
 import {config} from "../config/config";
+import {pool} from "../db/pool";
+import {UserRecord} from "../types/user/user";
+import {FieldPacket} from "mysql2";
 
 const cookieExtractor = function(req: Request): null | string {
     let token = null;
@@ -18,16 +21,23 @@ const opts = {
     expiresIn: 60 * 60 * 24
 }
 
-export const JwtStrategy = new Strategy(opts, async (jwt_payload, done: (error: Error | null, user: string | boolean) => void) => {
-    if(!jwt_payload || !jwt_payload.email) {
+export const JwtStrategy = new Strategy(opts, async (jwt_payload, done: (error: Error | null, user: UserRecord | boolean) => void) => {
+    if(!jwt_payload || !jwt_payload.currentTokenId) {
         return done(new Error("unauthorized User"), false)
     }
-    const user = "asd" //@TODO zrobić wysszukiwanie usera w bazie danych
+    const [result] = await pool.execute("SELECT * FROM `users` WHERE `currentTokenId` = :currentTokenId", {
+        currentTokenId: jwt_payload.currentTokenId,
+    }) as [UserRecord[], FieldPacket[]]
 
-    if(!user) {
+    if(!result[0]) {
         return done(new Error("nie ma usera"), false)
     }
-    done(null, user)
+    done(null, result[0])
 });
 
 passport.use(JwtStrategy)
+
+//if you want to authorization a path you must to add a function: passport.authenticate('jwt', { session: false })
+// fro example:
+//app.get('/test', passport.authenticate('jwt', { session: false }), (req, res) => {
+// })
