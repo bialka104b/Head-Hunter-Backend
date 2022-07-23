@@ -1,5 +1,15 @@
 import {FieldPacket} from "mysql2";
 
+export interface UserRecord {
+	id: string,
+	email: string,
+	password: string,
+	role: Role,
+	currentTokenId: string,
+	createdAt: Date,
+	isActive: number,
+}
+
 export interface UserLoginRequest {
 	email: string;
 	password: string;
