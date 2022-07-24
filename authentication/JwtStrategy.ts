@@ -1,10 +1,10 @@
 import {Strategy} from "passport-jwt";
 import {Request} from "express";
 import * as passport from "passport";
-import {config} from "../config/config";
 import {pool} from "../db/pool";
 import {UserRecord} from "../types/user/user";
 import {FieldPacket} from "mysql2";
+import {config} from "../config/config";
 
 const cookieExtractor = function(req: Request): null | string {
     let token = null;
@@ -17,7 +17,7 @@ const cookieExtractor = function(req: Request): null | string {
 
 const opts = {
     jwtFromRequest: cookieExtractor,
-    secretOrKey: config.passportSecretOrKey,
+    secretOrKey: config.jwt.passportSecretOrKey,
     expiresIn: 60 * 60 * 24
 }
 

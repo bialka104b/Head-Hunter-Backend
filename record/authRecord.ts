@@ -4,10 +4,11 @@ import {
 	UserLoginRequest,
 	UserLoginResponseFromDatabase,
 } from "../types/user/user";
-import { pool } from "../db/pool";
-import { config } from "../config/config";
-import { FieldPacket } from "mysql2";
-import { v4 as uuid } from "uuid";
+import {pool} from "../db/pool";
+import {FieldPacket} from "mysql2";
+import {v4 as uuid} from "uuid";
+import {config} from "../config/config";
+
 
 export class AuthRecord implements UserLoginRequest {
 	email: string;
@@ -37,9 +38,7 @@ export class AuthRecord implements UserLoginRequest {
 	protected async createToken(currentTokenId: string): Promise<string> {
 		const payload: JwtPayload = { currentTokenId: currentTokenId };
 
-		return sign(payload, config.passportSecretOrKey, {
-			expiresIn: 60 * 60 * 24,
-		});
+		return sign(payload, config.jwt.passportSecretOrKey, {expiresIn: 60 * 60 * 24});
 	}
 
 	protected async generateToken(userId: string): Promise<string> {
