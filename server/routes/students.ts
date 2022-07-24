@@ -8,6 +8,14 @@ const traineeProfileController = require("../controllers/traineeProfileControlle
 // dla funkcji z productsController np. find, create itd.
 // console.log(hrProfileController.hrProfile);
 
+const mysql = require("mysql");
+const pool = mysql.createPool({
+	connectionLimit: 100,
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	database: process.env.DB_NAME,
+});
+
 router.get("/students/", studentsController.students);
 router.get("/hrProfile/", hrProfileController.hrProfile);
 router.get("/traineeProfile/", traineeProfileController.traineeProfile);
@@ -21,4 +29,3 @@ router.get("/traineeProfile/", traineeProfileController.traineeProfile);
 // router.get("/category/:category", productsController.category);
 
 module.exports = router;
-
