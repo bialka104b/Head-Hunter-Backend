@@ -1,9 +1,9 @@
 import * as express from "express";
 import * as cors from "cors";
 import * as cookieParser from "cookie-parser";
-import {globalErrorHandler} from "./utils/globalErrorHandler";
+import { globalErrorHandler } from "./utils/globalErrorHandler";
 import "./authentication/JwtStrategy";
-import {authRouter} from "./routers/authRouter";
+import { authRouter } from "./routers/authRouter";
 const mysql = require("mysql");
 
 require("dotenv").config();
@@ -44,10 +44,12 @@ const productsRouter = require("./server/routes/students.js");
 
 // Use Routes
 app.use("/api/", productsRouter);
-app.use('/auth', authRouter);
+app.use("/auth", authRouter);
 
 // Global error handler:
 app.use(globalErrorHandler);
 
 // Assign the PORT 8080 or IP server to our app
-app.listen(port, () => console.log(`Server Running on port: http://localhost:${port}`));
+app.listen(port, () =>
+	console.log(`Server Running on port: http://localhost:${port}`),
+);

@@ -17,7 +17,9 @@ exports.students = async (req, res) => {
 			console.log("Połączono do bazy z routa");
 
 			let page =
-				req.query.page != undefined && req.query.page > 0 ? parseInt(req.query.page) : 1;
+				req.query.page != undefined && req.query.page > 0
+					? parseInt(req.query.page)
+					: 1;
 			const limit =
 				req.query.limit != undefined && req.query.limit > 0
 					? parseInt(req.query.limit)
@@ -25,21 +27,24 @@ exports.students = async (req, res) => {
 			const offset = (page - 1) * limit;
 			let numOfstudents;
 
-			connection.query(`SELECT COUNT(*) as count FROM users`, (err, countQuery) => {
-				if (!err) {
-					numOfstudents = countQuery[0].count;
-				} else {
-					console.log(err);
-				}
-			});
+			connection.query(
+				`SELECT COUNT(*) as count FROM users`,
+				(err, countQuery) => {
+					if (!err) {
+						numOfstudents = countQuery[0].count;
+					} else {
+						console.log(err);
+					}
+				},
+			);
 
 			// Query do bazy
 			connection.query(
-				`SELECT users.id, 
-                users.email, 
-                users.password, 
-                users.role, 
-                users.createdAt, 
+				`SELECT users.id,
+                users.email,
+                users.password,
+                users.role,
+                users.createdAt,
                 users.isActive
                 FROM users
                 LIMIT ?

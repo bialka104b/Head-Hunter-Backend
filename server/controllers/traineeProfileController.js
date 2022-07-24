@@ -48,7 +48,9 @@ exports.traineeProfile = async (req, res) => {
 							students: rows,
 						});
 					} else {
-						res.json({ message: "Nie znaleziono profilu  kursanta" });
+						res.json({
+							message: "Nie znaleziono profilu  kursanta",
+						});
 					}
 				},
 			);
@@ -58,3 +60,4 @@ exports.traineeProfile = async (req, res) => {
 		res.status(404).json({ message: "Error" });
 	}
 };
+

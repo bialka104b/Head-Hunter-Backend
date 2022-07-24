@@ -1,13 +1,13 @@
-import {FieldPacket} from "mysql2";
+import { FieldPacket } from "mysql2";
 
 export interface UserRecord {
-	id: string,
-	email: string,
-	password: string,
-	role: Role,
-	currentTokenId: string,
-	createdAt: Date,
-	isActive: number,
+	id: string;
+	email: string;
+	password: string;
+	role: Role;
+	currentTokenId: string;
+	createdAt: Date;
+	isActive: number;
 }
 
 export interface UserLoginRequest {
@@ -18,23 +18,23 @@ export interface UserLoginRequest {
 enum Role {
 	admin = "admin",
 	hr = "hr",
-	trainee = "trainee"
+	trainee = "trainee",
 }
 
 export type UserLoginResponseFromDatabase = [
 	{
-		id: string,
-		email: string,
-		password: string,
-		role: Role,
-		currentTokenId: string,
+		id: string;
+		email: string;
+		password: string;
+		role: Role;
+		currentTokenId: string;
 	}[],
-	FieldPacket[]
+	FieldPacket[],
 ];
 
 export type UserLoginResultsResponse = {
-	isLogin: boolean,
-	token?: string,
-	role?: string,
-	message?: string,
-}
+	isLogin: boolean;
+	token?: string;
+	role?: string;
+	message?: string;
+};
