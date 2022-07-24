@@ -40,7 +40,7 @@ pool.getConnection((err: any, connection: any) => {
 });
 
 // Import Router
-const productsRouter = require("./server/routes/students.js");
+const productsRouter = require("./server/routes/students.ts");
 
 // Use Routes
 app.use("/api/", productsRouter);

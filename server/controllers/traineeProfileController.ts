@@ -1,17 +1,16 @@
-const mysql = require("mysql");
+exports.traineeProfile = async (req: any, res: any) => {
 
-// Pool do bazy
-const pool = mysql.createPool({
-	connectionLimit: 100,
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	database: process.env.DB_NAME,
-});
+	const mysql = require("mysql");
+	const pool = mysql.createPool({
+		connectionLimit: 100,
+		host: process.env.DB_HOST,
+		user: process.env.DB_USER,
+		database: process.env.DB_NAME,
+	});
 
-exports.traineeProfile = async (req, res) => {
 	try {
 		// Połączenie
-		pool.getConnection((err, connection) => {
+		pool.getConnection((err: Error, connection: any) => {
 			if (err) throw err;
 			console.log("Połączono do bazy z routa traineeProfile");
 
@@ -39,7 +38,7 @@ exports.traineeProfile = async (req, res) => {
                 trainee_profile.createdAt
                 FROM trainee_profile
                 ORDER BY lastName ASC`,
-				(err, rows) => {
+				(err: Error, rows: any) => {
 					// Jeśli udane połączenie
 					connection.release();
 					if (!err) {
@@ -60,4 +59,3 @@ exports.traineeProfile = async (req, res) => {
 		res.status(404).json({ message: "Error" });
 	}
 };
-

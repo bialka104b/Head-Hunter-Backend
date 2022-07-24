@@ -1,18 +1,15 @@
-const mysql = require("mysql");
+exports.students = async (req: any, res: any) => {
+	const mysql = require("mysql");
+	const pool = mysql.createPool({
+		connectionLimit: 100,
+		host: process.env.DB_HOST,
+		user: process.env.DB_USER,
+		database: process.env.DB_NAME,
+	});
 
-// Pool do bazy
-const pool = mysql.createPool({
-	connectionLimit: 100,
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	database: process.env.DB_NAME,
-});
-
-// Lista produktów pod katalog
-exports.students = async (req, res) => {
 	try {
 		// Połączenie
-		pool.getConnection((err, connection) => {
+		pool.getConnection((err: Error, connection: any) => {
 			if (err) throw err;
 			console.log("Połączono do bazy z routa");
 
@@ -25,11 +22,11 @@ exports.students = async (req, res) => {
 					? parseInt(req.query.limit)
 					: 12;
 			const offset = (page - 1) * limit;
-			let numOfstudents;
+			let numOfstudents: any;
 
 			connection.query(
 				`SELECT COUNT(*) as count FROM users`,
-				(err, countQuery) => {
+				(err: Error, countQuery: any) => {
 					if (!err) {
 						numOfstudents = countQuery[0].count;
 					} else {
@@ -50,11 +47,13 @@ exports.students = async (req, res) => {
                 LIMIT ?
                 OFFSET ?`,
 				[limit, offset],
-				(err, rows) => {
+				(err: Error, rows: any) => {
 					// Jeśli udane połączenie
 					connection.release();
 					if (!err) {
-						let numOfPages = Math.ceil(numOfstudents / limit);
+						let numOfPages: Number = Math.ceil(
+							numOfstudents / limit,
+						);
 						res.status(200).json({
 							count: rows.length,
 							limit: limit,
