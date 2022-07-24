@@ -7,5 +7,6 @@ CREATE TABLE users
     password  VARCHAR(72)                     NOT NULL,
     role      ENUM ('admin', 'hr', 'trainee') NOT NULL,
     createdAt DATE                            NOT NULL DEFAULT (NOW()),
-    isActive  BOOLEAN                         NOT NULL DEFAULT TRUE
+    isActive  BOOLEAN                         NOT NULL DEFAULT TRUE,
+    currentTokenId VARCHAR(256)               NULL DEFAULT NULL,
 );

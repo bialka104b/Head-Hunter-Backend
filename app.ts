@@ -1,7 +1,10 @@
 import * as express from "express";
-import { globalErrorHandler } from "./utils/globalErrorHandler";
+import * as cors from "cors";
+import * as cookieParser from "cookie-parser";
+import {globalErrorHandler} from "./utils/globalErrorHandler";
+import "./authentication/JwtStrategy";
+import {authRouter} from "./routers/authRouter";
 const mysql = require("mysql");
-const cors = require("cors");
 
 require("dotenv").config();
 
@@ -18,6 +21,7 @@ const port = process.env.PORT || 8080;
 // Apply CORS policy
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Conected database
 const pool = mysql.createPool({
@@ -40,6 +44,7 @@ const productsRouter = require("./server/routes/students.js");
 
 // Use Routes
 app.use("/api/", productsRouter);
+app.use('/auth', authRouter);
 
 // Global error handler:
 app.use(globalErrorHandler);
