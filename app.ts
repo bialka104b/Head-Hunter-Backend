@@ -1,6 +1,6 @@
-import * as express from "express";
-import * as cors from "cors";
-import * as cookieParser from "cookie-parser";
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 import { globalErrorHandler } from "./utils/globalErrorHandler";
 import "./authentication/JwtStrategy";
 import { authRouter } from "./routers/authRouter";
@@ -31,7 +31,7 @@ const pool = mysql.createPool({
 	database: process.env.DB_NAME,
 });
 
-pool.getConnection((err, connection) => {
+pool.getConnection((err: any, connection: any) => {
 	if (err) {
 		console.log("Niudane połączenie do bazy", err);
 		throw err;
