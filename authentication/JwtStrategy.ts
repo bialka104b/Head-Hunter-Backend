@@ -1,6 +1,6 @@
 import {Strategy} from "passport-jwt";
-import {Request} from "express";
-import * as passport from "passport";
+import { Request } from "express";
+const passport = require("passport");
 import {pool} from "../db/pool";
 import {UserRecord} from "../types/user/user";
 import {FieldPacket} from "mysql2";
