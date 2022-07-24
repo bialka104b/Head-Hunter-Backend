@@ -1,74 +1,78 @@
-const mysql = require("mysql");
-
+import { pool } from "../db/pool";
 // Pool do bazy
-const pool = mysql.createPool({
-	connectionLimit: 100,
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	database: process.env.DB_NAME,
-});
+// const pool = mysql.createPool({
+// connectionLimit: 100,
+// host: process.env.DB_HOST,
+// user: process.env.DB_USER,
+// database: process.env.DB_NAME,
+// });
 
 // Lista produktów pod katalog
-exports.students = async (req, res) => {
-	try {
-		// Połączenie
-		pool.getConnection((err, connection) => {
-			if (err) throw err;
-			console.log("Połączono do bazy z routa");
+export const students = async (req, res) => {
+  try {
+    // Połączenie
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+      console.log("Połączono do bazy z routa");
 
-			let page =
-				req.query.page != undefined && req.query.page > 0 ? parseInt(req.query.page) : 1;
-			const limit =
-				req.query.limit != undefined && req.query.limit > 0
-					? parseInt(req.query.limit)
-					: 12;
-			const offset = (page - 1) * limit;
-			let numOfstudents;
+      let page =
+        req.query.page != undefined && req.query.page > 0
+          ? parseInt(req.query.page)
+          : 1;
+      const limit =
+        req.query.limit != undefined && req.query.limit > 0
+          ? parseInt(req.query.limit)
+          : 12;
+      const offset = (page - 1) * limit;
+      let numOfstudents;
 
-			connection.query(`SELECT COUNT(*) as count FROM users`, (err, countQuery) => {
-				if (!err) {
-					numOfstudents = countQuery[0].count;
-				} else {
-					console.log(err);
-				}
-			});
+      connection.query(
+        `SELECT COUNT(*) as count FROM users`,
+        (err, countQuery) => {
+          if (!err) {
+            numOfstudents = countQuery[0].count;
+          } else {
+            console.log(err);
+          }
+        }
+      );
 
-			// Query do bazy
-			connection.query(
-				`SELECT users.id, 
-                users.email, 
-                users.password, 
-                users.role, 
-                users.createdAt, 
+      // Query do bazy
+      connection.query(
+        `SELECT users.id,
+                users.email,
+                users.password,
+                users.role,
+                users.createdAt,
                 users.isActive
                 FROM users
                 LIMIT ?
                 OFFSET ?`,
-				[limit, offset],
-				(err, rows) => {
-					// Jeśli udane połączenie
-					connection.release();
-					if (!err) {
-						let numOfPages = Math.ceil(numOfstudents / limit);
-						res.status(200).json({
-							count: rows.length,
-							limit: limit,
-							totalstudents: numOfstudents,
-							currentPage: page,
-							totalPages: numOfPages,
-							students: rows,
-						});
-					} else {
-						res.json({ message: "Nie znaleziono produktów" });
-					}
-					//console.log('Znalezione dane z bazy: \n', rows)
-				},
-			);
-		});
-	} catch (e) {
-		console.log(e, "dupa");
-		res.status(404).json({ message: "Error" });
-	}
+        [limit, offset],
+        (err, rows) => {
+          // Jeśli udane połączenie
+          connection.release();
+          if (!err) {
+            let numOfPages = Math.ceil(numOfstudents / limit);
+            res.status(200).json({
+              count: rows.length,
+              limit: limit,
+              totalstudents: numOfstudents,
+              currentPage: page,
+              totalPages: numOfPages,
+              students: rows,
+            });
+          } else {
+            res.json({ message: "Nie znaleziono produktów" });
+          }
+          //console.log('Znalezione dane z bazy: \n', rows)
+        }
+      );
+    });
+  } catch (e) {
+    console.log(e, "dupa");
+    res.status(404).json({ message: "Error" });
+  }
 };
 
 // Lista wszystkich produktow pod kalkulator

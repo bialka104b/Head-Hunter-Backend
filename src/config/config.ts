@@ -1,6 +1,10 @@
 import { Config } from "../types";
 
 export const config: Config = {
+  app: {
+    port: 8080,
+  },
+
   db: {
     port: 3306,
     host: "localhost",

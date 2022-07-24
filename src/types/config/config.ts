@@ -1,4 +1,8 @@
 export interface Config {
+  app: {
+    port: number;
+  };
+
   db: {
     port: number;
     host: string;

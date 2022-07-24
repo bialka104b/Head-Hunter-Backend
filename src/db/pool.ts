@@ -11,4 +11,5 @@ export const pool = createPool({
   database,
   namedPlaceholders: true,
   decimalNumbers: true,
+  connectionLimit: 100,
 });
