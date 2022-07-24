@@ -1,5 +1,3 @@
 /node_modules/*
-
+.idea
 /config/config.ts
-
-tslint.json
