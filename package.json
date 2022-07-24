@@ -7,7 +7,8 @@
     "start": "ts-node app.ts",
     "start:dev": "tsnd app.ts",
     "build": "tsc",
-    "test": "test"
+    "test": "test",
+    "lint": "tslint --force --project tsconfig.json ./*/.ts -t verbose"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,9 @@
     "passport-jwt": "^4.0.0",
     "typescript": "^4.7.4",
     "uuid": "^8.3.2"
+    "body-parser": "^1.19.2",
+    "mysql": "^2.18.1",
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.3",
@@ -49,5 +53,6 @@
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "tslint": "^6.1.3"
+    "typescript": "^4.7.4"
   }
 }
