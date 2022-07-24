@@ -4,6 +4,8 @@ const productsController = require("../controllers/studentsController");
 const studentsController = require("../controllers/studentsController");
 const hrProfileController = require("../controllers/hrProfileController");
 const traineeProfileController = require("../controllers/traineeProfileController");
+const interviewsController = require("../controllers/interviewsController");
+const traineeScoreController = require("../controllers/traineeScoreController");
 
 // dla funkcji z productsController np. find, create itd.
 // console.log(hrProfileController.hrProfile);
@@ -19,6 +21,8 @@ const pool = mysql.createPool({
 router.get("/students/", studentsController.students);
 router.get("/hrProfile/", hrProfileController.hrProfile);
 router.get("/traineeProfile/", traineeProfileController.traineeProfile);
+router.get("/interviews/", interviewsController.interviews);
+router.get("/traineeScore/", traineeScoreController.traineeScore);
 // router.get("/hrProfile/", studentsController.hrProfile);
 // router.get("/products/", productsController.products);
 // router.get("/allProducts/", productsController.allProducts);
