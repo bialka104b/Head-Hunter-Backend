@@ -21,3 +21,4 @@ router.get("/traineeProfile/", traineeProfileController.traineeProfile);
 // router.get("/category/:category", productsController.category);
 
 module.exports = router;
+
