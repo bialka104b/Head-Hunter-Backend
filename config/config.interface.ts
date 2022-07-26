@@ -6,5 +6,7 @@ export interface Config {
 		password: string,
 		database: string,
 	},
-	passportSecretOrKey: string,
+	jwt: {
+		passportSecretOrKey: string,
+	}
 }
