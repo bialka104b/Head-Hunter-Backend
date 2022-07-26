@@ -8,5 +8,6 @@ export interface Config {
 	};
 	jwt: {
 		passportSecretOrKey: string;
+		salt: string;
 	};
 }

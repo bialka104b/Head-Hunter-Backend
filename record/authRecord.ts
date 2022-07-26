@@ -8,6 +8,7 @@ import { pool } from "../db/pool";
 import { FieldPacket } from "mysql2";
 import { v4 as uuid } from "uuid";
 import { config } from "../config/config";
+import {hashPassword} from "../utils/hashPassword";
 
 export class AuthRecord implements UserLoginRequest {
 	email: string;
@@ -86,8 +87,7 @@ export class AuthRecord implements UserLoginRequest {
 			};
 		}
 
-		//TODO create task to create hash function for password
-		if (result[0].password !== this.password) {
+		if (result[0].password !== hashPassword(this.password)) {
 			return {
 				isLogin: false,
 				message: "Bad Password",
