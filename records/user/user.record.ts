@@ -1,17 +1,19 @@
 import { FieldPacket } from 'mysql2';
 import { UserEntity } from '../../types/user/user.entity';
 import { UserRole } from '../../types/user/user';
+import { ValidationError } from '../../utils/ValidationError';
 import { hash } from 'bcrypt';
+import { pool } from '../../db/pool';
+import { v4 as uuid } from 'uuid';
 import {
 	deleteUserById,
 	findUserByEmail,
 	getAllUsers,
 	getUserById,
 	insertMe,
+	updateMe,
+	updatePassword,
 } from './sql';
-import { pool } from '../../db/pool';
-import { v4 as uuid } from 'uuid';
-import { ValidationError } from '../../utils/ValidationError';
 
 type DbResult = [UserRecord[], FieldPacket[]];
 
@@ -74,36 +76,36 @@ export class UserRecord implements UserEntity {
 		return id;
 	}
 
-	//IN PROCESS:
+	/*Function doesn't include password change to avoid hashing previous password if it is not changed. */
 	async updateMe(): Promise<string> {
 		const {
 			id,
 			email,
-			password,
 			role,
 			currentTokenId,
 			createdAt,
-			isActive,
 		} = this;
 
-		await pool.execute(insertMe, {
+		await pool.execute(
+			updateMe, {
 				id,
 				email,
-				password: await hash(password, 12),
 				role,
 				currentTokenId,
 				createdAt,
-				isActive,
 			},
 		);
 		return id;
 	}
 
-	//-GET ALL USERS - ✔
-	//-GET USER BY ID - ✔
-	//-DELETE USER - ✔;
-	//-FIND USER BY NAME/EMAIL - ✔;
-	//-UPDATE USER -
+	async updatePassword() {
+		const { id, password } = this;
+		await pool.execute(updatePassword, {
+				id,
+				password: await hash(password, 12),
+			},
+		);
+	}
 
 	//static:
 	static async getAllUsers(): Promise<UserRecord[] | null> {

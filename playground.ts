@@ -7,10 +7,15 @@ const obj = {
 	role: UserRole.hr,
 };
 
-const user = new UserRecord(obj);
-console.log(user);
-// (async () => {
-// 	const target = await UserRecord.getAllUsers();
-// 	console.log(target);
-// })();
+// const user = new UserRecord(obj);
+// console.log(user);
+(async () => {
+	const target = await UserRecord.getUserById('user1');
+	console.log(target);
+	target.password = 'o0o0o0o0o0o0o';
+
+	await target.updatePassword();
+	const updated = await UserRecord.getUserById('user1');
+	console.log(updated);
+})();
 

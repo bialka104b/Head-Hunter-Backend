@@ -8,6 +8,25 @@ export const insertMe =
 	`
 ;
 
+export const updateMe =
+	`
+		UPDATE users
+		SET email          = :email,
+			role           = :role,
+			currentTokenId = :currentTokenId,
+			createdAt      = :createdAt
+		WHERE id = :id
+	`
+;
+
+export const updatePassword =
+	`
+		UPDATE users
+		SET password = :password
+		WHERE id = :id
+	`
+;
+
 export const getAllUsers =
 	`
 		SELECT *
