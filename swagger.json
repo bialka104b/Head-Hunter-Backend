@@ -1,0 +1,497 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "My User Project CRUD",
+		"description": "My User Project Application API",
+		"license": {
+			"name": "MIT",
+			"url": "https://opensource.org/licenses/MIT"
+		}
+	},
+	"host": "localhost:8080/api",
+	"basePath": "/",
+	"tags": [
+		{
+			"name": "students",
+			"description": "API for students in the system"
+		},
+		{
+			"name": "hrProfile",
+			"description": "API for hrProfile in the system"
+		},
+		{
+			"name": "traineeProfile",
+			"description": "API for traineeProfile in the system"
+		},
+		{
+			"name": "traineeScore",
+			"description": "API for traineeProfile in the system"
+		},
+		{
+			"name": "interviews",
+			"description": "API for interviews in the system"
+		}
+	],
+	"schemes": [
+		"http"
+	],
+	"consumes": [
+		"application/json"
+	],
+	"produces": [
+		"application/json"
+	],
+	"paths": {
+		"/hrProfile": {
+			"get": {
+				"tags": [
+					"hrProfile"
+				],
+				"summary": "Get all students in system",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/hrProfile"
+						}
+					}
+				}
+			}
+		},
+		"/students": {
+			"get": {
+				"tags": [
+					"students"
+				],
+				"summary": "Get all students in system",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/students"
+						}
+					}
+				}
+			}
+		},
+		"/interviews": {
+			"get": {
+				"tags": [
+					"interviews"
+				],
+				"summary": "Get all interviews in system",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/interviews"
+						}
+					}
+				}
+			}
+		},
+		"/traineeProfile": {
+			"get": {
+				"tags": [
+					"traineeProfile"
+				],
+				"summary": "Get all interviews in system",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/traineeProfile"
+						}
+					}
+				}
+			}
+		},
+		"/traineeScore": {
+			"get": {
+				"tags": [
+					"traineeScore"
+				],
+				"summary": "Get all interviews in system",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"$ref": "#/definitions/traineeScore"
+						}
+					}
+				}
+			}
+		},
+		"/addStudents": {
+			"post": {
+				"tags": [
+					"students"
+				],
+				"description": "Create new user in system",
+				"parameters": [
+					{
+						"name": "students",
+						"in": "body",
+						"description": "students that we want to create",
+						"schema": {
+							"$ref": "#/definitions/students"
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "New user is created",
+						"schema": {
+							"$ref": "#/definitions/students"
+						}
+					}
+				}
+			}
+		},
+		"/user/{id}": {
+			"parameters": [
+				{
+					"name": "id",
+					"in": "path",
+					"required": true,
+					"description": "ID użytkownika, którego chcemy find",
+					"type": "integer"
+				}
+			],
+			"put": {
+				"summary": "Zaktualizuj użytkownika podając ID",
+				"tags": [
+					"Użytkownicy"
+				],
+				"parameters": [
+					{
+						"name": "user",
+						"in": "body",
+						"description": "Użytkownik z nowymi wartościami właściwości",
+						"schema": {
+							"$ref": "#/definitions/updateUser"
+						}
+					}
+				],
+				"respons": {
+					"200": {
+						"description": "Użytkownik został zaktualizowany",
+						"schema": {
+							"$ref": "#/definitions/User"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"User": {
+			"required": [],
+			"properties": {
+				"count": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"limit": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"totalstudents": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"currentPage": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"totalPages": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"students": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "integer",
+								"uniqueItems": true
+							},
+							"email": {
+								"type": "string"
+							},
+							"password": {
+								"type": "string"
+							},
+							"role": {
+								"type": "string"
+							},
+							"createdAt": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"isActive": {
+								"type": "number"
+							}
+						}
+					}
+				}
+			}
+		},
+		"HrProfile": {
+			"required": [],
+			"properties": {
+				"count": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"students": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"uniqueItems": true
+							},
+							"fullName": {
+								"type": "string"
+							},
+							"company": {
+								"type": "string"
+							},
+							"maxReservedStudents": {
+								"type": "number"
+							},
+							"createdAt": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"userId": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"Interviews": {
+			"required": [],
+			"properties": {
+				"count": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"students": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"uniqueItems": true
+							},
+							"traineeId": {
+								"type": "string"
+							},
+							"scheduledFor": {
+								"type": "string"
+							},
+							"isActive": {
+								"type": "number"
+							},
+							"createdAt": {
+								"type": "string",
+								"format": "date-time"
+							},
+							"hrId": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"TraineeProfile": {
+			"required": [],
+			"properties": {
+				"count": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"students": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"uniqueItems": true
+							},
+							"tel": {
+								"type": "string",
+								"uniqueItems": true
+							},
+							"firstName": {
+								"type": "string"
+							},
+							"lastName": {
+								"type": "string"
+							},
+							"githubUsername": {
+								"type": "string"
+							},
+							"portfolioUrls": {
+								"type": "string"
+							},
+							"projectUrls": {
+								"type": "string"
+							},
+							"bio": {
+								"type": "string"
+							},
+							"expectedTypeWork": {
+								"type": "string"
+							},
+							"targetWorkCity": {
+								"type": "string"
+							},
+							"expectedContractType": {
+								"type": "string"
+							},
+							"expectedSalary": {
+								"type": "string"
+							},
+							"canTakeApprenticeship": {
+								"type": "number"
+							},
+							"monthsOfCommercialExp": {
+								"type": "number"
+							},
+							"education": {
+								"type": "string"
+							},
+							"workExperience": {
+								"type": "string"
+							},
+							"courses": {
+								"type": "string"
+							},
+							"registrationUrl": {
+								"type": "string"
+							},
+							"userId": {
+								"type": "string"
+							},
+							"createdAt": {
+								"type": "string",
+								"format": "date-time"
+							}
+						}
+					}
+				}
+			}
+		},
+		"TraineeScore": {
+			"required": [],
+			"properties": {
+				"count": {
+					"type": "integer",
+					"uniqueItems": false
+				},
+				"students": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "string",
+								"uniqueItems": true
+							},
+							"courseCompletion": {
+								"type": "number"
+							},
+							"courseEngagment": {
+								"type": "number"
+							},
+							"projectDegree": {
+								"type": "number"
+							},
+							"teamProjectDegree": {
+								"type": "number"
+							},
+							"bonusProjectUrls": {
+								"type": "string"
+							},
+							"userId": {
+								"type": "string"
+							},
+							"createdAt": {
+								"type": "string",
+								"format": "date-time"
+							}
+						}
+					}
+				}
+			}
+		},
+		"students": {
+			"type": "array",
+			"$ref": "#/definitions/User"
+		},
+		"interviews": {
+			"type": "array",
+			"$ref": "#/definitions/Interviews"
+		},
+		"hrProfile": {
+			"type": "array",
+			"$ref": "#/definitions/HrProfile"
+		},
+		"traineeProfile":{
+			"type": "array",
+			"$ref": "#/definitions/TraineeProfile"
+		},
+		"traineeScore":{
+			"type": "array",
+			"$ref": "#/definitions/TraineeScore"
+		},
+		"updateUser": {
+			"required": [
+				"name",
+				"companies"
+			],
+			"properties": {
+				"isPublic": {
+					"type": "boolean"
+				},
+				"name": {
+					"type": "string"
+				},
+				"books": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string"
+							},
+							"amount": {
+								"type": "number"
+							}
+						}
+					}
+				},
+				"companies": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}
