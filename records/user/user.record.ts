@@ -15,6 +15,12 @@ import {
 	updatePassword,
 } from './sql';
 
+const {
+	incorrectEmail,
+	incorrectPassword,
+	incorrectRole,
+} = ValidationError.messages.recordInstanceInit.user;
+
 type DbResult = [UserRecord[], FieldPacket[]];
 
 export class UserRecord implements UserEntity {
@@ -40,15 +46,15 @@ export class UserRecord implements UserEntity {
 	//dynamic:
 	private validate() {
 		if (!this.email || !this.email.includes('@')) {
-			throw new ValidationError(ValidationError.messages.userRecordInstanceInit.incorrectEmail, 400);
+			throw new ValidationError(incorrectEmail, 400);
 		}
 
 		if (!this.password || this.password.length < 6) {
-			throw new ValidationError('', 400);
+			throw new ValidationError(incorrectPassword, 400);
 		}
 
 		if (!this.role || !Object.values(UserRole).includes(this.role)) {
-			throw new ValidationError(ValidationError.messages.userRecordInstanceInit.incorrectRole, 400);
+			throw new ValidationError(incorrectRole, 400);
 		}
 	}
 
@@ -83,7 +89,6 @@ export class UserRecord implements UserEntity {
 			email,
 			role,
 			currentTokenId,
-			createdAt,
 		} = this;
 
 		await pool.execute(
@@ -92,7 +97,6 @@ export class UserRecord implements UserEntity {
 				email,
 				role,
 				currentTokenId,
-				createdAt,
 			},
 		);
 		return id;

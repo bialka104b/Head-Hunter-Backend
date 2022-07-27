@@ -13,8 +13,7 @@ export const updateMe =
 		UPDATE users
 		SET email          = :email,
 			role           = :role,
-			currentTokenId = :currentTokenId,
-			createdAt      = :createdAt
+			currentTokenId = :currentTokenId
 		WHERE id = :id
 	`
 ;
