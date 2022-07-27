@@ -8,7 +8,7 @@ const interviewsController = require("../controllers/interviewsController");
 const traineeScoreController = require("../controllers/traineeScoreController");
 
 // dla funkcji z productsController np. find, create itd.
-// console.log(hrProfileController.hrProfile);
+// console.log(hrProfileController.hr-profile);
 
 const mysql = require("mysql");
 const pool = mysql.createPool({
@@ -21,9 +21,13 @@ const pool = mysql.createPool({
 router.get("/students/", studentsController.students);
 router.get("/hrProfile/", hrProfileController.hrProfile);
 router.get("/traineeProfile/", traineeProfileController.traineeProfile);
+<<<<<<<< HEAD:routes/students.ts
 router.get("/interviews/", interviewsController.interviews);
 router.get("/traineeScore/", traineeScoreController.traineeScore);
 // router.get("/hrProfile/", studentsController.hrProfile);
+========
+// router.get("/hr-profile/", studentsController.hr-profile);
+>>>>>>>> feature/55_be-structure-rebuild:routes/students.js
 // router.get("/products/", productsController.products);
 // router.get("/allProducts/", productsController.allProducts);
 // router.post("/products/", productsController.find);

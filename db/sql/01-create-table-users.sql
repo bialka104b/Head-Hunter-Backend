@@ -6,7 +6,7 @@ CREATE TABLE users
     email     VARCHAR(256) UNIQUE             NOT NULL,
     password  VARCHAR(72)                     NOT NULL,
     role      ENUM ('admin', 'hr', 'trainee') NOT NULL,
+	currentTokenId VARCHAR(256)               NULL DEFAULT NULL,
     createdAt DATE                            NOT NULL DEFAULT (NOW()),
-    isActive  BOOLEAN                         NOT NULL DEFAULT TRUE,
-    currentTokenId VARCHAR(256)               NULL DEFAULT NULL,
+	isActive  BOOLEAN                         NOT NULL DEFAULT TRUE
 );
