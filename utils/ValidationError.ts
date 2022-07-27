@@ -9,14 +9,29 @@ export class ValidationError extends Error {
 	}
 
 	static messages = {
+		recordInstanceInit: {
+			user: {
+				incorrectEmail: 'Incorrect user\'s object data. Email key can not be empty and has to include "@".',
+				incorrectPassword: 'Incorrect user\'s object data. Password key can not be empty and has to include 6 characters at list.',
+				incorrectRole: 'Incorrect user\'s object data. Allowed roles are: "admin", "hr", "trainee".',
+			},
+			interview: {
+				incorrectRelationId: 'Incorrect interview\'s object data. "HrId" and "traineeId" keys can not be empty and have to match user\'s ids.',
+			},
+			hrProfile: {
+				incorrectNameOrCompany: 'Incorrect hr-profile\'s object data. Please provide data for "fullName" and "company" keys.',
+				incorrectRelationId: 'Incorrect hr-profile\'s object data. "UserId" key can not be empty and have to match user\'s ids.',
+			}
+
+		},
 		login: {
-			incorrectData: "Incorrect email address or password.",
+			incorrectData: 'Incorrect email address or password.',
 		},
 		fetch: {
-			notFound: "Fetched data not found.",
+			notFound: 'Fetched data not found.',
 		},
 		auth: {
-			notAuthorised: "Please log in.",
+			notAuthorised: 'Please log in.',
 		},
 	};
 }
