@@ -5,6 +5,8 @@ import { globalErrorHandler } from "./utils/globalErrorHandler";
 import "./authentication/JwtStrategy";
 import { authRouter } from "./routers/authRouter";
 const mysql = require("mysql");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json")
 
 require("dotenv").config();
 
@@ -48,6 +50,10 @@ app.use("/auth", authRouter);
 
 // Global error handler:
 app.use(globalErrorHandler);
+
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // Assign the PORT 8080 or IP server to our app
 app.listen(port, () =>
