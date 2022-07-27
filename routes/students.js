@@ -6,12 +6,12 @@ const hrProfileController = require("../controllers/hrProfileController");
 const traineeProfileController = require("../controllers/traineeProfileController");
 
 // dla funkcji z productsController np. find, create itd.
-// console.log(hrProfileController.hrProfile);
+// console.log(hrProfileController.hr-profile);
 
 router.get("/students/", studentsController.students);
 router.get("/hrProfile/", hrProfileController.hrProfile);
 router.get("/traineeProfile/", traineeProfileController.traineeProfile);
-// router.get("/hrProfile/", studentsController.hrProfile);
+// router.get("/hr-profile/", studentsController.hr-profile);
 // router.get("/products/", productsController.products);
 // router.get("/allProducts/", productsController.allProducts);
 // router.post("/products/", productsController.find);

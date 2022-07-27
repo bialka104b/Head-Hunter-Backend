@@ -18,6 +18,11 @@ export class ValidationError extends Error {
 			interview: {
 				incorrectRelationId: 'Incorrect interview\'s object data. "HrId" and "traineeId" keys can not be empty and have to match user\'s ids.',
 			},
+			hrProfile: {
+				incorrectNameOrCompany: 'Incorrect hr-profile\'s object data. Please provide data for "fullName" and "company" keys.',
+				incorrectRelationId: 'Incorrect hr-profile\'s object data. "UserId" key can not be empty and have to match user\'s ids.',
+			}
+
 		},
 		login: {
 			incorrectData: 'Incorrect email address or password.',

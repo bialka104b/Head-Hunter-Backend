@@ -1,21 +1,25 @@
-import { UserRecord } from './records/user/user.record';
-import { UserRole } from './types/user/user';
+import { InterviewRecord } from './records/interview/interview.record';
+import {
+	HrProfileRecord,
+} from './records/hr-profile/hr-profile.record';
 
 const obj = {
-	email: '@',
-	password: 'test1234',
-	role: UserRole.hr,
+	// id: 'id1234',
+	fullName: 'Tester Testowy',
+	company: 'TestCompanyInternational',
+	userId: 'user1',
+	// maxReservedStudents: 1;
+	// createdAt: Date;
 };
 
-// const user = new UserRecord(obj);
-// console.log(user);
-(async () => {
-	const target = await UserRecord.getUserById('user1');
-	console.log(target);
-	target.password = 'o0o0o0o0o0o0o';
+const newHrProfile = new HrProfileRecord(obj);
 
-	await target.updatePassword();
-	const updated = await UserRecord.getUserById('user1');
-	console.log(updated);
+
+(async () => {
+	// await newHrProfile.insertMe();
+	const x = await HrProfileRecord.getHrProfileById('hrProfile1');
+	x.company = 'zmiana!';
+	await x.updateMe();
+	console.log(x);
 })();
 
