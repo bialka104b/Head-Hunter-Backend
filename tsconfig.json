@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"noImplicitAny": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"moduleResolution": "Node",
+		"target": "ES6",
+		"downlevelIteration": true,
+		"lib": ["DOM", "ES6", "DOM.Iterable"],
+		"outDir": "dist",
+		"allowSyntheticDefaultImports": true
+	}
+}

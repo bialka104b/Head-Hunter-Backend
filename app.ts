@@ -5,8 +5,6 @@ import { globalErrorHandler } from './utils/globalErrorHandler';
 import './authentication/JwtStrategy';
 import { authRouter } from './routes/auth.router';
 
-const productsRouter = require('./routes/students.js'); //@TODO - do sth with that;
-
 const port = process.env.PORT || 3001;
 const app = express();
 
@@ -23,7 +21,6 @@ app.use(cookieParser());
 //TODO - create db connection test (maybe should be in db/pool file);
 
 // Routes:
-app.use('/api', productsRouter);
 app.use('/auth', authRouter);
 
 // Global error handler:

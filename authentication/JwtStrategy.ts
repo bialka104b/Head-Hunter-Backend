@@ -2,9 +2,9 @@ import { Strategy } from "passport-jwt";
 import { Request } from "express";
 const passport = require("passport");
 import { pool } from "../db/pool";
-import { UserRecord } from "../types/user/user";
 import { FieldPacket } from "mysql2";
 import { config } from "../config/config";
+import { UserRecord } from '../records/user/user.record';
 
 const cookieExtractor = function (req: Request): null | string {
 	let token = null;

@@ -87,9 +87,9 @@ export class AuthRecord implements UserLoginRequest {
 		return result.length === 0 ? null : result[0];
 	}
 
-	static async logout(id: string) {
+	static async logout(jwtToken: string) {
 		await pool.execute(logout, {
-			id,
+			jwtToken,
 		});
 	}
 }

@@ -17,9 +17,9 @@ authRouter
 			})
 			.json(login);
 	})
-	.get('/logout/:id', async (req, res) => {
-		const id = req.params.id;
-		await AuthRecord.logout(id);
+	.get('/logout', async (req, res) => {
+		const jwtToken = req.cookies.jwt
+		await AuthRecord.logout(jwtToken)
 
 		res.clearCookie('jwt')
 			.json({ isLogout: true });
