@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const productsController = require("../controllers/studentsController");
-const studentsController = require("../controllers/studentsController");
-const hrProfileController = require("../controllers/hrProfileController");
-const traineeProfileController = require("../controllers/traineeProfileController");
-const interviewsController = require("../controllers/interviewsController");
-const traineeScoreController = require("../controllers/traineeScoreController");
+const productsController = require("../../controllers/old/studentsController");
+const studentsController = require("../../controllers/old/studentsController");
+const hrProfileController = require("../../controllers/old/hrProfileController");
+const traineeProfileController = require("../../controllers/old/traineeProfileController");
+const interviewsController = require("../../controllers/old/interviewsController");
+const traineeScoreController = require("../../controllers/old/traineeScoreController");
 
 // dla funkcji z productsController np. find, create itd.
 // console.log(hrProfileController.hr-profile);
