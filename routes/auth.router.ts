@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AuthRecord } from '../records/auth.record';
+import { AuthRecord } from '../records/auth/auth.record';
 
 export const authRouter = Router();
 
