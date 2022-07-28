@@ -3,7 +3,7 @@ export const config = {
 		port: 3306,
 		host: "localhost",
 		user: "root",
-		password: "",
+		password: "123456",
 		database: "head_hunter_megak",
 	},
 	jwt: {
