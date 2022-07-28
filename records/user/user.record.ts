@@ -2,7 +2,6 @@ import { FieldPacket } from 'mysql2';
 import { UserEntity } from '../../types/user/user.entity';
 import { UserRole } from '../../types/user/user';
 import { ValidationError } from '../../utils/ValidationError';
-import { hash } from 'bcrypt';
 import { pool } from '../../db/pool';
 import { v4 as uuid } from 'uuid';
 import {
@@ -14,6 +13,7 @@ import {
 	updateMe,
 	updatePassword,
 } from './sql';
+import { hashPassword } from '../../utils/hashPassword';
 
 const {
 	incorrectEmail,
@@ -72,7 +72,7 @@ export class UserRecord implements UserEntity {
 		await pool.execute(insertMe, {
 				id,
 				email,
-				password: await hash(password, 12),
+				password: hashPassword(password),
 				role,
 				currentTokenId,
 				createdAt,
@@ -106,7 +106,7 @@ export class UserRecord implements UserEntity {
 		const { id, password } = this;
 		await pool.execute(updatePassword, {
 				id,
-				password: await hash(password, 12),
+				password: hashPassword(password),
 			},
 		);
 	}
