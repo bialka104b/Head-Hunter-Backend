@@ -21,6 +21,12 @@ export class ValidationError extends Error {
 			hrProfile: {
 				incorrectNameOrCompany: 'Incorrect hr-profile\'s object data. Please provide data for "fullName" and "company" keys.',
 				incorrectRelationId: 'Incorrect hr-profile\'s object data. "UserId" key can not be empty and have to match user\'s ids.',
+			},
+			traineeScore: {
+				incorrectScore: 'Incorrect trainee-score\'s object data. "CourseCompletion", "courseEngagment", "projectDegree", "teamProjectDegree" keys can not be empty and have to be between 0 and 5.'
+			},
+			traineeProfile: {
+				incorrectMinimumData: 'Incorrect trainee-profile\'s object data. "FirstName", "lastName", "githubUsername", "projectUrls" keys can not be empty.',
 			}
 
 		},

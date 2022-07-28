@@ -35,11 +35,3 @@ export const getHrProfileById =
 		WHERE id = :id
 	`
 ;
-
-export const deleteHrProfileById =
-	`
-		DELETE
-		FROM hr_profile
-		WHERE id = :id
-	`
-;

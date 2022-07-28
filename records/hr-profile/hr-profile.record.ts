@@ -1,10 +1,9 @@
 import { HrProfileEntity } from '../../types/hr-profile/hr-profile.entity';
 import { ValidationError } from '../../utils/ValidationError';
+import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
-import { FieldPacket } from 'mysql2';
 import {
-	deleteHrProfileById,
 	getAllHrProfiles,
 	getHrProfileById,
 	insertMe,
@@ -17,7 +16,6 @@ const {
 } = ValidationError.messages.recordInstanceInit.hrProfile;
 
 type DbResult = [HrProfileRecord[], FieldPacket[]];
-
 
 export class HrProfileRecord implements HrProfileEntity {
 	id: string;
@@ -98,9 +96,5 @@ export class HrProfileRecord implements HrProfileEntity {
 	static async getHrProfileById(id: string): Promise<HrProfileRecord | null> {
 		const [resp] = (await pool.execute(getHrProfileById, { id }) as DbResult)[0];
 		return resp ? new HrProfileRecord(resp) : null;
-	}
-
-	static async deleteHrProfileById(id: string): Promise<void> {
-		await pool.execute(deleteHrProfileById, { id });
 	}
 }

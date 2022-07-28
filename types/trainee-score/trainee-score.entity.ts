@@ -4,7 +4,7 @@ export interface TraineeScoreEntity {
 	courseEngagment: number;
 	projectDegree: number;
 	teamProjectDegree: number;
-	bonusProjectUrls: string;
-	userId: string;
+	bonusProjectUrls: string[];
+	userId?: string | null;
 	createdAt?: Date;
 }
