@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AuthRecord } from '../records/auth.record';
+import { AuthRecord } from '../records/auth/auth.record';
 
 export const authRouter = Router();
 
@@ -17,9 +17,9 @@ authRouter
 			})
 			.json(login);
 	})
-	.get('/logout/:id', async (req, res) => {
-		const id = req.params.id;
-		await AuthRecord.logout(id);
+	.get('/logout', async (req, res) => {
+		const jwtToken = req.cookies.jwt
+		await AuthRecord.logout(jwtToken)
 
 		res.clearCookie('jwt')
 			.json({ isLogout: true });
