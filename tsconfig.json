@@ -3,11 +3,15 @@
 		"noImplicitAny": true,
 		"preserveConstEnums": true,
 		"sourceMap": true,
-		"moduleResolution": "Node",
+		"lib": ["DOM", "ES6", "DOM.Iterable"],
+		"allowSyntheticDefaultImports": true
 		"target": "ES6",
 		"downlevelIteration": true,
-		"lib": ["DOM", "ES6", "DOM.Iterable"],
+		"module": "CommonJS",
 		"outDir": "dist",
-		"allowSyntheticDefaultImports": true
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"moduleResolution": "Node",
+		"esModuleInterop": true
 	}
 }
