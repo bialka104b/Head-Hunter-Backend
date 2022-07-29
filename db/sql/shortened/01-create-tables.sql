@@ -6,7 +6,8 @@ CREATE TABLE users
 	email          VARCHAR(256) UNIQUE             NOT NULL,
 	password       VARCHAR(72)                     NOT NULL,
 	role           ENUM ('admin', 'hr', 'trainee') NOT NULL,
-	currentTokenId VARCHAR(256)                    NULL     DEFAULT NULL,
+	currentTokenId VARCHAR(256)                             DEFAULT NULL,
+	registerToken  VARCHAR(36)                              DEFAULT NUll,
 	createdAt      DATE                            NOT NULL DEFAULT (NOW()),
 	isActive       BOOLEAN                         NOT NULL DEFAULT TRUE
 );
@@ -16,10 +17,10 @@ DROP TABLE IF EXISTS trainee_score;
 CREATE TABLE trainee_score
 (
 	id                VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-	courseCompletion  TINYINT NOT NULL,
-	courseEngagment   TINYINT NOT NULL,
-	projectDegree     TINYINT NOT NULL,
-	teamProjectDegree TINYINT NOT NULL,
+	courseCompletion  DECIMAL(3,2) NOT NULL,
+	courseEngagment   DECIMAL(3,2) NOT NULL,
+	projectDegree     DECIMAL(3,2) NOT NULL,
+	teamProjectDegree DECIMAL(3,2) NOT NULL,
 	bonusProjectUrls  JSON    NOT NULL,
 	userId            VARCHAR(36),
 	createdAt         DATE    NOT NULL        DEFAULT (NOW()),
