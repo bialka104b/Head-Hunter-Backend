@@ -5,6 +5,7 @@ import { globalErrorHandler } from './utils/globalErrorHandler';
 import './authentication/JwtStrategy';
 import { authRouter } from './routes/auth.router';
 import { router as usersRouter } from './routes/users.router';
+import { mailRouter } from './routes/mail.router';
 
 const port = process.env.PORT || 3001;
 const app = express();
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 // Routes:
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/mail', mailRouter);
 app.use('/api/v1/users', usersRouter);
 
 // Global error handler:
