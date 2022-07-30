@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { MailRecord } from '../../records/mail/mail.record';git
+import { MailRecord } from '../../records/mail/mail.record';
 import { sendRegisterMail } from '../../mailService/sendMail';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { JsonResponseStatus } from '../../types/api/json-response';
