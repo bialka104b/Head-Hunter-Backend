@@ -4,7 +4,7 @@
 		"preserveConstEnums": true,
 		"sourceMap": true,
 		"lib": ["DOM", "ES6", "DOM.Iterable"],
-		"allowSyntheticDefaultImports": true
+		"allowSyntheticDefaultImports": true,
 		"target": "ES6",
 		"downlevelIteration": true,
 		"module": "CommonJS",
