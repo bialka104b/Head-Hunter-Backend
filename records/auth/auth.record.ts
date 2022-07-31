@@ -12,7 +12,7 @@ import { ValidationError } from '../../utils/ValidationError';
 import { findTokenId, generateToken, login, logout } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
 
-const { incorrectEmail } = ValidationError.messages.recordInstanceInit.user;
+const { incorrectData, incorrectEmail } = ValidationError.messages.login;
 
 export class AuthRecord implements UserLoginRequest {
 	email: string;
@@ -34,17 +34,10 @@ export class AuthRecord implements UserLoginRequest {
 			isActive: true,
 		}) as UserLoginResponseFromDatabase;
 
-		if (!result[0]) {
+		if (!result[0] || result[0].password !== hashPassword(this.password)) {
 			return {
 				isLogin: false,
-				message: 'Not User Found. Possible that your status is non active.',
-			};
-		}
-
-		if (result[0].password !== hashPassword(this.password)) {
-			return {
-				isLogin: false,
-				message: 'Bad Password',
+				message: incorrectData,
 			};
 		}
 
