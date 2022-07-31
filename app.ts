@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import 'express-async-errors';
 import cors from 'cors';
 import { globalErrorHandler } from './utils/globalErrorHandler';
 import './authentication/JwtStrategy';
