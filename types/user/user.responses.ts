@@ -18,3 +18,9 @@ export type UserLoginResultsResponse = {
 	role?: string,
 	message?: string,
 }
+
+export type UnregisterUsersResponse = {
+	id: string,
+	email: string,
+	registerToken: string,
+}

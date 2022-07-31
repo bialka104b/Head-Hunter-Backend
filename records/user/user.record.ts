@@ -10,10 +10,12 @@ import {
 	getAllUsers,
 	getUserById,
 	insertMe,
+	unregisterUsers,
 	updateMe,
 	updatePassword,
 } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
+import { UnregisterUsersResponse } from '../../types/user/user.responses';
 
 const {
 	incorrectEmail,
@@ -22,6 +24,7 @@ const {
 } = ValidationError.messages.recordInstanceInit.user;
 
 type DbResult = [UserRecord[], FieldPacket[]];
+type DbUnregisterUsersResponse = [UnregisterUsersResponse[],  FieldPacket[]];
 
 export class UserRecord implements UserEntity {
 	id: string;
@@ -130,5 +133,11 @@ export class UserRecord implements UserEntity {
 
 	static async deleteUserById(id: string): Promise<void> {
 		await pool.execute(deleteUserById, { id });
+	}
+
+	static async findUnregisterUsers(): Promise<UnregisterUsersResponse[]> {
+		const [result] = await pool.execute(unregisterUsers) as DbUnregisterUsersResponse;
+
+		return result.length === 0 ? null : result;
 	}
 }

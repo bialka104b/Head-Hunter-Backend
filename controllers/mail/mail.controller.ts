@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
-import { MailRecord } from '../../records/mail/mail.record';
 import { sendRegisterMail } from '../../mailService/sendMail';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { JsonResponseStatus } from '../../types/api/json-response';
 import { ValidationError } from '../../utils/ValidationError';
+import { UserRecord } from '../../records/user/user.record';
 
 export class MailController {
 	static async registerMail(req: Request, res: Response) {
 		try {
-			const unregisterUsers = await MailRecord.findUnregisterUsers();
+			const unregisterUsers = await UserRecord.findUnregisterUsers();
 
 			for (const users of unregisterUsers) {
 				const { id, email, registerToken } = users;
