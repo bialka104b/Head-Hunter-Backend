@@ -38,7 +38,7 @@ export class ValidationError extends Error {
 			notFound: 'Fetched data not found.',
 		},
 		auth: {
-			notAuthorised: 'unauthorized User',
+			notAuthorised: 'Unauthorized User',
 		},
 	};
 }
