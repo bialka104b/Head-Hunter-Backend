@@ -3,6 +3,7 @@ import { MailRecord } from '../../records/mail/mail.record';
 import { sendRegisterMail } from '../../mailService/sendMail';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { JsonResponseStatus } from '../../types/api/json-response';
+import { ValidationError } from '../../utils/ValidationError';
 
 export class MailController {
 	static async registerMail(req: Request, res: Response) {
@@ -20,7 +21,7 @@ export class MailController {
 				message: 'done',
 			}));
 		} catch (e) {
-			console.log(e);
+			throw new ValidationError(e.message, e.code);
 		}
 	}
 }

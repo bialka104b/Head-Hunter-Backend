@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { AuthRecord } from '../../records/auth/auth.record';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { JsonResponseStatus } from '../../types/api/json-response';
+import { ValidationError } from '../../utils/ValidationError';
 
 export class AuthController {
 	static async login(req: Request, res: Response) {
@@ -38,7 +39,7 @@ export class AuthController {
 				})
 				.json(response);
 		} catch (e) {
-			console.log(e);
+			throw new ValidationError(e.message, e.code);
 		}
 	}
 
@@ -49,7 +50,7 @@ export class AuthController {
 
 			res.clearCookie('jwt');
 		} catch (e) {
-			console.log(e);
+			throw new ValidationError(e.message, e.code);
 		}
 	}
 }
