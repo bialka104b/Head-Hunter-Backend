@@ -1,11 +1,13 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import 'express-async-errors';
 import cors from 'cors';
 import { globalErrorHandler } from './utils/globalErrorHandler';
 import './authentication/JwtStrategy';
 import { authRouter } from './routes/auth.router';
 import { router as usersRouter } from './routes/users.router';
 import { mailRouter } from './routes/mail.router';
+import { traineesRouter } from './routes/trainees.router';
 
 const port = process.env.PORT || 3001;
 const app = express();
@@ -26,6 +28,7 @@ app.use(cookieParser());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/mail', mailRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/trainees', traineesRouter);
 
 // Global error handler:
 app.use(globalErrorHandler);
