@@ -41,7 +41,7 @@ export const JwtStrategy = new Strategy(
 		)) as [UserRecord[], FieldPacket[]];
 
 		if (!result[0]) {
-			return done(new Error('nie ma usera'), false);
+			return done(new ValidationError(notAuthorised, 400), false);
 		}
 		done(null, result[0]);
 	},
