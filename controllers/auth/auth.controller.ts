@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthRecord } from '../../records/auth/auth.record';
 import { jsonResponse } from '../../utils/jsonResponse';
-import { JsonResponseStatus } from '../../types/api/json-response';
+import { JsonResponseStatus } from '../../types';
 
 export class AuthController {
 	static async login(req: Request, res: Response) {
@@ -25,6 +25,7 @@ export class AuthController {
 					data: {
 						token: login.token,
 						role: login.role,
+						id: login.id,
 					},
 				});
 			}

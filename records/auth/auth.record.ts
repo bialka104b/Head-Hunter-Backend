@@ -3,11 +3,11 @@ import { pool } from '../../db/pool';
 import { config } from '../../config/config';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
-import { UserLoginRequest } from '../../types/user/user.requests';
 import {
-	UserLoginResponseFromDatabase,
+	UserLoginRequest,
 	UserLoginResultsResponse,
-} from '../../types/user/user.responses';
+	UserLoginResponseFromDatabase,
+} from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import { findTokenId, generateToken, login, logout } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
@@ -45,6 +45,7 @@ export class AuthRecord implements UserLoginRequest {
 
 		return {
 			isLogin: true,
+			id: result[0].id,
 			token,
 			role: result[0].role,
 		};
