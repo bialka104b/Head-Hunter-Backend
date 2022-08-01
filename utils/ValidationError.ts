@@ -32,12 +32,13 @@ export class ValidationError extends Error {
 		},
 		login: {
 			incorrectData: 'Incorrect email address or password.',
+			incorrectEmail: 'Incorrect email. Email can not be empty and has to include "@".',
 		},
 		fetch: {
 			notFound: 'Fetched data not found.',
 		},
 		auth: {
-			notAuthorised: 'Please log in.',
+			notAuthorised: 'unauthorized User',
 		},
 	};
 }

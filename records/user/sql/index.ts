@@ -57,3 +57,11 @@ export const deleteUserById =
 		WHERE id = :id
 	`
 ;
+
+export const unregisterUsers =
+	`
+	SELECT id, email, registerToken
+	FROM users
+	WHERE registerToken IS NOT NULL
+	`
+;

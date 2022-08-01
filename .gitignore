@@ -2,4 +2,3 @@
 .idea
 #local playground file for testing:
 playground.ts
-config/passwordforMail.ts

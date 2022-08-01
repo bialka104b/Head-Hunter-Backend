@@ -1,5 +1,3 @@
-// import { mailPassword } from './passwordforMail';
-
 export const config = {
 	db: {
 		port: 3306,
@@ -14,7 +12,7 @@ export const config = {
 		salt: 'aomihdfadfhalmsdj893rh 892rymd 2q89rync2hcodfa;skncasldjkvba9s haiopj; caiodmhf892 h[fp\';alskdoqp\'wd 90wfduqjpefio ;r893gqh fnvwda; lwajscnavupo2\'-31ojwp;nOLDhIEWAVKNSDLu ;pqej2IEO QWF;J ji;LKH;OIHlkhkH D;lkh',
 	},
 	email: {
-		email: 'michal.pietraszek98@gmail.com',
-		pass: 'test',
+		email: 'megak.gr7@gmail.com',
+		pass: 'zjefjbxwshlhkxvx',
 	},
 };
