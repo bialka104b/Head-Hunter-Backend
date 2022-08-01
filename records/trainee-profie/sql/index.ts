@@ -65,3 +65,59 @@ export const getTraineeProfileById =
 		WHERE id = :id
 	`
 ;
+
+export const getFullTraineeInfo =
+	`
+		SELECT users.id,
+			   users.email,
+			   ts.bonusProjectUrls,
+			   ts.courseCompletion,
+			   ts.courseEngagment,
+			   ts.teamProjectDegree,
+			   ts.projectDegree,
+			   tp.tel,
+			   tp.firstName,
+			   tp.lastName,
+			   tp.githubUsername,
+			   tp.portfolioUrls,
+			   tp.projectUrls,
+			   tp.bio,
+			   tp.expectedTypeWork,
+			   tp.targetWorkCity,
+			   tp.expectedContractType,
+			   tp.expectedSalary,
+			   tp.canTakeApprenticeship,
+			   tp.monthsOfCommercialExp,
+			   tp.education,
+			   tp.workExperience,
+			   tp.courses,
+			   tp.status
+		FROM users
+				 JOIN trainee_profile tp on users.id = tp.userId
+				 JOIN trainee_score ts on users.id = ts.userId
+			AND users.isActive = true
+	`
+;
+
+export const getAllListedTrainees =
+	`
+		SELECT users.id,
+			   email,
+			   firstName,
+			   lastName,
+			   courseCompletion,
+			   courseEngagment,
+			   projectDegree,
+			   teamProjectDegree,
+			   expectedTypeWork,
+			   targetWorkCity,
+			   expectedContractType,
+			   expectedSalary,
+			   canTakeApprenticeship,
+			   monthsOfCommercialExp
+		FROM users
+				 JOIN trainee_profile tp on users.id = tp.userId
+				 JOIN trainee_score ts on users.id = ts.userId
+			AND users.isActive = true
+	`
+;

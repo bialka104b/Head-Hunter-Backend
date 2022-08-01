@@ -6,18 +6,24 @@ import {
 	TraineeExpectedTypeWork,
 	TraineeStatus,
 } from '../../types/trainee-profile/trainee-profile';
+import { FieldPacket } from 'mysql2';
+import { ValidationError } from '../../utils/ValidationError';
+import {
+	TraineeFullInfoEntity, TraineeListedEntity,
+} from '../../types/trainee-profile/trainee-profile.responses';
 import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
 import {
-	getAllTraineesProfiles,
+	getAllListedTrainees,
+	getAllTraineesProfiles, getFullTraineeInfo,
 	getTraineeProfileById,
 	insertMe,
 	updateMe,
 } from './sql';
-import { FieldPacket } from 'mysql2';
-import { ValidationError } from '../../utils/ValidationError';
-
+//TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
+type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
+type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
 
 const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;
 
@@ -138,5 +144,15 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	static async getTraineeProfileById(id: string): Promise<TraineeProfileRecord | null> {
 		const [resp] = (await pool.execute(getTraineeProfileById, { id }) as DbResult)[0];
 		return resp ? new TraineeProfileRecord(resp) : null;
+	}
+
+	static async getAllListedTrainees(): Promise<TraineeListedEntity[] | null> {
+		const resp = (await pool.execute(getAllListedTrainees) as DbResultTraineeListed)[0];
+		return resp.length !== 0 ? resp : null;
+	}
+
+	static async getFullTraineeInfo(id: string): Promise<TraineeFullInfoEntity | null> {
+		const [resp] = (await pool.execute(getFullTraineeInfo, { id }) as DbResultTraineeFullInfo)[0];
+		return resp ?? null;
 	}
 }
