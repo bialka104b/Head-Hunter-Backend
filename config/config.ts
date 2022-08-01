@@ -1,11 +1,11 @@
-import { mailPassword } from './passwordforMail';
+// import { mailPassword } from './passwordforMail';
 
 export const config = {
 	db: {
 		port: 3306,
 		host: 'localhost',
 		user: 'root',
-		password: '',
+		password: '123456',
 		database: 'head_hunter_megak',
 	},
 	jwt: {
@@ -15,6 +15,6 @@ export const config = {
 	},
 	email: {
 		email: 'michal.pietraszek98@gmail.com',
-		pass: mailPassword,
+		pass: 'test',
 	},
 };
