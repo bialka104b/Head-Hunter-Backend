@@ -4,7 +4,7 @@ import { TraineesController } from '../controllers/trainees.controller';
 const traineesRouter = express.Router();
 
 traineesRouter
-	.get('/', TraineesController.getAllListedTrainees)
+	.get('/:limit/:currentPage', TraineesController.getAllListedTrainees)
 	.get('/:id', TraineesController.getTraineeProfile);
 
 export {

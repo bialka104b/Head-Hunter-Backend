@@ -1,11 +1,9 @@
 import {
 	TraineeProfileEntity,
-} from '../../types/trainee-profile/trainee-profile.entity';
-import {
 	TraineeExpectedContractType,
 	TraineeExpectedTypeWork,
 	TraineeStatus,
-} from '../../types/trainee-profile/trainee-profile';
+} from '../../types';
 import { FieldPacket } from 'mysql2';
 import { ValidationError } from '../../utils/ValidationError';
 import {
@@ -15,7 +13,9 @@ import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
 import {
 	getAllListedTrainees,
-	getAllTraineesProfiles, getFullTraineeInfo,
+	getAllTraineesProfiles,
+	getCountOfTrainees,
+	getFullTraineeInfo,
 	getTraineeProfileById,
 	insertMe,
 	updateMe,
@@ -24,6 +24,7 @@ import {
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
 type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
 type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
+type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]]
 
 const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;
 
@@ -146,13 +147,18 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		return resp ? new TraineeProfileRecord(resp) : null;
 	}
 
-	static async getAllListedTrainees(): Promise<TraineeListedEntity[] | null> {
-		const resp = (await pool.execute(getAllListedTrainees) as DbResultTraineeListed)[0];
+	static async getAllListedTrainees(limit: number, offsetElement: number): Promise<TraineeListedEntity[] | null> {
+		const resp = (await pool.execute(getAllListedTrainees, { limit, offsetElement }) as DbResultTraineeListed)[0];
 		return resp.length !== 0 ? resp : null;
 	}
 
 	static async getFullTraineeInfo(id: string): Promise<TraineeFullInfoEntity | null> {
 		const [resp] = (await pool.execute(getFullTraineeInfo, { id }) as DbResultTraineeFullInfo)[0];
 		return resp ?? null;
+	}
+
+	static async getCountOfTrainees(): Promise<number | null> {
+		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
+		return resp.count ?? null;
 	}
 }
