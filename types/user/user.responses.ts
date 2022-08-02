@@ -13,6 +13,7 @@ export type UserLoginResponseFromDatabase = [
 ];
 
 export type UserLoginResultsResponse = {
+	id?: string,
 	isLogin: boolean,
 	token?: string,
 	role?: string,
