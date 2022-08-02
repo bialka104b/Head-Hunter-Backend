@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS trainee_profile;
-
 CREATE TABLE trainee_profile
 (
     id                    VARCHAR(36) PRIMARY KEY                           DEFAULT (UUID()),

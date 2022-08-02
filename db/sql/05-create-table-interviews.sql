@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS interviews;
-
 CREATE TABLE interviews
 (
     id        VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
