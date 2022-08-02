@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS hr_profile;
-
 CREATE TABLE hr_profile
 (
     id                  VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
