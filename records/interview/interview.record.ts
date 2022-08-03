@@ -1,5 +1,5 @@
 import { FieldPacket } from 'mysql2';
-import { InterviewEntity } from '../../types/interview/interview.entity';
+import { InterviewEntity } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import {
 	insertMe,
@@ -7,11 +7,15 @@ import {
 	getInterviewById,
 	deleteInterviewById,
 	updateMe,
+	getTraineesInterviewsListByHrId,
+	getCountOfTraineesInterviewsForHr,
 } from './sql';
 import { pool } from '../../db/pool';
 import { v4 as uuid } from 'uuid';
 
 type DbResult = [InterviewRecord[], FieldPacket[]];
+type DbResultTraineesInterviewsListByHrId = [{traineeId: string}[], FieldPacket[]];
+type DBResultCountOfTraineesInterviewsForHr = [{count: number}[], FieldPacket[]]
 
 const { incorrectRelationId } = ValidationError.messages.recordInstanceInit.interview;
 
@@ -81,7 +85,17 @@ export class InterviewRecord implements InterviewEntity {
 		return resp ? new InterviewRecord(resp) : null;
 	}
 
+	static async getInterviewsTraineeList(id: string, limit: number, offsetElement: number) {
+		const resp = (await pool.execute(getTraineesInterviewsListByHrId, {id, limit, offsetElement}) as DbResultTraineesInterviewsListByHrId)[0];
+		return resp.length !== 0 ? resp : null;
+	}
+
 	static async deleteInterviewById(id: string): Promise<void> {
 		await pool.execute(deleteInterviewById, { id });
+	}
+
+	static async getCountOfTraineesInterviewsForHr(id: string): Promise<number | null> {
+		const [resp] = (await pool.execute(getCountOfTraineesInterviewsForHr, {id}) as DBResultCountOfTraineesInterviewsForHr)[0];
+		return resp.count ?? null;
 	}
 }

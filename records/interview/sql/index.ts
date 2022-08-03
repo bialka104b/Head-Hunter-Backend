@@ -37,3 +37,22 @@ export const deleteInterviewById =
 		WHERE id = :id
 	`
 ;
+
+export const getTraineesInterviewsListByHrId =
+	`
+	SELECT traineeId
+	FROM interviews
+	WHERE hrId = :id
+		AND isActive = true
+		LIMIT :limit
+		OFFSET :offsetElement
+	`
+;
+
+export const getCountOfTraineesInterviewsForHr =
+	`
+		SELECT COUNT(*) as count
+		FROM interviews
+		WHERE hrId = :id
+	`
+;

@@ -1,11 +1,13 @@
 import express = require('express');
 import { TraineesController } from '../controllers/trainees.controller';
+import passport from 'passport';
 
 const traineesRouter = express.Router();
 
 traineesRouter
 	.get('/:limit/:currentPage', TraineesController.getAllListedTrainees)
-	.get('/:id', TraineesController.getTraineeProfile);
+	.get('/interviewsList/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getInterviewsTraineesList)
+	.get('/:id', passport.authenticate('jwt', { session: false }),TraineesController.getTraineeProfile);
 
 export {
 	traineesRouter,

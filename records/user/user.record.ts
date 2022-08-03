@@ -1,6 +1,5 @@
 import { FieldPacket } from 'mysql2';
-import { UserEntity } from '../../types/user/user.entity';
-import { UserRole } from '../../types/user/user';
+import { UserEntity, UserRole, UnregisterUsersResponse } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import { pool } from '../../db/pool';
 import { v4 as uuid } from 'uuid';
@@ -15,7 +14,6 @@ import {
 	updatePassword,
 } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
-import { UnregisterUsersResponse } from '../../types/user/user.responses';
 
 const {
 	incorrectEmail,

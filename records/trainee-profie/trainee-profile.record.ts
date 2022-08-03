@@ -1,5 +1,7 @@
 import {
 	TraineeProfileEntity,
+} from '../../types';
+import {
 	TraineeExpectedContractType,
 	TraineeExpectedTypeWork,
 	TraineeStatus,
@@ -17,6 +19,7 @@ import {
 	getCountOfTrainees,
 	getFullTraineeInfo,
 	getTraineeProfileById,
+	getTraineesInfoForTraineesInterviewsListById,
 	insertMe,
 	updateMe,
 } from './sql';
@@ -24,7 +27,9 @@ import {
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
 type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
 type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
+type DbResultInterviewsListTraineesInfoById = DbResultTraineeListed;
 type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]]
+
 
 const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;
 
@@ -154,6 +159,11 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 
 	static async getFullTraineeInfo(id: string): Promise<TraineeFullInfoEntity | null> {
 		const [resp] = (await pool.execute(getFullTraineeInfo, { id }) as DbResultTraineeFullInfo)[0];
+		return resp ?? null;
+	}
+
+	static async getTraineesInfoForTraineesInterviewsListById(id: string): Promise<TraineeListedEntity | null> {
+		const [resp] = (await pool.execute(getTraineesInfoForTraineesInterviewsListById, { id }) as DbResultInterviewsListTraineesInfoById)[0];
 		return resp ?? null;
 	}
 
