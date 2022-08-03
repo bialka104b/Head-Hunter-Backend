@@ -1,5 +1,5 @@
 import { FieldPacket } from 'mysql2';
-import { InterviewEntity } from '../../types';
+import { InterviewEntity, InterviewTraineesIdResponse } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import {
 	insertMe,
@@ -14,7 +14,7 @@ import { pool } from '../../db/pool';
 import { v4 as uuid } from 'uuid';
 
 type DbResult = [InterviewRecord[], FieldPacket[]];
-type DbResultTraineesInterviewsListByHrId = [{traineeId: string}[], FieldPacket[]];
+type DbResultTraineesInterviewsListByHrId = [InterviewTraineesIdResponse[], FieldPacket[]];
 type DBResultCountOfTraineesInterviewsForHr = [{count: number}[], FieldPacket[]]
 
 const { incorrectRelationId } = ValidationError.messages.recordInstanceInit.interview;
