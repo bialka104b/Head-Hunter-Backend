@@ -87,7 +87,6 @@ export class InterviewRecord implements InterviewEntity {
 
 	static async getInterviewsTraineeList(id: string, limit: number, offsetElement: number) {
 		const resp = (await pool.execute(getTraineesInterviewsListByHrId, {id, limit, offsetElement}) as DbResultTraineesInterviewsListByHrId)[0];
-		console.log(resp);
 		return resp.length !== 0 ? resp : null;
 	}
 
