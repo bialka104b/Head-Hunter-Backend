@@ -19,13 +19,8 @@ class TraineesController {
 
 			let currentPage = Number(req.params.currentPage);
 
-			if(currentPage < 1) {
-				currentPage = 1
-			}
+			currentPage = paginationValidation(currentPage, pages);
 
-			if(currentPage > pages) {
-				currentPage = pages
-			}
 			const offsetElement = limit * (currentPage - 1);
 
 
