@@ -5,7 +5,7 @@ import passport from 'passport';
 const traineesRouter = express.Router();
 
 traineesRouter
-	.get('/',TraineesController.getAllListedTrainees)
+	.get('/:limit/:currentPage', TraineesController.getAllListedTrainees)
 	.get('/interviewsList/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getInterviewsTraineesList)
 	.get('/:id', passport.authenticate('jwt', { session: false }),TraineesController.getTraineeProfile);
 

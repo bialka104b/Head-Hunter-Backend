@@ -6,20 +6,42 @@ import { InterviewRecord } from '../records/interview/interview.record';
 import { UserRecord } from '../records/user/user.record';
 import { ValidationError } from '../utils/ValidationError';
 import { paginationValidation } from '../utils/paginationValidation';
-
 const { notAuthorised } = ValidationError.messages.auth;
+
 
 class TraineesController {
 	static async getAllListedTrainees(req: Request, res: Response): Promise<void> {
 		try {
-			const listedTrainees = await TraineeProfileRecord.getAllListedTrainees();
+
+			const count = await TraineeProfileRecord.getCountOfTrainees();
+			const limit = Number(req.params.limit);
+			const pages = Math.ceil(count / limit);
+
+			let currentPage = Number(req.params.currentPage);
+
+			if(currentPage < 1) {
+				currentPage = 1
+			}
+
+			if(currentPage > pages) {
+				currentPage = pages
+			}
+			const offsetElement = limit * (currentPage - 1);
+
+
+			const listedTrainees = await TraineeProfileRecord.getAllListedTrainees(limit, offsetElement);
 			res
 				.status(200)
 				.json(jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
 					message: 'Listed trainees successfully fetched.',
-					data: { listedTrainees },
+					data: {
+						count,
+						currentPage,
+						pages,
+						listedTrainees,
+					},
 				}));
 		} catch (e) {
 			console.log(e);
