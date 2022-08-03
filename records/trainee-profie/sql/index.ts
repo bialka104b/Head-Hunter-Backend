@@ -119,5 +119,13 @@ export const getAllListedTrainees =
 				 JOIN trainee_profile tp on users.id = tp.userId
 				 JOIN trainee_score ts on users.id = ts.userId
 			AND users.isActive = true
+			LIMIT :limit
+			OFFSET :offsetElement
 	`
 ;
+
+export const getCountOfTrainees =
+	`
+		SELECT COUNT(*) as count
+		FROM trainee_profile
+	`;
