@@ -44,5 +44,15 @@ export const getTraineesInterviewsListByHrId =
 	FROM interviews
 	WHERE hrId = :id
 		AND isActive = true
+		LIMIT :limit
+		OFFSET :offsetElement
+	`
+;
+
+export const getCountOfTraineesInterviewsForHr =
+	`
+		SELECT COUNT(*) as count
+		FROM interviews
+		WHERE hrId = :id
 	`
 ;

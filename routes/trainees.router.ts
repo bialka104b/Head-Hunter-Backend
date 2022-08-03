@@ -6,7 +6,7 @@ const traineesRouter = express.Router();
 
 traineesRouter
 	.get('/',TraineesController.getAllListedTrainees)
-	.get('/interviewsList', passport.authenticate('jwt', { session: false }), TraineesController.getInterviewsTraineesList)
+	.get('/interviewsList/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getInterviewsTraineesList)
 	.get('/:id', passport.authenticate('jwt', { session: false }),TraineesController.getTraineeProfile);
 
 export {

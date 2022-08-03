@@ -5,6 +5,7 @@ import { TraineeProfileRecord } from '../records/trainee-profie/trainee-profile.
 import { InterviewRecord } from '../records/interview/interview.record';
 import { UserRecord } from '../records/user/user.record';
 import { ValidationError } from '../utils/ValidationError';
+import { paginationValidation } from '../utils/paginationValidation';
 
 const { notAuthorised } = ValidationError.messages.auth;
 
@@ -50,7 +51,15 @@ class TraineesController {
 		}
 
 		try {
-			const traineesIdList = await InterviewRecord.getInterviewsTraineeList(id);
+			const count = await InterviewRecord.getCountOfTraineesInterviewsForHr(id);
+			const limit = Number(req.params.limit);
+			const pages = Math.ceil(count / limit);
+			let currentPage = Number(req.params.currentPage);
+
+			currentPage = paginationValidation(currentPage, pages);
+
+			const offsetElement = limit * (currentPage - 1);
+			const traineesIdList = await InterviewRecord.getInterviewsTraineeList(id, limit, offsetElement);
 
 			const interviewsTraineesList = [];
 
