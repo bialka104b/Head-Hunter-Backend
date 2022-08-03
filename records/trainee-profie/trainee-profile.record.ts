@@ -163,8 +163,9 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	}
 
 	static async getTraineesInfoForTraineesInterviewsListById(id: string): Promise<TraineeListedEntity | null> {
-		const [resp] = (await pool.execute(getTraineesInfoForTraineesInterviewsListById, {id}) as DbResultInterviewsListTraineesInfoById)[0];
+		const [resp] = (await pool.execute(getTraineesInfoForTraineesInterviewsListById, { id }) as DbResultInterviewsListTraineesInfoById)[0];
 		return resp ?? null;
+	}
 
 	static async getCountOfTrainees(): Promise<number | null> {
 		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
