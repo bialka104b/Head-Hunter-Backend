@@ -37,3 +37,12 @@ export const deleteInterviewById =
 		WHERE id = :id
 	`
 ;
+
+export const getTraineesInterviewsListByHrId =
+	`
+	SELECT traineeId
+	FROM interviews
+	WHERE hrId = :id
+		AND isActive = true
+	`
+;

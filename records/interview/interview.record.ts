@@ -1,5 +1,5 @@
 import { FieldPacket } from 'mysql2';
-import { InterviewEntity } from '../../types/interview/interview.entity';
+import { InterviewEntity } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import {
 	insertMe,
@@ -7,11 +7,13 @@ import {
 	getInterviewById,
 	deleteInterviewById,
 	updateMe,
+	getTraineesInterviewsListByHrId,
 } from './sql';
 import { pool } from '../../db/pool';
 import { v4 as uuid } from 'uuid';
 
 type DbResult = [InterviewRecord[], FieldPacket[]];
+type DbResultTraineesInterviewsListByHrId = [{traineeId: string}[], FieldPacket[]];
 
 const { incorrectRelationId } = ValidationError.messages.recordInstanceInit.interview;
 
@@ -79,6 +81,11 @@ export class InterviewRecord implements InterviewEntity {
 	static async getInterviewById(id: string): Promise<InterviewRecord | null> {
 		const [resp] = (await pool.execute(getInterviewById, { id }) as DbResult)[0];
 		return resp ? new InterviewRecord(resp) : null;
+	}
+
+	static async getInterviewsTraineeList(id: string) {
+		const [resp] = (await pool.execute(getTraineesInterviewsListByHrId, {id}) as DbResultTraineesInterviewsListByHrId);
+		return resp ?? null
 	}
 
 	static async deleteInterviewById(id: string): Promise<void> {
