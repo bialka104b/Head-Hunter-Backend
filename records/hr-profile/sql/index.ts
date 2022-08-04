@@ -35,3 +35,11 @@ export const getHrProfileById =
 		WHERE id = :id
 	`
 ;
+
+export const getHrMaxReservedStudentsInfo =
+	`
+	SELECT maxReservedStudents
+	FROM hr_profile
+	WHERE userId = :id
+	`
+;

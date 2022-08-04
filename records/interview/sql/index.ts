@@ -25,7 +25,7 @@ export const updateMe =
 	`    UPDATE interviews
 		 SET hrId         = :hrId,
 			 traineeId    = :traineeId,
-			 scheduledFor = :scheduledForl
+			 scheduledFor = :scheduledFor
 		 WHERE id = :id
 	`
 ;
@@ -34,7 +34,7 @@ export const deleteInterviewById =
 	`
 		UPDATE interviews
 		SET isActive = false
-		WHERE id = :id
+		WHERE traineeId = :id
 	`
 ;
 
@@ -53,6 +53,6 @@ export const getCountOfTraineesInterviewsForHr =
 	`
 		SELECT COUNT(*) as count
 		FROM interviews
-		WHERE hrId = :id
+		WHERE hrId = :hrId
 	`
 ;

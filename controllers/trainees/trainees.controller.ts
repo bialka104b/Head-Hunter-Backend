@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { jsonResponse } from '../utils/jsonResponse';
-import { JsonResponseStatus } from '../types';
-import { TraineeProfileRecord } from '../records/trainee-profie/trainee-profile.record';
-import { InterviewRecord } from '../records/interview/interview.record';
-import { UserRecord } from '../records/user/user.record';
-import { ValidationError } from '../utils/ValidationError';
-import { paginationValidation } from '../utils/paginationValidation';
+import { jsonResponse } from '../../utils/jsonResponse';
+import { JsonResponseStatus } from '../../types';
+import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
+import { InterviewRecord } from '../../records/interview/interview.record';
+import { UserRecord } from '../../records/user/user.record';
+import { ValidationError } from '../../utils/ValidationError';
+import { paginationValidation } from '../../utils/paginationValidation';
 const { notAuthorised } = ValidationError.messages.auth;
 
 
@@ -19,13 +19,8 @@ class TraineesController {
 
 			let currentPage = Number(req.params.currentPage);
 
-			if(currentPage < 1) {
-				currentPage = 1
-			}
+			currentPage = paginationValidation(currentPage, pages);
 
-			if(currentPage > pages) {
-				currentPage = pages
-			}
 			const offsetElement = limit * (currentPage - 1);
 
 

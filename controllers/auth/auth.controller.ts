@@ -5,8 +5,9 @@ import { JsonResponseStatus } from '../../types';
 
 export class AuthController {
 	static async login(req: Request, res: Response) {
+		const user = new AuthRecord(req.body);
+
 		try {
-			const user = new AuthRecord(req.body);
 			const login = await user.login();
 
 			let response;
@@ -48,7 +49,14 @@ export class AuthController {
 			const jwtToken = req.cookies.jwt;
 			await AuthRecord.logout(jwtToken);
 
-			res.clearCookie('jwt');
+			res
+				.status(200)
+				.clearCookie('jwt')
+				.json(jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'You are logout.'
+				}));
 		} catch (e) {
 			console.log(e);
 		}

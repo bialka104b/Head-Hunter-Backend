@@ -40,5 +40,10 @@ export class ValidationError extends Error {
 		auth: {
 			notAuthorised: 'Unauthorized User',
 		},
+		interview: {
+			notAvailable: 'Trainee isn\'t available',
+			notInterviewed: 'Trainee isn\'t interviewed',
+			hrMaxReservedStudents: 'Hr have max reserved of students to interview',
+		}
 	};
 }

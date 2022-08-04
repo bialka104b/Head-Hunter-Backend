@@ -21,14 +21,14 @@ import {
 	getTraineeProfileById,
 	getTraineesInfoForTraineesInterviewsListById,
 	insertMe,
-	updateMe,
+	updateMe, updateStatus,
 } from './sql';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
 type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
 type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
 type DbResultInterviewsListTraineesInfoById = DbResultTraineeListed;
-type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]]
+type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]];
 
 
 const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;
@@ -139,6 +139,13 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 			userId: this.userId,
 		});
 		return this.id;
+	}
+
+	async updateStatus(status: string): Promise<void> {
+		await pool.execute(updateStatus, {
+			status,
+			id: this.id
+		});
 	}
 
 	//static:

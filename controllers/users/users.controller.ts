@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { UserRecord } from '../records/user/user.record';
-import { JsonResponseStatus } from '../types/api/json-response';
-import { jsonResponse } from '../utils/jsonResponse';
+import { UserRecord } from '../../records/user/user.record';
+import { JsonResponseStatus } from '../../types';
+import { jsonResponse } from '../../utils/jsonResponse';
 
 class UsersController {
 	//TODO - example:

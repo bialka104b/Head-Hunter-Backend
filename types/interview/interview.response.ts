@@ -1,3 +1,3 @@
-export interface InterviewResponseTraineesId {
+export interface InterviewTraineesIdResponse {
 	traineeId: string
 }
