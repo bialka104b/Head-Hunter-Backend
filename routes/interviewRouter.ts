@@ -5,7 +5,8 @@ import { InterviewController } from '../controllers/interview/interview.controll
 const interviewRouter = express.Router();
 
 interviewRouter
-	.get('/add/:userId', passport.authenticate('jwt', { session: false }), InterviewController.AddInterview)
+	.get('/add/:traineeId', passport.authenticate('jwt', { session: false }), InterviewController.addInterview)
+	.delete('/:traineeId', passport.authenticate('jwt', { session: false }), InterviewController.deleteInterview)
 
 export {
 	interviewRouter,
