@@ -53,6 +53,6 @@ export const getCountOfTraineesInterviewsForHr =
 	`
 		SELECT COUNT(*) as count
 		FROM interviews
-		WHERE hrId = :id
+		WHERE hrId = :hrId
 	`
 ;

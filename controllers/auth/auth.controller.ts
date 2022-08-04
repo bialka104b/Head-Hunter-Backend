@@ -5,8 +5,9 @@ import { JsonResponseStatus } from '../../types';
 
 export class AuthController {
 	static async login(req: Request, res: Response) {
+		const user = new AuthRecord(req.body);
+
 		try {
-			const user = new AuthRecord(req.body);
 			const login = await user.login();
 
 			let response;

@@ -1,5 +1,5 @@
 import express = require('express');
-import { TraineesController } from '../controllers/trainees.controller';
+import { TraineesController } from '../controllers/trainees/trainees.controller';
 import passport from 'passport';
 
 const traineesRouter = express.Router();

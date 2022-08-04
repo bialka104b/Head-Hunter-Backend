@@ -1,13 +1,14 @@
-import { HrProfileEntity } from '../../types/hr-profile/hr-profile.entity';
+import { HrProfileEntity } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
 import {
 	getAllHrProfiles,
+	getHrMaxReservedStudentsInfo,
 	getHrProfileById,
 	insertMe,
-    updateMe,
+	updateMe,
 } from './sql';
 
 const {
@@ -16,6 +17,7 @@ const {
 } = ValidationError.messages.recordInstanceInit.hrProfile;
 
 type DbResult = [HrProfileRecord[], FieldPacket[]];
+type DBResultHrMaxReservedStudentsInfo = [{ maxReservedStudents: number }[], FieldPacket[]];
 
 export class HrProfileRecord implements HrProfileEntity {
 	id: string;
@@ -96,5 +98,10 @@ export class HrProfileRecord implements HrProfileEntity {
 	static async getHrProfileById(id: string): Promise<HrProfileRecord | null> {
 		const [resp] = (await pool.execute(getHrProfileById, { id }) as DbResult)[0];
 		return resp ? new HrProfileRecord(resp) : null;
+	}
+
+	static async getHrMaxReservedStudentsInfo(id: string): Promise<number | null> {
+		const [resp] = (await pool.execute(getHrMaxReservedStudentsInfo, {id}) as DBResultHrMaxReservedStudentsInfo)[0];
+		return resp.maxReservedStudents ?? null;
 	}
 }

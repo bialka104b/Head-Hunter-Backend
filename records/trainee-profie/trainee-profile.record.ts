@@ -28,7 +28,7 @@ type DbResult = [TraineeProfileRecord[], FieldPacket[]];
 type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
 type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
 type DbResultInterviewsListTraineesInfoById = DbResultTraineeListed;
-type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]]
+type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]];
 
 
 const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;

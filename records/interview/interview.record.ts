@@ -94,8 +94,8 @@ export class InterviewRecord implements InterviewEntity {
 		await pool.execute(deleteInterviewById, { id });
 	}
 
-	static async getCountOfTraineesInterviewsForHr(id: string): Promise<number | null> {
-		const [resp] = (await pool.execute(getCountOfTraineesInterviewsForHr, {id}) as DBResultCountOfTraineesInterviewsForHr)[0];
+	static async getCountOfTraineesInterviewsForHr(hrId: string): Promise<number | null> {
+		const [resp] = (await pool.execute(getCountOfTraineesInterviewsForHr, {hrId}) as DBResultCountOfTraineesInterviewsForHr)[0];
 		return resp.count ?? null;
 	}
 }

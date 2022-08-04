@@ -8,6 +8,7 @@ import { authRouter } from './routes/auth.router';
 import { router as usersRouter } from './routes/users.router';
 import { mailRouter } from './routes/mail.router';
 import { traineesRouter } from './routes/trainees.router';
+import { interviewRouter } from './routes/interviewRouter';
 
 const port = process.env.PORT || 3001;
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/mail', mailRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/trainees', traineesRouter);
+app.use('/api/v1/interview', interviewRouter);
 
 // Global error handler:
 app.use(globalErrorHandler);

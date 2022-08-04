@@ -62,7 +62,7 @@ export const getTraineeProfileById =
 	`
 		SELECT *
 		FROM trainee_profile
-		WHERE id = :id
+		WHERE userId = :id
 	`
 ;
 
