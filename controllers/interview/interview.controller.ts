@@ -10,10 +10,10 @@ import { HrProfileRecord } from '../../records/hr-profile/hr-profile.record';
 const { interview, auth} = ValidationError.messages
 
 class InterviewController {
-	static async addInterview(req: Request, res: Response) {
-		const trainee = await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId)
+	static async addInterview(req: Request, res: Response): Promise<void> {
+		const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId))
 
-		if(trainee.status !== 'available') {
+		if(trainee.status !== TraineeStatus.available) {
 			throw new ValidationError(interview.notAvailable, 400)
 		}
 
@@ -37,10 +37,7 @@ class InterviewController {
 			})
 
 			await interview.insertMe()
-
-			const traineeChangeStatus = new TraineeProfileRecord(trainee);
-			traineeChangeStatus.status = TraineeStatus.interviewed;
-			await traineeChangeStatus.updateMe();
+			await trainee.updateStatus(TraineeStatus.interviewed)
 
 			res
 				.status(200)
@@ -53,6 +50,29 @@ class InterviewController {
 						date: interview.createdAt,
 					},
 				}));
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async deleteInterview(req: Request, res: Response): Promise<void> {
+		const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId));
+
+		if(trainee.status !== TraineeStatus.interviewed) {
+			throw new ValidationError(interview.notInterviewed, 400)
+		}
+
+		try {
+			await InterviewRecord.deleteInterviewByTraineeId(trainee.userId)
+			await trainee.updateStatus(TraineeStatus.available)
+
+			res
+				.status(200)
+				.json(jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee was successfully delete from interview.'
+				}))
 		} catch (e) {
 			console.log(e);
 		}

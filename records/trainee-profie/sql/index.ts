@@ -51,6 +51,14 @@ export const updateMe =
 	`
 ;
 
+export const updateStatus =
+	`
+		UPDATE trainee_profile
+		SET status = :status
+		WHERE id = :id
+	`
+;
+
 export const getAllTraineesProfiles =
 	`
 		SELECT *

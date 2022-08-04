@@ -21,7 +21,7 @@ import {
 	getTraineeProfileById,
 	getTraineesInfoForTraineesInterviewsListById,
 	insertMe,
-	updateMe,
+	updateMe, updateStatus,
 } from './sql';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
@@ -139,6 +139,13 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 			userId: this.userId,
 		});
 		return this.id;
+	}
+
+	async updateStatus(status: string): Promise<void> {
+		await pool.execute(updateStatus, {
+			status,
+			id: this.id
+		});
 	}
 
 	//static:

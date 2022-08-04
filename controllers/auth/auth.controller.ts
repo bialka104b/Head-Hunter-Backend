@@ -49,7 +49,14 @@ export class AuthController {
 			const jwtToken = req.cookies.jwt;
 			await AuthRecord.logout(jwtToken);
 
-			res.clearCookie('jwt');
+			res
+				.status(200)
+				.clearCookie('jwt')
+				.json(jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'You are logout.'
+				}));
 		} catch (e) {
 			console.log(e);
 		}

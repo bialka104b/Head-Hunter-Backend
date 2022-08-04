@@ -90,7 +90,7 @@ export class InterviewRecord implements InterviewEntity {
 		return resp.length !== 0 ? resp : null;
 	}
 
-	static async deleteInterviewById(id: string): Promise<void> {
+	static async deleteInterviewByTraineeId(id: string): Promise<void> {
 		await pool.execute(deleteInterviewById, { id });
 	}
 
