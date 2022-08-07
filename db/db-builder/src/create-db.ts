@@ -12,17 +12,22 @@ const initPool = createPool({
 	password,
 });
 
-const createDb = fs.readFileSync(path.resolve('db/sql/00-create-db.sql')).toString();
+const createDb = fs
+	.readFileSync(path.resolve('db/sql/00-create-db.sql'))
+	.toString();
 
 export const createDatabase = async () => {
-	const dbName = (createDb.split('CREATE DATABASE IF NOT EXISTS '))[1].split('\r\n')[0];
+	const dbName = createDb
+		.split('CREATE DATABASE IF NOT EXISTS ')[1]
+		.split('\r\n')[0];
 	try {
 		console.log('DATABASE:');
 		await initPool.execute(`DROP DATABASE IF EXISTS ${dbName}`);
 		console.log(`\t✔ ${dbName} database dropped`);
 		await initPool.execute(createDb);
 		console.log(`\t✔ ${dbName} database created`);
+		initPool.end();
 	} catch (e) {
-		console.log(e);
+		throw e;
 	}
 };

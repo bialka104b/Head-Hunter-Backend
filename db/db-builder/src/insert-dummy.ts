@@ -5,7 +5,8 @@ import { hrProfiles } from './data/hrProfiles';
 import { traineeProfiles } from './data/traineeProfiles';
 import {
 	TraineeExpectedContractType,
-	TraineeExpectedTypeWork, TraineeStatus,
+	TraineeExpectedTypeWork,
+	TraineeStatus,
 } from '../../../types/trainee-profile/trainee-profile';
 import { interviews } from './data/interviews';
 
@@ -13,14 +14,20 @@ const insertDummyUsers = async () => {
 	try {
 		for (const user of users) {
 			const { id, email, role, password } = user;
-			await pool.execute(`INSERT INTO users (id, email, password, role)
-								VALUES (:id, :email, :password, :role)`, {
-				id, email, role, password,
-			});
+			await pool.execute(
+				`INSERT INTO users (id, email, password, role)
+								VALUES (:id, :email, :password, :role)`,
+				{
+					id,
+					email,
+					role,
+					password,
+				},
+			);
 		}
 		console.log('\t✔ users dummy data inserted');
 	} catch (e) {
-		console.log(e);
+		throw e;
 	}
 };
 
@@ -36,6 +43,7 @@ const insertDummyTraineeScores = async () => {
 				bonusProjectUrls,
 				userId,
 			} = ts;
+			const bonusProjectUrlsStringify = JSON.stringify(bonusProjectUrls);
 			await pool.execute(
 				`INSERT INTO trainee_score (id,
 											courseCompletion,
@@ -49,33 +57,29 @@ const insertDummyTraineeScores = async () => {
 						 :courseEngagment,
 						 :projectDegree,
 						 :teamProjectDegree,
-						 :bonusProjectUrls,
-						 :userId)`, {
+						 :bonusProjectUrlsStringify,
+						 :userId)`,
+				{
 					id,
 					courseCompletion,
 					courseEngagment,
 					projectDegree,
 					teamProjectDegree,
-					bonusProjectUrls,
+					bonusProjectUrlsStringify,
 					userId,
-				});
+				},
+			);
 		}
 		console.log('\t✔ trainee_scores dummy data inserted');
 	} catch (e) {
-		console.log(e);
+		throw e;
 	}
 };
 
 const insertDummyHrProfiles = async () => {
 	try {
 		for (const hrp of hrProfiles) {
-			const {
-				id,
-				fullName,
-				company,
-				maxReservedStudents,
-				userId,
-			} = hrp;
+			const { id, fullName, company, maxReservedStudents, userId } = hrp;
 			await pool.execute(
 				`
 					INSERT INTO hr_profile (id,
@@ -88,17 +92,19 @@ const insertDummyHrProfiles = async () => {
 							:company,
 							:maxReservedStudents,
 							:userId)
-				`, {
+				`,
+				{
 					id,
 					fullName,
 					company,
 					maxReservedStudents,
 					userId,
-				});
+				},
+			);
 		}
 		console.log('\t✔ hr_profiles dummy data inserted');
 	} catch (e) {
-		console.log(e);
+		throw e;
 	}
 };
 
@@ -127,6 +133,10 @@ const insertDummyTraineeProfiles = async () => {
 				registrationUrl,
 				userId,
 			} = tp;
+			const portfolioUrlsStringify = JSON.stringify(portfolioUrls);
+			const projectUrlsStringify = JSON.stringify(projectUrls);
+			const expectedContractTypeStringify =
+				JSON.stringify(expectedContractType);
 			await pool.execute(
 				`
 					INSERT INTO trainee_profile (tel,
@@ -152,12 +162,12 @@ const insertDummyTraineeProfiles = async () => {
 							:firstName,
 							:lastName,
 							:githubUsername,
-							:portfolioUrls,
-							:projectUrls,
+							:portfolioUrlsStringify,
+							:projectUrlsStringify,
 							:bio,
 							:expectedTypeWork,
 							:targetWorkCity,
-							:expectedContractType,
+							:expectedContractTypeStringify,
 							:expectedSalary,
 							:canTakeApprenticeship,
 							:monthsOfCommercialExp,
@@ -167,17 +177,18 @@ const insertDummyTraineeProfiles = async () => {
 							:status,
 							:registrationUrl,
 							:userId)
-				`, {
+				`,
+				{
 					tel,
 					firstName,
 					lastName,
 					githubUsername,
-					portfolioUrls,
-					projectUrls,
+					portfolioUrlsStringify,
+					projectUrlsStringify,
 					bio,
 					expectedTypeWork,
 					targetWorkCity,
-					expectedContractType,
+					expectedContractTypeStringify,
 					expectedSalary,
 					canTakeApprenticeship,
 					monthsOfCommercialExp,
@@ -187,23 +198,19 @@ const insertDummyTraineeProfiles = async () => {
 					status,
 					registrationUrl,
 					userId,
-				});
+				},
+			);
 		}
 		console.log('\t✔ trainee profiles dummy data inserted');
 	} catch (e) {
-		console.log(e);
+		throw e;
 	}
 };
 
 const insertDummyInterviews = async () => {
 	try {
 		for (const interview of interviews) {
-			const {
-				id,
-				hrId,
-				traineeId,
-				scheduledFor,
-			} = interview;
+			const { id, hrId, traineeId, scheduledFor } = interview;
 			await pool.execute(
 				`
 					INSERT INTO interviews (id,
@@ -214,19 +221,20 @@ const insertDummyInterviews = async () => {
 							:hrId,
 							:traineeId,
 							:scheduledFor)
-				`, {
+				`,
+				{
 					id,
 					hrId,
 					traineeId,
 					scheduledFor,
-				});
+				},
+			);
 		}
 		console.log('\t✔ interviews dummy data inserted');
 	} catch (e) {
-		console.log(e);
+		throw e;
 	}
 };
-
 
 export const insertDummyData = async () => {
 	console.log('DUMMY DATA:');
