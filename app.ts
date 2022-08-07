@@ -34,7 +34,7 @@ app.use('/api/v1/trainees', traineesRouter);
 app.use('/api/v1/interview', interviewRouter);
 
 // Change interview trainees status when they was in interviews list long than 10 days
-changeInterviewTraineesStatus();
+// changeInterviewTraineesStatus();
 
 // Global error handler:
 app.use(globalErrorHandler);
