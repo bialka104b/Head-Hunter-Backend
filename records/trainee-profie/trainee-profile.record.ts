@@ -21,7 +21,8 @@ import {
 	getTraineeProfileById,
 	getTraineesInfoForTraineesInterviewsListById,
 	insertMe,
-	updateMe, updateStatus,
+	updateMe,
+	updateStatus,
 } from './sql';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
