@@ -1,6 +1,4 @@
-import {
-	TraineeProfileEntity,
-} from '../../../../types/trainee-profile/trainee-profile.entity';
+import { TraineeProfileEntity } from '../../../../types/trainee-profile/trainee-profile.entity';
 import {
 	TraineeExpectedContractType,
 	TraineeExpectedTypeWork,
@@ -19,7 +17,10 @@ export const traineeProfiles: TraineeProfileEntity[] = [
 		bio: 'Really nice bio of a really nice guy.',
 		expectedTypeWork: TraineeExpectedTypeWork.hybrid,
 		targetWorkCity: 'Petersburg',
-		expectedContractType: [TraineeExpectedContractType.b2b, TraineeExpectedContractType.uop],
+		expectedContractType: [
+			TraineeExpectedContractType.b2b,
+			TraineeExpectedContractType.uop,
+		],
 		expectedSalary: '3500$',
 		canTakeApprenticeship: false,
 		monthsOfCommercialExp: 0,
@@ -41,7 +42,10 @@ export const traineeProfiles: TraineeProfileEntity[] = [
 		bio: 'Really nice bio of a really nice guy.',
 		expectedTypeWork: TraineeExpectedTypeWork.onsite,
 		targetWorkCity: 'Lvov',
-		expectedContractType: [TraineeExpectedContractType.uzuod, TraineeExpectedContractType.b2b],
+		expectedContractType: [
+			TraineeExpectedContractType.uzuod,
+			TraineeExpectedContractType.b2b,
+		],
 		expectedSalary: '8000PLN',
 		canTakeApprenticeship: true,
 		monthsOfCommercialExp: 3,

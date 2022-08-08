@@ -10,7 +10,7 @@
 		"build": "tsc",
 		"test": "test",
 		"lint": "tslint --force --project tsconfig.json ./*/.ts -t verbose",
-		"db:build": "tsnd ./db/db-builder/index.ts"
+		"db:build": "ts-node ./db/db-builder/index.ts"
 	},
 	"repository": {
 		"type": "git",
