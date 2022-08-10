@@ -16,7 +16,7 @@ export interface TraineeProfileEntity {
 	expectedTypeWork?: TraineeExpectedTypeWork | null;
 	targetWorkCity?: string;
 	expectedContractType?: TraineeExpectedContractType[] | null;
-	expectedSalary?: string;
+	expectedSalary?: number;
 	canTakeApprenticeship?: boolean;
 	monthsOfCommercialExp?: number;
 	education?: string;

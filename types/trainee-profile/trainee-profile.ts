@@ -16,3 +16,14 @@ export enum TraineeExpectedContractType {
 	b2b = 'b2b',
 	uzuod = 'uz/uod',
 }
+
+export interface FilteredInfo {
+	courseCompletion: number,
+	courseEngagment: number,
+	projectDegree: number,
+	teamProjectDegree: number,
+	canTakeApprenticeship: boolean,
+	monthsOfCommercialExp: number,
+	expectedSalaryFrom: number,
+	expectedSalaryTo: number,
+}

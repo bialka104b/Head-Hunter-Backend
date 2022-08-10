@@ -1,4 +1,5 @@
 import {
+	FilteredInfo,
 	TraineeProfileEntity,
 } from '../../types';
 import {
@@ -17,6 +18,7 @@ import {
 	getAllListedTrainees,
 	getAllTraineesProfiles,
 	getCountOfTrainees,
+	getFilteredTrainees,
 	getFullTraineeInfo,
 	getTraineeProfileById,
 	getTraineesInfoForTraineesInterviewsListById,
@@ -30,6 +32,7 @@ type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
 type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
 type DbResultInterviewsListTraineesInfoById = DbResultTraineeListed;
 type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]];
+type DBResultFilteredTrainees = DbResultTraineeListed
 
 
 const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;
@@ -46,7 +49,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	expectedTypeWork: TraineeExpectedTypeWork | null;
 	targetWorkCity: string;
 	expectedContractType: TraineeExpectedContractType[] | null;
-	expectedSalary: string;
+	expectedSalary: number;
 	canTakeApprenticeship: boolean;
 	monthsOfCommercialExp: number;
 	education: string;
@@ -69,7 +72,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		this.expectedTypeWork = obj.expectedTypeWork ?? null;
 		this.targetWorkCity = obj.targetWorkCity ?? '';
 		this.expectedContractType = obj.expectedContractType ?? null;
-		this.expectedSalary = obj.expectedSalary ?? '';
+		this.expectedSalary = obj.expectedSalary ?? 0;
 		this.canTakeApprenticeship = obj.canTakeApprenticeship ?? false;
 		this.monthsOfCommercialExp = obj.monthsOfCommercialExp ?? 0;
 		this.education = obj.education ?? '';
@@ -178,5 +181,30 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	static async getCountOfTrainees(): Promise<number | null> {
 		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
 		return resp.count ?? null;
+	}
+
+	static async getFilteredTrainees(filteredInfo: FilteredInfo): Promise<TraineeListedEntity[] | null> {
+		const {
+			courseCompletion,
+			courseEngagment,
+			projectDegree,
+			teamProjectDegree,
+			canTakeApprenticeship,
+			monthsOfCommercialExp,
+			expectedSalaryFrom,
+			expectedSalaryTo,
+		} = filteredInfo
+
+		const resp = (await pool.execute(getFilteredTrainees, {
+			courseCompletion,
+			courseEngagment,
+			projectDegree,
+			teamProjectDegree,
+			canTakeApprenticeship,
+			monthsOfCommercialExp,
+			expectedSalaryFrom,
+			expectedSalaryTo,
+		}) as DBResultFilteredTrainees)[0];
+		return resp ?? null
 	}
 }

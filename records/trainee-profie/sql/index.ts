@@ -132,7 +132,7 @@ export const getAllListedTrainees =
 	`
 ;
 
-export const getTraineesInfoForTraineesInterviewsListById=
+export const getTraineesInfoForTraineesInterviewsListById =
 	`
 		SELECT users.id,
 			   email,
@@ -162,3 +162,32 @@ export const getCountOfTrainees =
 		FROM trainee_profile
 	`;
 
+export const getFilteredTrainees =
+	`
+		SELECT users.id,
+			   email,
+			   firstName,
+			   lastName,
+			   courseCompletion,
+			   courseEngagment,
+			   projectDegree,
+			   teamProjectDegree,
+			   expectedTypeWork,
+			   targetWorkCity,
+			   expectedContractType,
+			   expectedSalary,
+			   canTakeApprenticeship,
+			   monthsOfCommercialExp
+		FROM users
+				 JOIN trainee_profile tp on users.id = tp.userId
+				 JOIN trainee_score ts on users.id = ts.userId
+		WHERE users.isActive = true
+			AND courseCompletion >= :courseCompletion
+			AND courseEngagment >= :courseEngagment
+			AND projectDegree >= :projectDegree
+			AND teamProjectDegree >= :teamProjectDegree
+			AND canTakeApprenticeship = :canTakeApprenticeship
+			AND monthsOfCommercialExp >= :monthsOfCommercialExp
+			AND expectedSalary BETWEEN :expectedSalaryFrom AND :expectedSalaryTo
+	`
+;
