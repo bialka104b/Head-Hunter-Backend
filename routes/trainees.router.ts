@@ -8,7 +8,7 @@ traineesRouter
 	.get('/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getAllListedTrainees)
 	.get('/interviewsList/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getInterviewsTraineesList)
 	.get('/:id', passport.authenticate('jwt', { session: false }), TraineesController.getTraineeProfile)
-	.post('/search', passport.authenticate('jwt', { session: false }), TraineesController.getFilteredTrainees);
+	.post('/filter', passport.authenticate('jwt', { session: false }), TraineesController.getFilteredTrainees);
 
 export {
 	traineesRouter,
