@@ -126,7 +126,9 @@ export const getAllListedTrainees =
 		FROM users
 				 JOIN trainee_profile tp on users.id = tp.userId
 				 JOIN trainee_score ts on users.id = ts.userId
-			AND users.isActive = true
+		WHERE
+			users.isActive = true
+			AND tp.status != 'hired'
 			LIMIT :limit
 			OFFSET :offsetElement
 	`
@@ -152,6 +154,7 @@ export const getTraineesInfoForTraineesInterviewsListById=
 				 JOIN trainee_profile tp on users.id = tp.userId
 				 JOIN trainee_score ts on users.id = ts.userId
 		WHERE users.id = :id
+			AND tp.status != 'hired'
 			AND users.isActive = true
 	`
 ;
@@ -160,5 +163,6 @@ export const getCountOfTrainees =
 	`
 		SELECT COUNT(*) as count
 		FROM trainee_profile
+		WHERE status != 'hired'
 	`;
 

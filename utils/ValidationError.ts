@@ -1,13 +1,4 @@
 export class ValidationError extends Error {
-	message: string;
-	code: number;
-
-	constructor(message: string, code: number) {
-		super();
-		this.message = message;
-		this.code = code;
-	}
-
 	static messages = {
 		recordInstanceInit: {
 			user: {
@@ -23,12 +14,11 @@ export class ValidationError extends Error {
 				incorrectRelationId: 'Incorrect hr-profile\'s object data. "UserId" key can not be empty and have to match user\'s ids.',
 			},
 			traineeScore: {
-				incorrectScore: 'Incorrect trainee-score\'s object data. "CourseCompletion", "courseEngagment", "projectDegree", "teamProjectDegree" keys can not be empty and have to be between 0 and 5.'
+				incorrectScore: 'Incorrect trainee-score\'s object data. "CourseCompletion", "courseEngagment", "projectDegree", "teamProjectDegree" keys can not be empty and have to be between 0 and 5.',
 			},
 			traineeProfile: {
 				incorrectMinimumData: 'Incorrect trainee-profile\'s object data. "FirstName", "lastName", "githubUsername", "projectUrls" keys can not be empty.',
-			}
-
+			},
 		},
 		login: {
 			incorrectData: 'Incorrect email address or password.',
@@ -41,9 +31,17 @@ export class ValidationError extends Error {
 			notAuthorised: 'Unauthorized User',
 		},
 		interview: {
-			notAvailable: 'Trainee isn\'t available',
-			notInterviewed: 'Trainee isn\'t interviewed',
+			id: 'User with that ID don\'t exist',
+			statusHired: 'This user is already hired.',
 			hrMaxReservedStudents: 'Hr have max reserved of students to interview',
-		}
+		},
 	};
+	message: string;
+	code: number;
+
+	constructor(message: string, code: number) {
+		super();
+		this.message = message;
+		this.code = code;
+	}
 }
