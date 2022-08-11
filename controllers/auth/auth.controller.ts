@@ -35,7 +35,7 @@ export class AuthController {
 				secure: true,
 				domain: 'localhost',
 				httpOnly: true,
-				maxAge: 60 * 60 * 24,
+				maxAge: 1000 * 60 * 60,
 			}).json(response);
 		} catch (e) {
 			console.log(e);
