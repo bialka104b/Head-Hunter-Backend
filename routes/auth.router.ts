@@ -6,4 +6,5 @@ export const authRouter = Router();
 
 authRouter
 	.post('/login', AuthController.login)
-	.get('/logout', passport.authenticate('jwt', { session: false }), AuthController.logout);
+	.get('/logout', passport.authenticate('jwt', { session: false }), AuthController.logout)
+	.post('/changePassword', passport.authenticate('jwt', { session: false }), AuthController.changePassword);

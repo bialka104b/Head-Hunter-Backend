@@ -9,7 +9,13 @@ import {
 	UserLoginResponseFromDatabase,
 } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
-import { findTokenId, generateToken, login, logout } from './sql';
+import {
+	changePassword,
+	findTokenId,
+	generateToken,
+	login,
+	logout,
+} from './sql';
 import { hashPassword } from '../../utils/hashPassword';
 
 const { incorrectData, incorrectEmail } = ValidationError.messages.login;
@@ -85,5 +91,12 @@ export class AuthRecord implements UserLoginRequest {
 		await pool.execute(logout, {
 			jwtToken,
 		});
+	}
+
+	static async changePassword(id: string, newPassword: string) {
+
+		const hashPwd = hashPassword(newPassword)
+
+		await pool.execute(changePassword, {id, hashPwd})
 	}
 }

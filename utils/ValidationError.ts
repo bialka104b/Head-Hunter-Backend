@@ -38,6 +38,8 @@ export class ValidationError extends Error {
 			notFound: 'Fetched data not found.',
 		},
 		auth: {
+			passwordIsTheSame: 'New password must be different',
+			incorrectPassword: 'Bad Password',
 			notAuthorised: 'Unauthorized User',
 		},
 		interview: {
