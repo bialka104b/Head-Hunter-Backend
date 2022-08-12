@@ -32,14 +32,12 @@ class AuthController {
 				});
 			}
 
-			res
-				.cookie('jwt', login.token, {
-					secure: true,
-					domain: 'localhost',
-					httpOnly: true,
-					maxAge: 60 * 60 * 24,
-				})
-				.json(response);
+			res.cookie('jwt', login.token, {
+				secure: true,
+				domain: 'localhost',
+				httpOnly: true,
+				maxAge: 1000 * 60 * 60,
+			}).json(response);
 		} catch (e) {
 			console.log(e);
 		}
@@ -51,14 +49,15 @@ class AuthController {
 		try {
 			await AuthRecord.logout(id);
 
-			res
-				.status(200)
+			res.status(200)
 				.clearCookie('jwt')
-				.json(jsonResponse({
-					code: 200,
-					status: JsonResponseStatus.success,
-					message: 'You are logout.',
-				}));
+				.json(
+					jsonResponse({
+						code: 200,
+						status: JsonResponseStatus.success,
+						message: 'You are logout.',
+					}),
+				);
 		} catch (e) {
 			console.log(e);
 		}
