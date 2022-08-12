@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { AuthRecord } from '../../records/auth/auth.record';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { JsonResponseStatus } from '../../types';
+import { UserRecord } from '../../records/user/user.record';
 
-export class AuthController {
+class AuthController {
 	static async login(req: Request, res: Response) {
 		const user = new AuthRecord(req.body);
 
@@ -45,9 +46,10 @@ export class AuthController {
 	}
 
 	static async logout(req: Request, res: Response) {
+		const { id } = req.user as UserRecord;
+
 		try {
-			const jwtToken = req.cookies.jwt;
-			await AuthRecord.logout(jwtToken);
+			await AuthRecord.logout(id);
 
 			res
 				.status(200)
@@ -55,10 +57,14 @@ export class AuthController {
 				.json(jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'You are logout.'
+					message: 'You are logout.',
 				}));
 		} catch (e) {
 			console.log(e);
 		}
 	}
 }
+
+export {
+	AuthController,
+};
