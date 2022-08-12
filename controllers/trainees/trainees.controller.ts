@@ -6,6 +6,7 @@ import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
+
 const { notAuthorised } = ValidationError.messages.auth;
 
 
@@ -80,9 +81,13 @@ class TraineesController {
 
 			const interviewsTraineesList = [];
 
-			for (const { traineeId } of traineesIdList) {
-				const traineeInfo = await TraineeProfileRecord.getTraineesInfoForTraineesInterviewsListById(traineeId);
-				interviewsTraineesList.push(traineeInfo);
+			if (traineesIdList !== null) {
+				for (const { traineeId } of traineesIdList) {
+					const traineeInfo = await TraineeProfileRecord.getTraineesInfoForTraineesInterviewsListById(traineeId);
+					if (traineeInfo !== null) {
+						interviewsTraineesList.push(traineeInfo);
+					}
+				}
 			}
 
 			res

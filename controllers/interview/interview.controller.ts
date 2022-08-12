@@ -11,10 +11,14 @@ const { interview, auth} = ValidationError.messages
 
 class InterviewController {
 	static async addInterview(req: Request, res: Response): Promise<void> {
-		const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId))
+		const trainee = await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId)
 
-		if(trainee.status !== TraineeStatus.available) {
-			throw new ValidationError(interview.notAvailable, 400)
+		if(trainee === null) {
+			throw new ValidationError(interview.id, 400)
+		}
+
+		if(trainee.status === TraineeStatus.hired) {
+			throw new ValidationError(interview.statusHired, 400)
 		}
 
 		const hr = req.user as UserRecord;
@@ -37,7 +41,6 @@ class InterviewController {
 			})
 
 			await interview.insertMe()
-			await trainee.updateStatus(TraineeStatus.interviewed)
 
 			res
 				.status(200)
@@ -56,15 +59,14 @@ class InterviewController {
 	}
 
 	static async deleteInterview(req: Request, res: Response): Promise<void> {
-		const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId));
+		const trainee = await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId);
 
-		if(trainee.status !== TraineeStatus.interviewed) {
-			throw new ValidationError(interview.notInterviewed, 400)
+		if(trainee === null) {
+			throw new ValidationError(interview.id, 400)
 		}
 
 		try {
 			await InterviewRecord.deleteInterviewByTraineeId(trainee.userId)
-			await trainee.updateStatus(TraineeStatus.available)
 
 			res
 				.status(200)
