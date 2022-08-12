@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { sendRegisterMail } from '../../mailService/sendMail';
 import { jsonResponse } from '../../utils/jsonResponse';
-import { JsonResponseStatus } from '../../types/api/json-response';
+import { JsonResponseStatus } from '../../types';
 import { UserRecord } from '../../records/user/user.record';
 
-export class MailController {
+class MailController {
 	static async registerMail(req: Request, res: Response) {
 		try {
 			const unregisterUsers = await UserRecord.findUnregisterUsers();
@@ -24,3 +24,7 @@ export class MailController {
 		}
 	}
 }
+
+export {
+	MailController,
+};

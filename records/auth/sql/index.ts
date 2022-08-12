@@ -18,7 +18,7 @@ export const logout =
 	`
 	UPDATE users
 	SET currentTokenId = NULL
-	WHERE currentTokenId = :jwtToken
+	WHERE id = :id
 	`
 ;
 

@@ -8,7 +8,7 @@ import { hashPassword } from '../../utils/hashPassword';
 
 const {notAuthorised, incorrectPassword, passwordIsTheSame} = ValidationError.messages.auth
 
-export class AuthController {
+class AuthController {
 	static async login(req: Request, res: Response) {
 		const user = new AuthRecord(req.body);
 
@@ -48,9 +48,10 @@ export class AuthController {
 	}
 
 	static async logout(req: Request, res: Response) {
+		const { id } = req.user as UserRecord;
+
 		try {
-			const jwtToken = req.cookies.jwt;
-			await AuthRecord.logout(jwtToken);
+			await AuthRecord.logout(id);
 
 			res.status(200)
 				.clearCookie('jwt')
@@ -106,3 +107,7 @@ export class AuthController {
 		}
 	}
 }
+
+export {
+	AuthController,
+};
