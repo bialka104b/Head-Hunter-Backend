@@ -124,15 +124,15 @@ export const getAllListedTrainees =
 			   canTakeApprenticeship,
 			   monthsOfCommercialExp
 		FROM users
-				 JOIN trainee_profile tp on users.id = tp.userId
-				 JOIN trainee_score ts on users.id = ts.userId
-			AND users.isActive = true
-			LIMIT :limit
-			OFFSET :offsetElement
+				 INNER JOIN trainee_profile tp on users.id = tp.userId
+				 INNER JOIN trainee_score ts on users.id = ts.userId
+		WHERE users.isActive = true
+		  AND users.role = 'trainee'
+		LIMIT :limit OFFSET :offsetElement
 	`
 ;
 
-export const getTraineesInfoForTraineesInterviewsListById=
+export const getTraineesInfoForTraineesInterviewsListById =
 	`
 		SELECT users.id,
 			   email,
@@ -152,7 +152,7 @@ export const getTraineesInfoForTraineesInterviewsListById=
 				 JOIN trainee_profile tp on users.id = tp.userId
 				 JOIN trainee_score ts on users.id = ts.userId
 		WHERE users.id = :id
-			AND users.isActive = true
+		  AND users.isActive = true
 	`
 ;
 

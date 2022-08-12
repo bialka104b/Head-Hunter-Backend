@@ -19,13 +19,4 @@ export const traineeScores: TraineeScoreEntity[] = [
 		bonusProjectUrls: ['https://github.com'],
 		userId: 'u4',
 	},
-	{
-		id: 'ts3',
-		courseCompletion: 4.5,
-		courseEngagment: 2.7,
-		projectDegree: 4,
-		teamProjectDegree: 3.5,
-		bonusProjectUrls: [],
-		userId: 'u4',
-	},
 ];

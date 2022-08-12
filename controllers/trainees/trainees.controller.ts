@@ -1,30 +1,40 @@
 import { Request, Response } from 'express';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { JsonResponseStatus } from '../../types';
-import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
+import {
+	TraineeProfileRecord,
+} from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
+import {convertToNumber as N} from '../../utils/convertToNumber';
 const { notAuthorised } = ValidationError.messages.auth;
 
 
 class TraineesController {
 	static async getAllListedTrainees(req: Request, res: Response): Promise<void> {
 		try {
+			/*
+			PATH model:
+			http://localhost:3000/api/v1/trainees?limit=2&page=1
 
-			const count = await TraineeProfileRecord.getCountOfTrainees();
-			const limit = Number(req.params.limit);
+			If limit/page data not provided default values are:
+				-page = 1
+				-limit = 10
+			*/
+			/*Destructurization with renaming: */
+			const { limit: limitQ, page: pageQ } = req.query;
+			/*Setting data:*/
+			const count = await TraineeProfileRecord.getCount();
+			const limit = limitQ ? N(limitQ) : 10;
+			const page = pageQ ? N(pageQ) : 1;
 			const pages = Math.ceil(count / limit);
-
-			let currentPage = Number(req.params.currentPage);
-
-			currentPage = paginationValidation(currentPage, pages);
-
+			const currentPage = paginationValidation(page, pages) ?? 1;
 			const offsetElement = limit * (currentPage - 1);
-
-
+			/*Get trainees:*/
 			const listedTrainees = await TraineeProfileRecord.getAllListedTrainees(limit, offsetElement);
+
 			res
 				.status(200)
 				.json(jsonResponse({

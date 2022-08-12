@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+	import { Request, Response } from 'express';
 import { AuthRecord } from '../../records/auth/auth.record';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { JsonResponseStatus } from '../../types';

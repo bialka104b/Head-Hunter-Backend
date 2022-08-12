@@ -145,7 +145,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	async updateStatus(status: string): Promise<void> {
 		await pool.execute(updateStatus, {
 			status,
-			id: this.id
+			id: this.id,
 		});
 	}
 
@@ -161,7 +161,11 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	}
 
 	static async getAllListedTrainees(limit: number, offsetElement: number): Promise<TraineeListedEntity[] | null> {
-		const resp = (await pool.execute(getAllListedTrainees, { limit, offsetElement }) as DbResultTraineeListed)[0];
+		const resp = (await pool.execute(getAllListedTrainees, {
+			limit: String(limit),
+			offsetElement: String(offsetElement),
+		}) as DbResultTraineeListed)[0];
+		console.log(resp);
 		return resp.length !== 0 ? resp : null;
 	}
 
@@ -175,7 +179,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		return resp ?? null;
 	}
 
-	static async getCountOfTrainees(): Promise<number | null> {
+	static async getCount(): Promise<number | null> {
 		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
 		return resp.count ?? null;
 	}
