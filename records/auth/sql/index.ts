@@ -30,3 +30,11 @@ export const login =
 	AND isActive = :isActive
 	`
 ;
+
+export const changePassword =
+	`
+			UPDATE users
+		SET password = :hashPwd
+		WHERE id = :id
+	`
+;
