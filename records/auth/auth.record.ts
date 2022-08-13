@@ -7,12 +7,17 @@ import {
 	UserLoginRequest,
 	UserLoginResultsResponse,
 	UserLoginResponseFromDatabase,
+	UserRole,
+	HrNameResponseFromDatabase,
+	TraineeNameResponseFromDatabase,
 } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import {
 	changePassword,
 	findTokenId,
 	generateToken,
+	getHrName,
+	getTraineeName,
 	login,
 	logout,
 } from './sql';
@@ -34,11 +39,10 @@ export class AuthRecord implements UserLoginRequest {
 
 	//dynamic
 	async login(): Promise<UserLoginResultsResponse> {
-
-		const [result] = await pool.execute(login, {
+		const [result] = (await pool.execute(login, {
 			email: this.email,
 			isActive: true,
-		}) as UserLoginResponseFromDatabase;
+		})) as UserLoginResponseFromDatabase;
 
 		if (!result[0] || result[0].password !== hashPassword(this.password)) {
 			return {
@@ -47,20 +51,40 @@ export class AuthRecord implements UserLoginRequest {
 			};
 		}
 
-		const token = await this.createToken(await this.generateToken(result[0].id));
+		let name = '';
+		if (result[0].role === UserRole.admin) name = 'Admin';
+		if (result[0].role === UserRole.hr) {
+			const [hrResult] = (await pool.execute(getHrName, {
+				userId: result[0].id,
+			})) as HrNameResponseFromDatabase;
+			name = hrResult[0].fullName;
+		}
+		if (result[0].role === UserRole.trainee) {
+			const [traineeResult] = (await pool.execute(getTraineeName, {
+				userId: result[0].id,
+			})) as TraineeNameResponseFromDatabase;
+			name = traineeResult[0].firstName + ' ' + traineeResult[0].lastName;
+		}
+
+		const token = await this.createToken(
+			await this.generateToken(result[0].id),
+		);
 
 		return {
 			isLogin: true,
 			id: result[0].id,
 			token,
 			role: result[0].role,
+			name,
 		};
 	}
 
 	protected async createToken(currentTokenId: string): Promise<string> {
 		const payload: JwtPayload = { currentTokenId: currentTokenId };
 
-		return sign(payload, config.jwt.passportSecretOrKey, { expiresIn: 60 * 60 * 24 });
+		return sign(payload, config.jwt.passportSecretOrKey, {
+			expiresIn: 60 * 60 * 24,
+		});
 	}
 
 	protected async generateToken(userId: string): Promise<string> {
@@ -79,10 +103,12 @@ export class AuthRecord implements UserLoginRequest {
 	}
 
 	//static
-	static async findTokenId(currentTokenId: string): Promise<{ currentTokenId: string } | null> {
-		const [result] = await pool.execute(findTokenId, {
+	static async findTokenId(
+		currentTokenId: string,
+	): Promise<{ currentTokenId: string } | null> {
+		const [result] = (await pool.execute(findTokenId, {
 			currentTokenId,
-		}) as [{ currentTokenId: string }[], FieldPacket[]];
+		})) as [{ currentTokenId: string }[], FieldPacket[]];
 
 		return result.length === 0 ? null : result[0];
 	}
@@ -94,9 +120,8 @@ export class AuthRecord implements UserLoginRequest {
 	}
 
 	static async changePassword(id: string, newPassword: string) {
+		const hashPwd = hashPassword(newPassword);
 
-		const hashPwd = hashPassword(newPassword)
-
-		await pool.execute(changePassword, {id, hashPwd})
+		await pool.execute(changePassword, { id, hashPwd });
 	}
 }

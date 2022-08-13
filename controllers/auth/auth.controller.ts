@@ -33,6 +33,7 @@ class AuthController {
 						token: login.token,
 						role: login.role,
 						id: login.id,
+						name: login.name,
 					},
 				});
 			}
