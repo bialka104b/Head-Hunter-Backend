@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { jsonResponse } from '../../utils/jsonResponse';
-import { JsonResponseStatus, TraineeStatus } from '../../types';
+import { JsonResponseStatus, TraineeStatus, UserRole } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
@@ -23,7 +23,7 @@ class InterviewController {
 
 		const hr = req.user as UserRecord;
 
-		if (hr.role !== 'hr') {
+		if (hr.role !== UserRole.hr) {
 			throw new ValidationError(auth.notAuthorised, 400);
 		}
 

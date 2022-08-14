@@ -69,7 +69,7 @@ class TraineesController {
 	static async getInterviewsTraineesList(req: Request, res: Response): Promise<void> {
 		const { id, role } = req.user as UserRecord;
 
-		if (role !== 'hr') {
+		if (role !== UserRole.hr) {
 			throw new ValidationError(notAuthorised, 400);
 		}
 

@@ -1,14 +1,22 @@
 import { Request, Response } from 'express';
 import { AuthRecord } from '../../records/auth/auth.record';
 import { jsonResponse } from '../../utils/jsonResponse';
-import { JsonResponseStatus } from '../../types';
+import { JsonResponseStatus} from '../../types';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { hashPassword } from '../../utils/hashPassword';
 import { getRandomPassword } from '../../utils/getRandomPassword';
 import { sendResetPasswordMail } from '../../mailService/sendMail';
 
-const { notAuthorised, incorrectPassword, passwordIsTheSame, incorrectEmail, userWithThatEmailNotExist, userWithThatIdNotExist, incorrectCreatePassword } =
+const {
+	notAuthorised,
+	incorrectPassword,
+	passwordIsTheSame,
+	incorrectEmail,
+	userWithThatEmailNotExist,
+	userWithThatIdNotExist,
+	incorrectCreatePassword,
+} =
 	ValidationError.messages.auth;
 
 class AuthController {
@@ -117,10 +125,10 @@ class AuthController {
 			throw new ValidationError(incorrectEmail, 200);
 		}
 
-		const findUserById = await UserRecord.findUserByEmail(email)
+		const findUserById = await UserRecord.findUserByEmail(email);
 
-		if(!findUserById) {
-			throw new ValidationError(userWithThatEmailNotExist, 200)
+		if (!findUserById) {
+			throw new ValidationError(userWithThatEmailNotExist, 200);
 		}
 
 		try {
@@ -147,34 +155,31 @@ class AuthController {
 		}
 	}
 
-	static async createPassword(req: Request, res:Response) {
-		const {id, password} = req.body
+	static async createPassword(req: Request, res: Response) {
+		const { id, password } = req.body;
 
-		const userById = await UserRecord.getUserById(id)
+		const userById = await UserRecord.getUserById(id);
 
-		if(!userById) {
-			throw new ValidationError(userWithThatIdNotExist, 200)
+		if (!userById) {
+			throw new ValidationError(userWithThatIdNotExist, 200);
 		}
 
-		if(password.length < 6) {
-			throw new ValidationError(incorrectCreatePassword, 200)
+		if (password.length < 6) {
+			throw new ValidationError(incorrectCreatePassword, 200);
 		}
 
 		try {
-			const user = new UserRecord(userById)
+			const user = new UserRecord(userById);
 
-			user.password = password
+			user.password = password;
 
-			await user.updatePassword()
+			await user.updatePassword();
 
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
 					message: 'Create Password successfully.',
-					data: {
-						password
-					}
 				}));
 		} catch (e) {
 			console.log(e);
