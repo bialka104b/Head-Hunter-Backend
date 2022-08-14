@@ -26,13 +26,15 @@ class AdminController {
 
 		try {
 
+			await UserRecord.deleteUserById(id)
+
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Create Password successfully.',
+					message: 'Delete user successfully.',
 					data: {
-						userId: 'asd',
+						deleteUserId: id,
 					},
 				}));
 		} catch (e) {
