@@ -5,8 +5,10 @@ import { JsonResponseStatus } from '../../types';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { hashPassword } from '../../utils/hashPassword';
+import { getRandomPassword } from '../../utils/getRandomPassword';
+import { sendResetPasswordMail } from '../../mailService/sendMail';
 
-const { notAuthorised, incorrectPassword, passwordIsTheSame } =
+const { notAuthorised, incorrectPassword, passwordIsTheSame, incorrectEmail, userWithThatEmailNotExist } =
 	ValidationError.messages.auth;
 
 class AuthController {
@@ -103,6 +105,43 @@ class AuthController {
 					},
 				}),
 			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async forgotPassword(req: Request, res: Response) {
+		const { email } = req.body;
+
+		if (!email.includes('@')) {
+			throw new ValidationError(incorrectEmail, 200);
+		}
+
+		const findUserById = await UserRecord.findUserByEmail(email)
+
+		if(!findUserById) {
+			throw new ValidationError(userWithThatEmailNotExist, 200)
+		}
+
+		try {
+
+
+			const user = new UserRecord(findUserById);
+
+			const randomPassword = getRandomPassword();
+
+			user.password = randomPassword;
+
+			await user.updatePassword();
+
+			await sendResetPasswordMail(user.email, randomPassword);
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Reset Password success.',
+				}));
 		} catch (e) {
 			console.log(e);
 		}

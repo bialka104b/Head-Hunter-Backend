@@ -31,6 +31,8 @@ export class ValidationError extends Error {
 			passwordIsTheSame: 'New password must be different',
 			incorrectPassword: 'Bad Password',
 			notAuthorised: 'Unauthorized User',
+			incorrectEmail: 'Incorrect email. Email can not be empty and has to include "@".',
+			userWithThatEmailNotExist: 'User with that email don\'t exist'
 		},
 		interview: {
 			id: 'User with that ID don\'t exist',
