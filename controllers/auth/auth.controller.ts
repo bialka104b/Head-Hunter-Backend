@@ -8,7 +8,7 @@ import { hashPassword } from '../../utils/hashPassword';
 import { getRandomPassword } from '../../utils/getRandomPassword';
 import { sendResetPasswordMail } from '../../mailService/sendMail';
 
-const { notAuthorised, incorrectPassword, passwordIsTheSame, incorrectEmail, userWithThatEmailNotExist } =
+const { notAuthorised, incorrectPassword, passwordIsTheSame, incorrectEmail, userWithThatEmailNotExist, userWithThatIdNotExist, incorrectCreatePassword } =
 	ValidationError.messages.auth;
 
 class AuthController {
@@ -140,7 +140,41 @@ class AuthController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Reset Password success.',
+					message: 'Reset Password successfully.',
+				}));
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async createPassword(req: Request, res:Response) {
+		const {id, password} = req.body
+
+		const userById = await UserRecord.getUserById(id)
+
+		if(!userById) {
+			throw new ValidationError(userWithThatIdNotExist, 200)
+		}
+
+		if(password.length < 6) {
+			throw new ValidationError(incorrectCreatePassword, 200)
+		}
+
+		try {
+			const user = new UserRecord(userById)
+
+			user.password = password
+
+			await user.updatePassword()
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Create Password successfully.',
+					data: {
+						password
+					}
 				}));
 		} catch (e) {
 			console.log(e);

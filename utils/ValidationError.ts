@@ -32,7 +32,9 @@ export class ValidationError extends Error {
 			incorrectPassword: 'Bad Password',
 			notAuthorised: 'Unauthorized User',
 			incorrectEmail: 'Incorrect email. Email can not be empty and has to include "@".',
-			userWithThatEmailNotExist: 'User with that email don\'t exist'
+			userWithThatEmailNotExist: 'User with that email don\'t exist',
+			userWithThatIdNotExist: 'User with that ID don\'t exist',
+			incorrectCreatePassword: 'Incorrect Password. Password can not be empty and should be at least 6 characters long'
 		},
 		interview: {
 			id: 'User with that ID don\'t exist',
