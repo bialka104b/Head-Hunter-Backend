@@ -19,10 +19,11 @@ const app = express();
 
 // middleware:
 app.use(cors({
-		origin: '*',
-		methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+		origin: 'http://localhost:3000',
+		credentials: true,
 	}),
 );
+
 app.use(express.urlencoded({ extended: false })); //@TODO - don't think we'll use it with react-fe;
 app.use(express.json());
 app.use(cookieParser());
@@ -30,13 +31,14 @@ app.use(cookieParser());
 //TODO - create db connection test (maybe should be in db/pool file);
 
 // Routes:
+app.get('/', (req, res) => res.send('test'));
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/mail', mailRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/trainees', passport.authenticate('jwt', { session: false }), traineesRouter);
 app.use('/api/v1/interview', interviewRouter);
 
-// Change interview trainees status when they was in interviews list long than 10 days
+// Change interview trainees status when they were in interviews list long than 10 days
 // changeInterviewTraineesStatus();
 
 // Global error handler:

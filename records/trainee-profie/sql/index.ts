@@ -107,29 +107,48 @@ export const getFullTraineeInfo =
 	`
 ;
 
-export const getAllListedTrainees =
-	`
-		SELECT users.id,
-			   email,
-			   firstName,
-			   lastName,
-			   courseCompletion,
-			   courseEngagment,
-			   projectDegree,
-			   teamProjectDegree,
-			   expectedTypeWork,
-			   targetWorkCity,
-			   expectedContractType,
-			   expectedSalary,
-			   canTakeApprenticeship,
-			   monthsOfCommercialExp
-		FROM users
-				 INNER JOIN trainee_profile tp on users.id = tp.userId
-				 INNER JOIN trainee_score ts on users.id = ts.userId
-		WHERE users.isActive = true
-		  AND users.role = 'trainee'
-		LIMIT :limit OFFSET :offsetElement
-	`
+export const getAllListedTrainees = (
+		expectedTypeWork?: string,
+		expectedContractType?: any,
+		canTakeApprenticeship?: any,
+	): string => {
+		return `
+			SELECT users.id,
+				   email,
+				   firstName,
+				   lastName,
+				   courseCompletion,
+				   courseEngagment,
+				   projectDegree,
+				   teamProjectDegree,
+				   expectedTypeWork,
+				   targetWorkCity,
+				   expectedContractType,
+				   expectedSalary,
+				   canTakeApprenticeship,
+				   monthsOfCommercialExp
+			FROM users
+					 INNER JOIN trainee_profile tp on users.id = tp.userId
+					 INNER JOIN trainee_score ts on users.id = ts.userId
+			WHERE users.isActive = true
+			  AND users.role = 'trainee'
+			  AND tp.status = 'available'
+			  AND ts.courseCompletion >= :courseCompletion
+			  AND ts.courseEngagment >= :courseEngagment
+			  AND ts.projectDegree >= :projectDegree
+			  AND ts.teamProjectDegree >= :teamProjectDegree
+				${expectedTypeWork ? 'AND tp.expectedTypeWork = :expectedTypeWork' : ''}
+			    ${expectedContractType.b2b ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'b2b')` : ''}
+			    ${expectedContractType.uop ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'uop')` : ''}
+			    ${expectedContractType.uzuod ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'uz/uod')` : ''}
+			  AND tp.expectedSalary BETWEEN :expectedSalaryFrom
+			  AND :expectedSalaryTo
+			    ${canTakeApprenticeship ? `AND tp.canTakeApprenticeship = ${canTakeApprenticeship.value}` : ''}
+			AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp
+			ORDER by ts.courseCompletion
+			LIMIT :limit OFFSET :offsetElement
+		`;
+	}
 ;
 
 export const getTraineesInfoForTraineesInterviewsListById =
@@ -160,5 +179,6 @@ export const getCountOfTrainees =
 	`
 		SELECT COUNT(*) as count
 		FROM trainee_profile
-	`;
+	`
+;
 

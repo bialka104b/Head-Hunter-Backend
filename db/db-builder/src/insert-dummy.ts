@@ -1,14 +1,23 @@
+import { generateInterviews } from './data/interviews';
 import { pool } from '../../pool';
-import { users } from './data/users';
-import { traineeScores } from './data/traineeScores';
-import { hrProfiles } from './data/hrProfiles';
-import { traineeProfiles } from './data/traineeProfiles';
-import {
-	TraineeExpectedContractType,
-	TraineeExpectedTypeWork,
-	TraineeStatus,
-} from '../../../types/trainee-profile/trainee-profile';
-import { interviews } from './data/interviews';
+import { generateTraineeProfiles } from './data/traineeProfiles';
+import { generateHrProfiles } from './data/hrProfiles';
+import { generateTraineeScores } from './data/traineeScores';
+import { generateUsers } from './data/users';
+
+/*Warning!
+1) When changing amount of generated data, make sure to provide matching amounts of entities.
+	For instance if generating 10 users of 'trainee' role make sure go to generate 10 trainee-profiles and 10 trainee-scores etc.
+2) `generateUsers` function always return 1 admin and provided amount of hrs and trainees.
+3) `generateInterviews` function will relate first 5 (or another provided amount) of hr's and trainees.
+4) `interviewedAmount` argument of `generateTraineeProfiles` function will set `status` property of first 5(or another provided amount) generated profiles as interviewed.
+Because of that, it has to match `amount` argument of `generateInterviews` function.
+*/
+const users = generateUsers(15, 100);
+const traineeScores = generateTraineeScores(100);
+const hrProfiles = generateHrProfiles(10);
+const traineeProfiles = generateTraineeProfiles(100, 10);
+const interviews = generateInterviews(10);
 
 const insertDummyUsers = async () => {
 	try {
@@ -16,7 +25,7 @@ const insertDummyUsers = async () => {
 			const { id, email, role, password } = user;
 			await pool.execute(
 				`INSERT INTO users (id, email, password, role)
-								VALUES (:id, :email, :password, :role)`,
+				 VALUES (:id, :email, :password, :role)`,
 				{
 					id,
 					email,
@@ -139,7 +148,8 @@ const insertDummyTraineeProfiles = async () => {
 				JSON.stringify(expectedContractType);
 			await pool.execute(
 				`
-					INSERT INTO trainee_profile (tel,
+					INSERT INTO trainee_profile (id,
+					                             tel,
 												 firstName,
 												 lastName,
 												 githubUsername,
@@ -158,7 +168,8 @@ const insertDummyTraineeProfiles = async () => {
 												 status,
 												 registrationUrl,
 												 userId)
-					VALUES (:tel,
+					VALUES (:id,
+					        :tel,
 							:firstName,
 							:lastName,
 							:githubUsername,
@@ -179,6 +190,7 @@ const insertDummyTraineeProfiles = async () => {
 							:userId)
 				`,
 				{
+					id,
 					tel,
 					firstName,
 					lastName,

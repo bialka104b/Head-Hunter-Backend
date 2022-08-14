@@ -28,6 +28,7 @@
 	},
 	"homepage": "https://github.com/bialka104b/Head-Hunter-Backend#readme",
 	"dependencies": {
+		"@faker-js/faker": "^7.4.0",
 		"bcrypt": "^5.0.1",
 		"body-parser": "^1.19.2",
 		"cli-progress": "^3.11.2",

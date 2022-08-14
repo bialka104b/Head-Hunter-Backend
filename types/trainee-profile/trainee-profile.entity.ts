@@ -23,7 +23,7 @@ export interface TraineeProfileEntity {
 	workExperience?: string;
 	courses?: string;
 	status?: TraineeStatus;
-	registrationUrl?: string;
+	registrationUrl?: string | null;
 	userId?: string | null;
 	createdAt?: Date;
 }

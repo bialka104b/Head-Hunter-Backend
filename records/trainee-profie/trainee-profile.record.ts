@@ -24,6 +24,7 @@ import {
 	updateMe,
 	updateStatus,
 } from './sql';
+import { traineeFilteredSql } from './sql/filtering-test';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
 type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
@@ -160,12 +161,36 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		return resp ? new TraineeProfileRecord(resp) : null;
 	}
 
-	static async getAllListedTrainees(limit: number, offsetElement: number): Promise<TraineeListedEntity[] | null> {
-		const resp = (await pool.execute(getAllListedTrainees, {
+	static async getAllListedTrainees(
+		limit: number,
+		offsetElement: number,
+		sortBy: string,
+		courseCompletion: number,
+		courseEngagment: number,
+		projectDegree: number,
+		teamProjectDegree: number,
+		expectedTypeWork: string,
+		expectedContractType: {},
+		expectedSalaryFrom: number,
+		expectedSalaryTo: number,
+		canTakeApprenticeship: any,
+		monthsOfCommercialExp: number
+	): Promise<TraineeListedEntity[] | null> {
+		const resp = (await pool.execute(getAllListedTrainees(expectedTypeWork, expectedContractType, canTakeApprenticeship), {
 			limit: String(limit),
 			offsetElement: String(offsetElement),
+			sortBy: String(sortBy),
+			courseCompletion,
+			courseEngagment,
+			projectDegree,
+			teamProjectDegree,
+			expectedTypeWork,
+			expectedContractType,
+			expectedSalaryFrom,
+			expectedSalaryTo,
+			canTakeApprenticeship,
+			monthsOfCommercialExp
 		}) as DbResultTraineeListed)[0];
-		console.log(resp);
 		return resp.length !== 0 ? resp : null;
 	}
 
@@ -180,6 +205,11 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	}
 
 	static async getCount(): Promise<number | null> {
+		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
+		return resp.count ?? null;
+	}
+
+	static async getCountOfFiltered(): Promise<number | null> {
 		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
 		return resp.count ?? null;
 	}
