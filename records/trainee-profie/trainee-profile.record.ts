@@ -175,9 +175,10 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		expectedSalaryFrom: number,
 		expectedSalaryTo: number,
 		canTakeApprenticeship: any,
-		monthsOfCommercialExp: number
+		monthsOfCommercialExp: number,
+		search: string,
 	): Promise<TraineeListedEntity[] | null> {
-		const resp = (await pool.execute(getAllListedTrainees(sortParams, expectedTypeWork, expectedContractType, canTakeApprenticeship), {
+		const resp = (await pool.execute(getAllListedTrainees(sortParams, expectedTypeWork, expectedContractType, canTakeApprenticeship, search), {
 			limit: String(limit),
 			offsetElement: String(offsetElement),
 			sortParams,
@@ -190,7 +191,8 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 			expectedSalaryFrom,
 			expectedSalaryTo,
 			canTakeApprenticeship,
-			monthsOfCommercialExp
+			monthsOfCommercialExp,
+			search,
 		}) as DbResultTraineeListed)[0];
 		return resp.length !== 0 ? resp : null;
 	}
@@ -205,9 +207,10 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		expectedSalaryFrom: number,
 		expectedSalaryTo: number,
 		canTakeApprenticeship: any,
-		monthsOfCommercialExp: number
+		monthsOfCommercialExp: number,
+		search: string,
 	): Promise<number | null> {
-		const resp = (await pool.execute(getCountOfAllListedTrainees(expectedTypeWork, expectedContractType, canTakeApprenticeship), {
+		const resp = (await pool.execute(getCountOfAllListedTrainees(expectedTypeWork, expectedContractType, canTakeApprenticeship, search), {
 			courseCompletion,
 			courseEngagment,
 			projectDegree,
@@ -217,7 +220,8 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 			expectedSalaryFrom,
 			expectedSalaryTo,
 			canTakeApprenticeship,
-			monthsOfCommercialExp
+			monthsOfCommercialExp,
+			search,
 		}) as DBResultCountOfTrainees)[0];
 		return resp.length ?? null;
 	}

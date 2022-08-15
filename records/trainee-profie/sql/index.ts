@@ -112,10 +112,11 @@ export const getFullTraineeInfo =
 ;
 
 export const getAllListedTrainees = (
-	sortParams: sortParamsObj,
+		sortParams: sortParamsObj,
 		expectedTypeWork?: string,
 		expectedContractType?: any,
 		canTakeApprenticeship?: any,
+		search?: string,
 	): string => {
 		return `
 			SELECT users.id,
@@ -145,8 +146,7 @@ export const getAllListedTrainees = (
 				${expectedTypeWork ? 'AND tp.expectedTypeWork = :expectedTypeWork' : ''} ${expectedContractType.b2b ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'b2b')` : ''} ${expectedContractType.uop ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'uop')` : ''} ${expectedContractType.uzuod ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'uz/uod')` : ''}
 			  AND tp.expectedSalary BETWEEN :expectedSalaryFrom
 			  AND :expectedSalaryTo ${canTakeApprenticeship ? `AND tp.canTakeApprenticeship = ${canTakeApprenticeship.value}` : ''}
-			  AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp
-			    ${sortParams.key ? `ORDER BY ${sortParams.key} ${sortParams.direction}` : ''}
+			  AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp ${search ? `AND (tp.targetWorkCity LIKE '%${search}%' OR tp.expectedTypeWork LIKE '%${search}%' OR JSON_SEARCH(tp.expectedContractType, 'all', '${search}'))` : ''} ${sortParams.key ? `ORDER BY ${sortParams.key} ${sortParams.direction}` : ''}
 			LIMIT :limit OFFSET :offsetElement
 		`;
 	}
@@ -156,6 +156,7 @@ export const getCountOfAllListedTrainees = (
 		expectedTypeWork?: string,
 		expectedContractType?: any,
 		canTakeApprenticeship?: any,
+		search?: string,
 	): string => {
 		return `
 			SELECT users.id,
@@ -185,7 +186,7 @@ export const getCountOfAllListedTrainees = (
 				${expectedTypeWork ? 'AND tp.expectedTypeWork = :expectedTypeWork' : ''} ${expectedContractType.b2b ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'b2b')` : ''} ${expectedContractType.uop ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'uop')` : ''} ${expectedContractType.uzuod ? `AND JSON_SEARCH(tp.expectedContractType, 'all', 'uz/uod')` : ''}
 			  AND tp.expectedSalary BETWEEN :expectedSalaryFrom
 			  AND :expectedSalaryTo ${canTakeApprenticeship ? `AND tp.canTakeApprenticeship = ${canTakeApprenticeship.value}` : ''}
-			  AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp
+			  AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp ${search ? `AND (tp.targetWorkCity LIKE '%${search}%' OR tp.expectedTypeWork LIKE '%${search}%' OR JSON_SEARCH(tp.expectedContractType, 'all', '${search}'))` : ''}
 		`;
 	}
 ;

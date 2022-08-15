@@ -23,18 +23,6 @@ export interface sortParamsObj {
 class TraineesController {
 	static async getAllListedTrainees(req: Request, res: Response): Promise<void> {
 		try {
-			/*
-			PATH model:
-			http://localhost:3000/api/v1/trainees?
-			limit=2&
-			page=1&
-			sortBy=test&
-			sortDir=asc&
-
-			If limit/page data not provided default values are:
-				-page = 1
-				-limit = 10
-			*/
 			/*Destructurization with renaming: */
 			const {
 				limit: limitQ,
@@ -51,9 +39,10 @@ class TraineesController {
 				expectedSalaryTo: expectedSalaryToQ,
 				canTakeApprenticeship: canTakeApprenticeshipQ,
 				monthsOfCommercialExp: monthsOfCommercialExpQ,
+				search: searchQ,
 			} = req.query;
 
-			/*Sorting data: TODO: sort direction*/
+			/*Sorting data:*/
 			const getSortDirection = (queryValue: string) => {
 				if (queryValue === 'ascending') {
 					return 'ASC';
@@ -101,6 +90,9 @@ class TraineesController {
 			const canTakeApprenticeship = getCanTakeApprenticeship(canTakeApprenticeshipQ);
 			const monthsOfCommercialExp = monthsOfCommercialExpQ ? N(monthsOfCommercialExpQ) : 0;
 
+			/*Search:*/
+			const search = searchQ ? S(searchQ) : '';
+
 			/*Get pagination data:*/
 			const count = await TraineeProfileRecord.getCountOfAllListedTrainees(
 				courseCompletion,
@@ -113,6 +105,7 @@ class TraineesController {
 				expectedSalaryTo,
 				canTakeApprenticeship,
 				monthsOfCommercialExp,
+				search
 			);
 			const limit = limitQ ? N(limitQ) : 10;
 			const page = pageQ ? N(pageQ) : 1;
@@ -135,6 +128,7 @@ class TraineesController {
 				expectedSalaryTo,
 				canTakeApprenticeship,
 				monthsOfCommercialExp,
+				search
 			);
 
 			res
