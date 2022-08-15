@@ -7,8 +7,7 @@ const traineesRouter = express.Router();
 traineesRouter
 	.get('/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getAllListedTrainees)
 	.get('/interviewsList/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getInterviewsTraineesList)
-	.get('/:id', passport.authenticate('jwt', { session: false }), TraineesController.getTraineeProfile)
-	.post('/importTrainees', passport.authenticate('jwt', { session: false }), TraineesController.importTraineesFromCsvFile);
+	.get('/:userId', passport.authenticate('jwt', { session: false }), TraineesController.getTraineeProfile);
 
 export {
 	traineesRouter,

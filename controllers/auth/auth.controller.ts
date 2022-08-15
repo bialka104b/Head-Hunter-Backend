@@ -51,7 +51,7 @@ class AuthController {
 			res.cookie('jwt', login.token, {
 				secure: true,
 				domain: 'localhost',
-				httpOnly: true,
+				httpOnly: false,
 				maxAge: 1000 * 60 * 60,
 			}).json(response);
 		} catch (e) {
