@@ -51,19 +51,45 @@ export class AuthRecord implements UserLoginRequest {
 			};
 		}
 
+		const { role, email, id } = result[0];
+
 		let name = '';
-		if (result[0].role === UserRole.admin) name = 'Admin';
-		if (result[0].role === UserRole.hr) {
-			const [hrResult] = (await pool.execute(getHrName, {
-				userId: result[0].id,
-			})) as HrNameResponseFromDatabase;
-			name = hrResult[0].fullName;
-		}
-		if (result[0].role === UserRole.trainee) {
-			const [traineeResult] = (await pool.execute(getTraineeName, {
-				userId: result[0].id,
-			})) as TraineeNameResponseFromDatabase;
-			name = traineeResult[0].firstName + ' ' + traineeResult[0].lastName;
+		if (role === UserRole.admin) name = 'Admin';
+		else {
+			try {
+				if (role === UserRole.hr) {
+					const [hrResult] = (await pool.execute(getHrName, {
+						userId: id,
+					})) as HrNameResponseFromDatabase;
+					name =
+						hrResult[0] === null || !hrResult[0].fullName
+							? email
+							: hrResult[0].fullName;
+				}
+				if (role === UserRole.trainee) {
+					const [traineeResult] = (await pool.execute(
+						getTraineeName,
+						{
+							userId: id,
+						},
+					)) as TraineeNameResponseFromDatabase;
+					let fullName = '';
+					const firstName =
+						traineeResult[0] === null || !traineeResult[0].firstName
+							? ''
+							: traineeResult[0].firstName;
+					const lastName =
+						traineeResult[0] === null || !traineeResult[0].lastName
+							? ''
+							: traineeResult[0].lastName;
+					fullName =
+						firstName === '' && lastName === ''
+							? email
+							: firstName + ' ' + lastName;
+				}
+			} catch (e) {
+				name = email;
+			}
 		}
 
 		const token = await this.createToken(
