@@ -7,12 +7,16 @@ import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
 
+const { traineeNotExist } =
+	ValidationError.messages.recordInstanceInit.traineeProfile;
 const { notAuthorised } = ValidationError.messages.auth;
 
 class TraineesController {
-	static async getAllListedTrainees(req: Request, res: Response): Promise<void> {
+	static async getAllListedTrainees(
+		req: Request,
+		res: Response,
+	): Promise<void> {
 		try {
-
 			const count = await TraineeProfileRecord.getCountOfTrainees();
 			const limit = Number(req.params.limit);
 			const pages = Math.ceil(count / limit);
@@ -23,11 +27,13 @@ class TraineesController {
 
 			const offsetElement = limit * (currentPage - 1);
 
-
-			const listedTrainees = await TraineeProfileRecord.getAllListedTrainees(limit, offsetElement);
-			res
-				.status(200)
-				.json(jsonResponse({
+			const listedTrainees =
+				await TraineeProfileRecord.getAllListedTrainees(
+					limit,
+					offsetElement,
+				);
+			res.status(200).json(
+				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
 					message: 'Listed trainees successfully fetched.',
@@ -37,37 +43,42 @@ class TraineesController {
 						pages,
 						listedTrainees,
 					},
-				}));
+				}),
+			);
 		} catch (e) {
 			console.log(e);
 		}
 	}
 
 	static async getTraineeProfile(req: Request, res: Response): Promise<void> {
-		const { userId } = req.params;
-
-		const { role } = req.user as UserRecord;
-
-		if (role === UserRole.trainee) {
-			throw new ValidationError(notAuthorised, 400);
-		}
+		let traineeId: string = null;
+		const { role, id } = req.user as UserRecord;
+		if (role === UserRole.trainee) traineeId = id;
+		else traineeId = req.params.userId;
 
 		try {
-			const traineeProfile = await TraineeProfileRecord.getFullTraineeInfo(userId);
-			res
-				.status(200)
-				.json(jsonResponse({
-					code: 200,
-					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully fetched.',
-					data: { traineeProfile },
-				}));
+			const traineeProfile =
+				await TraineeProfileRecord.getFullTraineeInfo(traineeId);
+
+			if (traineeProfile)
+				res.status(200).json(
+					jsonResponse({
+						code: 200,
+						status: JsonResponseStatus.success,
+						message: "Trainee's profile successfully fetched.",
+						data: { traineeProfile },
+					}),
+				);
+			else throw new ValidationError(traineeNotExist, 404);
 		} catch (e) {
-			console.log(e);
+			throw e;
 		}
 	}
 
-	static async getInterviewsTraineesList(req: Request, res: Response): Promise<void> {
+	static async getInterviewsTraineesList(
+		req: Request,
+		res: Response,
+	): Promise<void> {
 		const { id, role } = req.user as UserRecord;
 
 		if (role !== UserRole.hr) {
@@ -75,7 +86,8 @@ class TraineesController {
 		}
 
 		try {
-			const count = await InterviewRecord.getCountOfTraineesInterviewsForHr(id);
+			const count =
+				await InterviewRecord.getCountOfTraineesInterviewsForHr(id);
 			const limit = Number(req.params.limit);
 			const pages = Math.ceil(count / limit);
 			let currentPage = Number(req.params.currentPage);
@@ -83,33 +95,39 @@ class TraineesController {
 			currentPage = paginationValidation(currentPage, pages);
 
 			const offsetElement = limit * (currentPage - 1);
-			const traineesIdList = await InterviewRecord.getInterviewsTraineeList(id, limit, offsetElement);
+			const traineesIdList =
+				await InterviewRecord.getInterviewsTraineeList(
+					id,
+					limit,
+					offsetElement,
+				);
 
 			const interviewsTraineesList = [];
 
 			if (traineesIdList !== null) {
 				for (const { traineeId } of traineesIdList) {
-					const traineeInfo = await TraineeProfileRecord.getTraineesInfoForTraineesInterviewsListById(traineeId);
+					const traineeInfo =
+						await TraineeProfileRecord.getTraineesInfoForTraineesInterviewsListById(
+							traineeId,
+						);
 					if (traineeInfo !== null) {
 						interviewsTraineesList.push(traineeInfo);
 					}
 				}
 			}
 
-			res
-				.status(200)
-				.json(jsonResponse({
+			res.status(200).json(
+				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully fetched.',
+					message: "Trainee's profile successfully fetched.",
 					data: { interviewsTraineesList },
-				}));
+				}),
+			);
 		} catch (e) {
 			console.log(e);
 		}
 	}
 }
 
-export {
-	TraineesController,
-};
+export { TraineesController };
