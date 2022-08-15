@@ -48,7 +48,7 @@ class TraineesController {
 
 		const { role } = req.user as UserRecord;
 
-		if (role !== UserRole.trainee) {
+		if (role === UserRole.trainee) {
 			throw new ValidationError(notAuthorised, 400);
 		}
 
