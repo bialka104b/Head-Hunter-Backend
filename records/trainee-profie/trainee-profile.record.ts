@@ -15,7 +15,7 @@ import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
 import {
 	getAllListedTrainees,
-	getAllTraineesProfiles,
+	getAllTraineesProfiles, getCountOfAllListedTrainees,
 	getCountOfTrainees,
 	getFullTraineeInfo,
 	getTraineeProfileById,
@@ -25,6 +25,7 @@ import {
 	updateStatus,
 } from './sql';
 import { traineeFilteredSql } from './sql/filtering-test';
+import { sortParamsObj } from '../../controllers/trainees/trainees.controller';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
 type DbResultTraineeFullInfo = [TraineeFullInfoEntity[], FieldPacket[]];
@@ -164,7 +165,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	static async getAllListedTrainees(
 		limit: number,
 		offsetElement: number,
-		sortBy: string,
+		sortParams: sortParamsObj,
 		courseCompletion: number,
 		courseEngagment: number,
 		projectDegree: number,
@@ -176,10 +177,10 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		canTakeApprenticeship: any,
 		monthsOfCommercialExp: number
 	): Promise<TraineeListedEntity[] | null> {
-		const resp = (await pool.execute(getAllListedTrainees(expectedTypeWork, expectedContractType, canTakeApprenticeship), {
+		const resp = (await pool.execute(getAllListedTrainees(sortParams, expectedTypeWork, expectedContractType, canTakeApprenticeship), {
 			limit: String(limit),
 			offsetElement: String(offsetElement),
-			sortBy: String(sortBy),
+			sortParams,
 			courseCompletion,
 			courseEngagment,
 			projectDegree,
@@ -192,6 +193,33 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 			monthsOfCommercialExp
 		}) as DbResultTraineeListed)[0];
 		return resp.length !== 0 ? resp : null;
+	}
+
+	static async getCountOfAllListedTrainees(
+		courseCompletion: number,
+		courseEngagment: number,
+		projectDegree: number,
+		teamProjectDegree: number,
+		expectedTypeWork: string,
+		expectedContractType: {},
+		expectedSalaryFrom: number,
+		expectedSalaryTo: number,
+		canTakeApprenticeship: any,
+		monthsOfCommercialExp: number
+	): Promise<number | null> {
+		const resp = (await pool.execute(getCountOfAllListedTrainees(expectedTypeWork, expectedContractType, canTakeApprenticeship), {
+			courseCompletion,
+			courseEngagment,
+			projectDegree,
+			teamProjectDegree,
+			expectedTypeWork,
+			expectedContractType,
+			expectedSalaryFrom,
+			expectedSalaryTo,
+			canTakeApprenticeship,
+			monthsOfCommercialExp
+		}) as DBResultCountOfTrainees)[0];
+		return resp.length ?? null;
 	}
 
 	static async getFullTraineeInfo(id: string): Promise<TraineeFullInfoEntity | null> {
@@ -209,8 +237,5 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		return resp.count ?? null;
 	}
 
-	static async getCountOfFiltered(): Promise<number | null> {
-		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
-		return resp.count ?? null;
-	}
+
 }

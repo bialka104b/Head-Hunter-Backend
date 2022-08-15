@@ -11,11 +11,14 @@ import { paginationValidation } from '../../utils/paginationValidation';
 import {
 	convertToNumber as N,
 	convertToString as S,
-	convertToBoolean as B,
 } from '../../utils/convertDataType';
 
 const { notAuthorised } = ValidationError.messages.auth;
 
+export interface sortParamsObj {
+	key: string,
+	direction: string
+}
 
 class TraineesController {
 	static async getAllListedTrainees(req: Request, res: Response): Promise<void> {
@@ -49,15 +52,23 @@ class TraineesController {
 				canTakeApprenticeship: canTakeApprenticeshipQ,
 				monthsOfCommercialExp: monthsOfCommercialExpQ,
 			} = req.query;
-			/*Pagination data:*/
-			const count = await TraineeProfileRecord.getCount();
-			const limit = limitQ ? N(limitQ) : 10;
-			const page = pageQ ? N(pageQ) : 1;
-			const pages = Math.ceil(count / limit);
-			const currentPage = paginationValidation(page, pages) ?? 1;
-			const offsetElement = limit * (currentPage - 1);
+
 			/*Sorting data: TODO: sort direction*/
-			const sortBy = sortByQ ?? 'courseCompletion';
+			const getSortDirection = (queryValue: string) => {
+				if (queryValue === 'ascending') {
+					return 'ASC';
+				}
+				if (queryValue === 'descending') {
+					return 'DESC';
+				}
+				return 'ASC';
+			};
+
+			const sortParams: sortParamsObj = {
+				key: sortByQ ? S(sortByQ) : 'courseCompletion',
+				direction: getSortDirection(S(sortDirQ)),
+			};
+
 			/*Filtering data:*/
 			const courseCompletion = courseCompletionQ ? N(courseCompletionQ) : 0;
 			const courseEngagment = courseEngagmentQ ? N(courseEngagmentQ) : 0;
@@ -77,12 +88,12 @@ class TraineesController {
 					if (canTakeApprenticeshipQ === 'true') {
 						return {
 							value: true,
-						}
+						};
 					}
 					if (canTakeApprenticeshipQ === 'false') {
 						return {
-							value: false
-						}
+							value: false,
+						};
 					}
 				}
 				return '';
@@ -90,11 +101,30 @@ class TraineesController {
 			const canTakeApprenticeship = getCanTakeApprenticeship(canTakeApprenticeshipQ);
 			const monthsOfCommercialExp = monthsOfCommercialExpQ ? N(monthsOfCommercialExpQ) : 0;
 
+			/*Get pagination data:*/
+			const count = await TraineeProfileRecord.getCountOfAllListedTrainees(
+				courseCompletion,
+				courseEngagment,
+				projectDegree,
+				teamProjectDegree,
+				expectedTypeWork,
+				expectedContractType,
+				expectedSalaryFrom,
+				expectedSalaryTo,
+				canTakeApprenticeship,
+				monthsOfCommercialExp,
+			);
+			const limit = limitQ ? N(limitQ) : 10;
+			const page = pageQ ? N(pageQ) : 1;
+			const pages = Math.ceil(count / limit);
+			const currentPage = paginationValidation(page, pages) ?? 1;
+			const offsetElement = limit * (currentPage - 1);
+
 			/*Get trainees:*/
 			const listedTrainees = await TraineeProfileRecord.getAllListedTrainees(
 				limit,
 				offsetElement,
-				S(sortBy),
+				sortParams,
 				courseCompletion,
 				courseEngagment,
 				projectDegree,
