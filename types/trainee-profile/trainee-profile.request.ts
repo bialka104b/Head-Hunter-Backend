@@ -23,11 +23,7 @@ export interface TraineeProfileRequest {
 	projectUrl3: string;
 	projectUrl4: string;
 	projectUrl5: string;
-	course1: string;
-	course2: string;
-	course3: string;
-	course4: string;
-	course5: string;
+	courses: string;
 	expectedTypeWork: TraineeExpectedTypeWork;
 	expectedContractType: TraineeExpectedContractType[];
 	canTakeApprenticeship: "true" | "false";
