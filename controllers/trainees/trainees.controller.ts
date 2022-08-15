@@ -1,6 +1,12 @@
 import { Request, Response } from 'express';
 import { jsonResponse } from '../../utils/jsonResponse';
-import { JsonResponseStatus, UserImport, UserRole } from '../../types';
+import {
+	JsonResponseStatus,
+	TraineeProfileEntity,
+	TraineeProfileRequest,
+	UserImport,
+	UserRole,
+} from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
@@ -12,7 +18,7 @@ import { TraineeScoreRecord } from '../../records/trainee-score/trainee-score.re
 
 const { readFile } = require('fs').promises;
 
-const { notAuthorised } = ValidationError.messages.auth;
+const { notAuthorised, incorrectId } = ValidationError.messages.auth;
 
 
 class TraineesController {
@@ -152,6 +158,101 @@ class TraineesController {
 					status: JsonResponseStatus.success,
 					message: 'Trainee\'s profile successfully fetched.',
 					data: { userThatWasAlreadyExist },
+				}));
+
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async editProfile(req: Request, res: Response) {
+		const {
+			userId,
+			firstName,
+			lastName,
+			githubUsername,
+			tel,
+			bio,
+			education,
+			targetWorkCity,
+			workExperience,
+			portfolioUrl1,
+			portfolioUrl2,
+			portfolioUrl3,
+			portfolioUrl4,
+			portfolioUrl5,
+			projectUrl1,
+			projectUrl2,
+			projectUrl3,
+			projectUrl4,
+			projectUrl5,
+			course1,
+			course2,
+			course3,
+			course4,
+			course5,
+			expectedTypeWork,
+			expectedContractType,
+			canTakeApprenticeship,
+			monthsOfCommercialExp,
+			expectedSalaryFrom,
+		} = req.body as TraineeProfileRequest;
+
+		const projectUrls = [projectUrl1, projectUrl2, projectUrl3, projectUrl4, projectUrl5];
+		const portfolioUrls = [portfolioUrl1, portfolioUrl2, portfolioUrl3, portfolioUrl4, portfolioUrl5];
+		const courses = [course1, course2, course3, course4, course5]
+
+		const traineeProfileValues: TraineeProfileEntity = {
+			firstName,
+			lastName,
+			githubUsername,
+			tel,
+			bio,
+			education,
+			targetWorkCity,
+			workExperience: workExperience,
+			projectUrls: projectUrls.filter(obj => obj !== ''),
+			portfolioUrls: portfolioUrls.filter(obj => obj !== ''),
+			expectedTypeWork,
+			expectedContractType,
+			canTakeApprenticeship: canTakeApprenticeship === 'true' ?? true,
+			monthsOfCommercialExp: Number(monthsOfCommercialExp),
+			expectedSalary: expectedSalaryFrom,
+			courses: JSON.stringify(courses.filter(obj => obj !== '')),
+		};
+
+		const user = await UserRecord.getUserById(userId)
+
+		if(!user) {
+			throw new ValidationError(incorrectId, 400)
+		}
+
+		if (user.role !== UserRole.trainee) {
+			throw new ValidationError(notAuthorised, 400);
+		}
+
+		try {
+			const trainee = await TraineeProfileRecord.getTraineeProfileById(user.id);
+
+			if (!trainee) {
+				const newTrainee = new TraineeProfileRecord(traineeProfileValues);
+
+				newTrainee.userId = user.id
+
+				await newTrainee.insertMe();
+			} else {
+				await TraineeProfileRecord.updateTrainee(traineeProfileValues, user.id);
+			}
+
+			res
+				.status(200)
+				.json(jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s profile successfully update.',
+					data: {
+						trainee: await TraineeProfileRecord.getTraineeProfileById(user.id),
+					},
 				}));
 
 		} catch (e) {

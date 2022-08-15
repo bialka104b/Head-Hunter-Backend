@@ -1,15 +1,14 @@
 import {
-	TraineeProfileEntity,
-} from '../../types';
-import {
 	TraineeExpectedContractType,
 	TraineeExpectedTypeWork,
+	TraineeProfileEntity,
 	TraineeStatus,
 } from '../../types';
 import { FieldPacket } from 'mysql2';
 import { ValidationError } from '../../utils/ValidationError';
 import {
-	TraineeFullInfoEntity, TraineeListedEntity,
+	TraineeFullInfoEntity,
+	TraineeListedEntity,
 } from '../../types/trainee-profile/trainee-profile.responses';
 import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
@@ -21,8 +20,8 @@ import {
 	getTraineeProfileById,
 	getTraineesInfoForTraineesInterviewsListById,
 	insertMe,
-	updateMe,
 	updateStatus,
+	updateTrainee,
 } from './sql';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
@@ -116,32 +115,6 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		return this.id;
 	}
 
-	async updateMe(): Promise<string> {
-		await pool.execute(updateMe, {
-			id: this.id,
-			tel: this.tel,
-			firstName: this.firstName,
-			lastName: this.lastName,
-			githubUsername: this.githubUsername,
-			portfolioUrls: JSON.stringify(this.portfolioUrls),
-			projectUrls: JSON.stringify(this.projectUrls),
-			bio: this.bio,
-			expectedTypeWork: this.expectedTypeWork,
-			targetWorkCity: this.targetWorkCity,
-			expectedContractType: JSON.stringify(this.expectedContractType),
-			expectedSalary: this.expectedSalary,
-			canTakeApprenticeship: this.canTakeApprenticeship,
-			monthsOfCommercialExp: this.monthsOfCommercialExp,
-			education: this.education,
-			workExperience: this.workExperience,
-			courses: this.courses,
-			status: this.status,
-			registrationUrl: this.registrationUrl,
-			userId: this.userId,
-		});
-		return this.id;
-	}
-
 	async updateStatus(status: string): Promise<void> {
 		await pool.execute(updateStatus, {
 			status,
@@ -178,5 +151,46 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	static async getCountOfTrainees(): Promise<number | null> {
 		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
 		return resp.count ?? null;
+	}
+
+	static async updateTrainee(obj: TraineeProfileEntity, userId: string): Promise<void> {
+		const {
+			firstName,
+			lastName,
+			githubUsername,
+			tel,
+			bio,
+			education,
+			targetWorkCity,
+			workExperience,
+			projectUrls,
+			portfolioUrls,
+			expectedTypeWork,
+			expectedContractType,
+			canTakeApprenticeship,
+			monthsOfCommercialExp,
+			expectedSalary,
+			courses
+		} = obj;
+
+		await pool.execute(updateTrainee, {
+			tel,
+			firstName,
+			lastName,
+			githubUsername,
+			portfolioUrls: JSON.stringify(portfolioUrls),
+			projectUrls: JSON.stringify(projectUrls),
+			bio,
+			expectedTypeWork,
+			targetWorkCity,
+			expectedContractType: JSON.stringify(expectedContractType),
+			expectedSalary,
+			canTakeApprenticeship,
+			monthsOfCommercialExp,
+			education,
+			workExperience,
+			courses,
+			userId,
+		});
 	}
 }
