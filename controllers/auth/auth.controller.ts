@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { AuthRecord } from '../../records/auth/auth.record';
 import { jsonResponse } from '../../utils/jsonResponse';
-import { JsonResponseStatus} from '../../types';
+import { JsonResponseStatus, UserEntity } from '../../types';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { hashPassword } from '../../utils/hashPassword';
@@ -16,8 +16,7 @@ const {
 	userWithThatEmailNotExist,
 	userWithThatIdNotExist,
 	incorrectCreatePassword,
-} =
-	ValidationError.messages.auth;
+} = ValidationError.messages.auth;
 
 class AuthController {
 	static async login(req: Request, res: Response) {
@@ -51,12 +50,31 @@ class AuthController {
 			res.cookie('jwt', login.token, {
 				secure: true,
 				domain: 'localhost',
-				httpOnly: true,
+				httpOnly: false,
 				maxAge: 1000 * 60 * 60,
 			}).json(response);
 		} catch (e) {
 			console.log(e);
 		}
+	}
+
+	static async refresh(req: Request, res: Response) {
+		console.log(req.user);
+		const { role, id, name } = req.user as UserEntity;
+
+		res.json(
+			jsonResponse({
+				code: 200,
+				status: JsonResponseStatus.success,
+				message: 'Auth informations refreshed',
+				data: {
+					token: req.cookies.jwt,
+					role: role,
+					id: id,
+					name: name,
+				},
+			}),
+		);
 	}
 
 	static async logout(req: Request, res: Response) {
@@ -132,8 +150,6 @@ class AuthController {
 		}
 
 		try {
-
-
 			const user = new UserRecord(findUserById);
 
 			const randomPassword = getRandomPassword();
@@ -149,7 +165,8 @@ class AuthController {
 					code: 200,
 					status: JsonResponseStatus.success,
 					message: 'Reset Password successfully.',
-				}));
+				}),
+			);
 		} catch (e) {
 			console.log(e);
 		}
@@ -180,7 +197,8 @@ class AuthController {
 					code: 200,
 					status: JsonResponseStatus.success,
 					message: 'Create Password successfully.',
-				}));
+				}),
+			);
 		} catch (e) {
 			console.log(e);
 		}
