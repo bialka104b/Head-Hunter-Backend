@@ -59,7 +59,6 @@ class AuthController {
 	}
 
 	static async refresh(req: Request, res: Response) {
-		console.log(req.user);
 		const { role, id, name } = req.user as UserEntity;
 
 		res.json(

@@ -85,6 +85,7 @@ export const JwtStrategy = new Strategy(
 						firstName === '' && lastName === ''
 							? email
 							: firstName + ' ' + lastName;
+					name = fullName;
 				}
 			} catch (e) {
 				name = email;

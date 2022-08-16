@@ -82,10 +82,9 @@ export class AuthRecord implements UserLoginRequest {
 						traineeResult[0] === null || !traineeResult[0].lastName
 							? ''
 							: traineeResult[0].lastName;
-					fullName =
-						firstName === '' && lastName === ''
-							? email
-							: firstName + ' ' + lastName;
+					fullName = firstName + ' ' + lastName;
+					if (fullName.trim() === '') fullName = email;
+					name = fullName;
 				}
 			} catch (e) {
 				name = email;
