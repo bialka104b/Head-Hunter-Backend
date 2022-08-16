@@ -28,6 +28,7 @@ export class UserRecord implements UserEntity {
 	password: string;
 	role: UserRole;
 	currentTokenId: string;
+	registerToken: string
 	createdAt: Date;
 	isActive: boolean;
 
@@ -38,6 +39,7 @@ export class UserRecord implements UserEntity {
 		this.password = obj.password;
 		this.role = obj.role;
 		this.currentTokenId = obj.currentTokenId ?? '';
+		this.registerToken = obj.registerToken ?? uuid();
 		this.createdAt = obj.createdAt ?? new Date();
 		this.isActive = obj.isActive ?? true;
 		this.validate();
@@ -65,6 +67,7 @@ export class UserRecord implements UserEntity {
 			password,
 			role,
 			currentTokenId,
+			registerToken,
 			createdAt,
 			isActive,
 		} = this;
@@ -75,6 +78,7 @@ export class UserRecord implements UserEntity {
 			password: hashPassword(password),
 			role,
 			currentTokenId,
+			registerToken,
 			createdAt,
 			isActive,
 		});

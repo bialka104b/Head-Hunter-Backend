@@ -6,6 +6,7 @@ import { jsonResponse } from '../../utils/jsonResponse';
 import { parse } from 'papaparse';
 import { getRandomPassword } from '../../utils/getRandomPassword';
 import { TraineeScoreRecord } from '../../records/trainee-score/trainee-score.record';
+import { sendRegisterMail } from '../../mailService/sendMail';
 
 const { readFile } = require('fs').promises;
 
@@ -81,8 +82,12 @@ class AdminController {
 					});
 
 					await traineeScore.insertMe();
+
+					await sendRegisterMail(user.email, userId, user.registerToken);
 				}
 			}
+
+
 
 			res
 				.status(200)

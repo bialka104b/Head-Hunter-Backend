@@ -2,8 +2,8 @@
 
 export const insertMe =
 	`
-		INSERT INTO users (id, email, password, role, currentTokenId, createdAt, isActive)
-		VALUES (:id, :email, :password, :role, :currentTokenId,
+		INSERT INTO users (id, email, password, role, currentTokenId, registerToken, createdAt, isActive)
+		VALUES (:id, :email, :password, :role, :currentTokenId, :registerToken,
 				:createdAt, :isActive)
 	`
 ;
