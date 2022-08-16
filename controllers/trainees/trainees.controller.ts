@@ -4,10 +4,7 @@ import {
 	JsonResponseStatus,
 	TraineeProfileEntity,
 	TraineeProfileRequest,
-	UserImport,
 	UserRole,
-  JsonResponseStatus,
-  UserRole
 } from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
@@ -61,23 +58,28 @@ class TraineesController {
 	static async getTraineeProfile(req: Request, res: Response): Promise<void> {
 		let traineeId: string = null;
 		const { role, id } = req.user as UserRecord;
-		if (role === UserRole.trainee) traineeId = id;
-		else traineeId = req.params.userId;
+		if (role === UserRole.trainee) {
+			traineeId = id;
+		} else {
+			traineeId = req.params.userId;
+		}
 
 		try {
 			const traineeProfile =
 				await TraineeProfileRecord.getFullTraineeInfo(traineeId);
 
-			if (traineeProfile)
+			if (traineeProfile) {
 				res.status(200).json(
 					jsonResponse({
 						code: 200,
 						status: JsonResponseStatus.success,
-						message: "Trainee's profile successfully fetched.",
+						message: 'Trainee\'s profile successfully fetched.',
 						data: { traineeProfile },
 					}),
 				);
-			else throw new ValidationError(traineeNotExist, 404);
+			} else {
+				throw new ValidationError(traineeNotExist, 404);
+			}
 		} catch (e) {
 			throw e;
 		}
@@ -128,7 +130,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
+					message: 'Trainee\'s profile successfully fetched.',
 					data: { interviewsTraineesList },
 				}),
 			);
@@ -185,13 +187,13 @@ class TraineesController {
 			canTakeApprenticeship: canTakeApprenticeship === 'true' ?? true,
 			monthsOfCommercialExp: Number(monthsOfCommercialExp),
 			expectedSalary: expectedSalaryFrom,
-			courses
+			courses,
 		};
 
-		const user = await UserRecord.getUserById(userId)
+		const user = await UserRecord.getUserById(userId);
 
-		if(!user) {
-			throw new ValidationError(incorrectId, 400)
+		if (!user) {
+			throw new ValidationError(incorrectId, 400);
 		}
 
 		if (user.role !== UserRole.trainee) {
@@ -204,7 +206,7 @@ class TraineesController {
 			if (!trainee) {
 				const newTrainee = new TraineeProfileRecord(traineeProfileValues);
 
-				newTrainee.userId = user.id
+				newTrainee.userId = user.id;
 
 				await newTrainee.insertMe();
 			} else {
