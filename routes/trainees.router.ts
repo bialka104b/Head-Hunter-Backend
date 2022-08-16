@@ -5,11 +5,21 @@ import passport from 'passport';
 const traineesRouter = express.Router();
 
 traineesRouter
-	.get('/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getAllListedTrainees)
-	.get('/interviewsList/:limit/:currentPage', passport.authenticate('jwt', { session: false }), TraineesController.getInterviewsTraineesList)
-	.post('/editProfile', TraineesController.editProfile);
-	.get('/:userId', passport.authenticate('jwt', { session: false }), TraineesController.getTraineeProfile);
+	.get(
+		'/:limit/:currentPage',
+		passport.authenticate('jwt', { session: false }),
+		TraineesController.getAllListedTrainees,
+	)
+	.get(
+		'/interviewsList/:limit/:currentPage',
+		passport.authenticate('jwt', { session: false }),
+		TraineesController.getInterviewsTraineesList,
+	)
+	.post('/editProfile', TraineesController.editProfile)
+	.get(
+		'/:userId',
+		passport.authenticate('jwt', { session: false }),
+		TraineesController.getTraineeProfile,
+	);
 
-export {
-	traineesRouter,
-};
+export { traineesRouter };

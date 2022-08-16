@@ -20,8 +20,8 @@ import {
 	getTraineeProfileById,
 	getTraineesInfoForTraineesInterviewsListById,
 	insertMe,
-	updateStatus,
 	updateTrainee,
+	updateStatus,
 } from './sql';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
@@ -30,8 +30,8 @@ type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
 type DbResultInterviewsListTraineesInfoById = DbResultTraineeListed;
 type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]];
 
-
-const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;
+const { incorrectMinimumData } =
+	ValidationError.messages.recordInstanceInit.traineeProfile;
 
 export class TraineeProfileRecord implements TraineeProfileEntity {
 	id: string;
@@ -82,7 +82,12 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	}
 
 	validation() {
-		if (!this.firstName || !this.lastName || !this.githubUsername || !this.projectUrls) {
+		if (
+			!this.firstName ||
+			!this.lastName ||
+			!this.githubUsername ||
+			!this.projectUrls
+		) {
 			throw new ValidationError(incorrectMinimumData, 400);
 		}
 	}
@@ -118,42 +123,77 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	async updateStatus(status: string): Promise<void> {
 		await pool.execute(updateStatus, {
 			status,
-			id: this.id
+			id: this.id,
 		});
 	}
 
 	//static:
-	static async getAllTraineesProfiles(): Promise<TraineeProfileRecord[] | null> {
-		const resp = (await pool.execute(getAllTraineesProfiles) as DbResult)[0];
-		return resp.length !== 0 ? resp.map(el => new TraineeProfileRecord(el)) : null;
+	static async getAllTraineesProfiles(): Promise<
+		TraineeProfileRecord[] | null
+	> {
+		const resp = (
+			(await pool.execute(getAllTraineesProfiles)) as DbResult
+		)[0];
+		return resp.length !== 0
+			? resp.map((el) => new TraineeProfileRecord(el))
+			: null;
 	}
 
-	static async getTraineeProfileById(id: string): Promise<TraineeProfileRecord | null> {
-		const [resp] = (await pool.execute(getTraineeProfileById, { id }) as DbResult)[0];
+	static async getTraineeProfileById(
+		id: string,
+	): Promise<TraineeProfileRecord | null> {
+		const [resp] = (
+			(await pool.execute(getTraineeProfileById, { id })) as DbResult
+		)[0];
 		return resp ? new TraineeProfileRecord(resp) : null;
 	}
 
-	static async getAllListedTrainees(limit: number, offsetElement: number): Promise<TraineeListedEntity[] | null> {
-		const resp = (await pool.execute(getAllListedTrainees, { limit, offsetElement }) as DbResultTraineeListed)[0];
+	static async getAllListedTrainees(
+		limit: number,
+		offsetElement: number,
+	): Promise<TraineeListedEntity[] | null> {
+		const resp = (
+			(await pool.execute(getAllListedTrainees, {
+				limit,
+				offsetElement,
+			})) as DbResultTraineeListed
+		)[0];
 		return resp.length !== 0 ? resp : null;
 	}
 
-	static async getFullTraineeInfo(id: string): Promise<TraineeFullInfoEntity | null> {
-		const [resp] = (await pool.execute(getFullTraineeInfo, { id }) as DbResultTraineeFullInfo)[0];
+	static async getFullTraineeInfo(
+		id: string,
+	): Promise<TraineeFullInfoEntity | null> {
+		const [resp] = (
+			(await pool.execute(getFullTraineeInfo, {
+				id,
+			})) as DbResultTraineeFullInfo
+		)[0];
 		return resp ?? null;
 	}
 
-	static async getTraineesInfoForTraineesInterviewsListById(id: string): Promise<TraineeListedEntity | null> {
-		const [resp] = (await pool.execute(getTraineesInfoForTraineesInterviewsListById, { id }) as DbResultInterviewsListTraineesInfoById)[0];
+	static async getTraineesInfoForTraineesInterviewsListById(
+		id: string,
+	): Promise<TraineeListedEntity | null> {
+		const [resp] = (
+			(await pool.execute(getTraineesInfoForTraineesInterviewsListById, {
+				id,
+			})) as DbResultInterviewsListTraineesInfoById
+		)[0];
 		return resp ?? null;
 	}
 
 	static async getCountOfTrainees(): Promise<number | null> {
-		const [resp] = (await pool.execute(getCountOfTrainees) as DBResultCountOfTrainees)[0];
+		const [resp] = (
+			(await pool.execute(getCountOfTrainees)) as DBResultCountOfTrainees
+		)[0];
 		return resp.count ?? null;
 	}
 
-	static async updateTrainee(obj: TraineeProfileEntity, userId: string): Promise<void> {
+	static async updateTrainee(
+		obj: TraineeProfileEntity,
+		userId: string,
+	): Promise<void> {
 		const {
 			firstName,
 			lastName,
@@ -170,7 +210,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 			canTakeApprenticeship,
 			monthsOfCommercialExp,
 			expectedSalary,
-			courses
+			courses,
 		} = obj;
 
 		await pool.execute(updateTrainee, {

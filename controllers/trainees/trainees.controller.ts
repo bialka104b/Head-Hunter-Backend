@@ -3,7 +3,6 @@ import { jsonResponse } from '../../utils/jsonResponse';
 import {
 	JsonResponseStatus,
 	TraineeProfileEntity,
-	TraineeProfileRequest,
 	UserRole,
 } from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
@@ -11,6 +10,7 @@ import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
+import { TraineeProfileRequest } from '../../types/trainee-profile/trainee-profile.request';
 
 const { notAuthorised, incorrectId } = ValidationError.messages.auth;
 const { traineeNotExist } =
@@ -73,7 +73,7 @@ class TraineesController {
 					jsonResponse({
 						code: 200,
 						status: JsonResponseStatus.success,
-						message: 'Trainee\'s profile successfully fetched.',
+						message: "Trainee's profile successfully fetched.",
 						data: { traineeProfile },
 					}),
 				);
@@ -130,7 +130,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully fetched.',
+					message: "Trainee's profile successfully fetched.",
 					data: { interviewsTraineesList },
 				}),
 			);
@@ -168,8 +168,20 @@ class TraineesController {
 			expectedSalaryFrom,
 		} = req.body as TraineeProfileRequest;
 
-		const projectUrls = [projectUrl1, projectUrl2, projectUrl3, projectUrl4, projectUrl5];
-		const portfolioUrls = [portfolioUrl1, portfolioUrl2, portfolioUrl3, portfolioUrl4, portfolioUrl5];
+		const projectUrls = [
+			projectUrl1,
+			projectUrl2,
+			projectUrl3,
+			projectUrl4,
+			projectUrl5,
+		];
+		const portfolioUrls = [
+			portfolioUrl1,
+			portfolioUrl2,
+			portfolioUrl3,
+			portfolioUrl4,
+			portfolioUrl5,
+		];
 
 		const traineeProfileValues: TraineeProfileEntity = {
 			firstName,
@@ -180,8 +192,8 @@ class TraineesController {
 			education,
 			targetWorkCity,
 			workExperience: workExperience,
-			projectUrls: projectUrls.filter(obj => obj !== ''),
-			portfolioUrls: portfolioUrls.filter(obj => obj !== ''),
+			projectUrls: projectUrls.filter((obj) => obj !== ''),
+			portfolioUrls: portfolioUrls.filter((obj) => obj !== ''),
 			expectedTypeWork,
 			expectedContractType,
 			canTakeApprenticeship: canTakeApprenticeship === 'true' ?? true,
@@ -201,29 +213,38 @@ class TraineesController {
 		}
 
 		try {
-			const trainee = await TraineeProfileRecord.getTraineeProfileById(user.id);
+			const trainee = await TraineeProfileRecord.getTraineeProfileById(
+				user.id,
+			);
 
 			if (!trainee) {
-				const newTrainee = new TraineeProfileRecord(traineeProfileValues);
+				const newTrainee = new TraineeProfileRecord(
+					traineeProfileValues,
+				);
 
 				newTrainee.userId = user.id;
 
 				await newTrainee.insertMe();
 			} else {
-				await TraineeProfileRecord.updateTrainee(traineeProfileValues, user.id);
+				await TraineeProfileRecord.updateTrainee(
+					traineeProfileValues,
+					user.id,
+				);
 			}
 
-			res
-				.status(200)
-				.json(jsonResponse({
+			res.status(200).json(
+				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully update.',
+					message: "Trainee's profile successfully update.",
 					data: {
-						trainee: await TraineeProfileRecord.getTraineeProfileById(user.id),
+						trainee:
+							await TraineeProfileRecord.getTraineeProfileById(
+								user.id,
+							),
 					},
-				}));
-
+				}),
+			);
 		} catch (e) {
 			console.log(e);
 		}
