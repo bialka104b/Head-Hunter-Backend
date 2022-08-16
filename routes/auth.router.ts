@@ -6,8 +6,20 @@ export const authRouter = Router();
 
 authRouter
 	.post('/login', AuthController.login)
+	.get(
+		'/refresh',
+		passport.authenticate('jwt', { session: false }),
+		AuthController.refresh,
+	)
 	.post('/forgotPassword', AuthController.forgotPassword)
 	.post('/createPassword', AuthController.createPassword)
-	.get('/logout', passport.authenticate('jwt', { session: false }), AuthController.logout)
-	.post('/changePassword', passport.authenticate('jwt', { session: false }), AuthController.changePassword);
-
+	.get(
+		'/logout',
+		passport.authenticate('jwt', { session: false }),
+		AuthController.logout,
+	)
+	.post(
+		'/changePassword',
+		passport.authenticate('jwt', { session: false }),
+		AuthController.changePassword,
+	);

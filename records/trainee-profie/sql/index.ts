@@ -100,6 +100,7 @@ export const getFullTraineeInfo =
 		FROM users
 				 JOIN trainee_profile tp on users.id = tp.userId
 				 JOIN trainee_score ts on users.id = ts.userId
+		WHERE users.id = :id
 			AND users.isActive = true
 	`
 ;
