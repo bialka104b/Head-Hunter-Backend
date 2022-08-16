@@ -186,11 +186,7 @@ class TraineesController {
 			projectUrl3,
 			projectUrl4,
 			projectUrl5,
-			course1,
-			course2,
-			course3,
-			course4,
-			course5,
+			courses,
 			expectedTypeWork,
 			expectedContractType,
 			canTakeApprenticeship,
@@ -200,7 +196,6 @@ class TraineesController {
 
 		const projectUrls = [projectUrl1, projectUrl2, projectUrl3, projectUrl4, projectUrl5];
 		const portfolioUrls = [portfolioUrl1, portfolioUrl2, portfolioUrl3, portfolioUrl4, portfolioUrl5];
-		const courses = [course1, course2, course3, course4, course5]
 
 		const traineeProfileValues: TraineeProfileEntity = {
 			firstName,
@@ -218,7 +213,7 @@ class TraineesController {
 			canTakeApprenticeship: canTakeApprenticeship === 'true' ?? true,
 			monthsOfCommercialExp: Number(monthsOfCommercialExp),
 			expectedSalary: expectedSalaryFrom,
-			courses: JSON.stringify(courses.filter(obj => obj !== '')),
+			courses
 		};
 
 		const user = await UserRecord.getUserById(userId)
