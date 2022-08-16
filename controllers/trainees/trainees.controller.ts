@@ -165,7 +165,7 @@ class TraineesController {
 			expectedContractType,
 			canTakeApprenticeship,
 			monthsOfCommercialExp,
-			expectedSalaryFrom,
+			expectedSalary,
 		} = req.body as TraineeProfileRequest;
 
 		const projectUrls = [
@@ -198,7 +198,7 @@ class TraineesController {
 			expectedContractType,
 			canTakeApprenticeship: canTakeApprenticeship === 'true' ?? true,
 			monthsOfCommercialExp: Number(monthsOfCommercialExp),
-			expectedSalary: expectedSalaryFrom,
+			expectedSalary: expectedSalary,
 			courses,
 		};
 
