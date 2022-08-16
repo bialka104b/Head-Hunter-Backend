@@ -25,7 +25,7 @@ export const insertMe =
 	`
 ;
 
-export const updateMe =
+export const updateTrainee =
 	`
 		UPDATE trainee_profile
 		SET tel                   = :tel,
@@ -43,11 +43,8 @@ export const updateMe =
 			monthsOfCommercialExp = :monthsOfCommercialExp,
 			education             = :education,
 			workExperience        = :workExperience,
-			courses               = :courses,
-			status                = :status,
-			registrationUrl       = :registrationUrl,
-			userId                = :userId
-		WHERE id = :id
+			courses               = :courses
+		WHERE userId = :userId
 	`
 ;
 

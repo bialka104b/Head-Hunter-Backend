@@ -10,14 +10,13 @@ export const insertMe =
 	`
 ;
 
-export const updateMe =
+export const updateHr =
 	`
 		UPDATE hr_profile
 		SET fullName            = :fullName,
 			company             = :company,
-			maxReservedStudents = :maxReservedStudents,
-			userId              = :userId
-		WHERE id = :id
+			maxReservedStudents = :maxReservedStudents
+		WHERE userId = :userId
 	`
 ;
 
@@ -32,7 +31,7 @@ export const getHrProfileById =
 	`
 		SELECT *
 		FROM hr_profile
-		WHERE id = :id
+		WHERE userId = :id
 	`
 ;
 

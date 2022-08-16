@@ -1,4 +1,4 @@
-import { HrProfileEntity } from '../../types';
+import { HrProfileEntity, HrProfileRequest } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
@@ -8,7 +8,7 @@ import {
 	getHrMaxReservedStudentsInfo,
 	getHrProfileById,
 	insertMe,
-	updateMe,
+	updateHr,
 } from './sql';
 
 const {
@@ -69,26 +69,6 @@ export class HrProfileRecord implements HrProfileEntity {
 		return id;
 	}
 
-	async updateMe(): Promise<string> {
-		const {
-			id,
-			fullName,
-			company,
-			maxReservedStudents,
-			userId,
-		} = this;
-
-		await pool.execute(updateMe, {
-			id,
-			fullName,
-			company,
-			maxReservedStudents,
-			userId,
-		});
-
-		return id;
-	}
-
 	//static:
 	static async getAllHrProfiles() {
 		const resp = (await pool.execute(getAllHrProfiles) as DbResult)[0];
@@ -103,5 +83,20 @@ export class HrProfileRecord implements HrProfileEntity {
 	static async getHrMaxReservedStudentsInfo(id: string): Promise<number | null> {
 		const [resp] = (await pool.execute(getHrMaxReservedStudentsInfo, {id}) as DBResultHrMaxReservedStudentsInfo)[0];
 		return resp.maxReservedStudents ?? null;
+	}
+
+	static async updateHr(obj:HrProfileRequest, userId: string): Promise<void> {
+		const {
+			fullName,
+			company,
+			maxReservedStudents,
+		} = obj;
+
+		await pool.execute(updateHr, {
+			fullName,
+			company,
+			maxReservedStudents,
+			userId
+		});
 	}
 }

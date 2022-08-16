@@ -1,15 +1,20 @@
 import { Request, Response } from 'express';
 import { jsonResponse } from '../../utils/jsonResponse';
-import { JsonResponseStatus, UserRole } from '../../types';
+import {
+	JsonResponseStatus,
+	TraineeProfileEntity,
+	TraineeProfileRequest,
+	UserRole,
+} from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
 
+const { notAuthorised, incorrectId } = ValidationError.messages.auth;
 const { traineeNotExist } =
 	ValidationError.messages.recordInstanceInit.traineeProfile;
-const { notAuthorised } = ValidationError.messages.auth;
 
 class TraineesController {
 	static async getAllListedTrainees(
@@ -53,23 +58,28 @@ class TraineesController {
 	static async getTraineeProfile(req: Request, res: Response): Promise<void> {
 		let traineeId: string = null;
 		const { role, id } = req.user as UserRecord;
-		if (role === UserRole.trainee) traineeId = id;
-		else traineeId = req.params.userId;
+		if (role === UserRole.trainee) {
+			traineeId = id;
+		} else {
+			traineeId = req.params.userId;
+		}
 
 		try {
 			const traineeProfile =
 				await TraineeProfileRecord.getFullTraineeInfo(traineeId);
 
-			if (traineeProfile)
+			if (traineeProfile) {
 				res.status(200).json(
 					jsonResponse({
 						code: 200,
 						status: JsonResponseStatus.success,
-						message: "Trainee's profile successfully fetched.",
+						message: 'Trainee\'s profile successfully fetched.',
 						data: { traineeProfile },
 					}),
 				);
-			else throw new ValidationError(traineeNotExist, 404);
+			} else {
+				throw new ValidationError(traineeNotExist, 404);
+			}
 		} catch (e) {
 			throw e;
 		}
@@ -120,10 +130,100 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
+					message: 'Trainee\'s profile successfully fetched.',
 					data: { interviewsTraineesList },
 				}),
 			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async editProfile(req: Request, res: Response) {
+		const {
+			userId,
+			firstName,
+			lastName,
+			githubUsername,
+			tel,
+			bio,
+			education,
+			targetWorkCity,
+			workExperience,
+			portfolioUrl1,
+			portfolioUrl2,
+			portfolioUrl3,
+			portfolioUrl4,
+			portfolioUrl5,
+			projectUrl1,
+			projectUrl2,
+			projectUrl3,
+			projectUrl4,
+			projectUrl5,
+			courses,
+			expectedTypeWork,
+			expectedContractType,
+			canTakeApprenticeship,
+			monthsOfCommercialExp,
+			expectedSalaryFrom,
+		} = req.body as TraineeProfileRequest;
+
+		const projectUrls = [projectUrl1, projectUrl2, projectUrl3, projectUrl4, projectUrl5];
+		const portfolioUrls = [portfolioUrl1, portfolioUrl2, portfolioUrl3, portfolioUrl4, portfolioUrl5];
+
+		const traineeProfileValues: TraineeProfileEntity = {
+			firstName,
+			lastName,
+			githubUsername,
+			tel,
+			bio,
+			education,
+			targetWorkCity,
+			workExperience: workExperience,
+			projectUrls: projectUrls.filter(obj => obj !== ''),
+			portfolioUrls: portfolioUrls.filter(obj => obj !== ''),
+			expectedTypeWork,
+			expectedContractType,
+			canTakeApprenticeship: canTakeApprenticeship === 'true' ?? true,
+			monthsOfCommercialExp: Number(monthsOfCommercialExp),
+			expectedSalary: expectedSalaryFrom,
+			courses,
+		};
+
+		const user = await UserRecord.getUserById(userId);
+
+		if (!user) {
+			throw new ValidationError(incorrectId, 400);
+		}
+
+		if (user.role !== UserRole.trainee) {
+			throw new ValidationError(notAuthorised, 400);
+		}
+
+		try {
+			const trainee = await TraineeProfileRecord.getTraineeProfileById(user.id);
+
+			if (!trainee) {
+				const newTrainee = new TraineeProfileRecord(traineeProfileValues);
+
+				newTrainee.userId = user.id;
+
+				await newTrainee.insertMe();
+			} else {
+				await TraineeProfileRecord.updateTrainee(traineeProfileValues, user.id);
+			}
+
+			res
+				.status(200)
+				.json(jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s profile successfully update.',
+					data: {
+						trainee: await TraineeProfileRecord.getTraineeProfileById(user.id),
+					},
+				}));
+
 		} catch (e) {
 			console.log(e);
 		}
