@@ -6,7 +6,7 @@ const interviewRouter = express.Router();
 
 interviewRouter
 	.get('/add/:traineeId', passport.authenticate('jwt', { session: false }), InterviewController.addInterview)
-	.delete('/:traineeId', passport.authenticate('jwt', { session: false }), InterviewController.deleteInterview)
+	.delete('/', passport.authenticate('jwt', { session: false }), InterviewController.deleteInterview)
 
 export {
 	interviewRouter,

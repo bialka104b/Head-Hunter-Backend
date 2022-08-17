@@ -17,7 +17,7 @@ export const getInterviewById =
 	`
 		SELECT *
 		FROM interviews
-		WHERE id = :id
+		WHERE traineeId = :traineeId
 	`
 ;
 
@@ -34,7 +34,8 @@ export const deleteInterviewById =
 	`
 		UPDATE interviews
 		SET isActive = false
-		WHERE traineeId = :id
+		WHERE hrId = :hrId
+		AND traineeId = :traineeId
 	`
 ;
 
