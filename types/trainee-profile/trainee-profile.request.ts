@@ -26,8 +26,7 @@ export interface TraineeProfileRequest {
 	courses: string;
 	expectedTypeWork: TraineeExpectedTypeWork;
 	expectedContractType: TraineeExpectedContractType[];
-	canTakeApprenticeship: "true" | "false";
+	canTakeApprenticeship: 'true' | 'false';
 	monthsOfCommercialExp: string;
-	expectedSalaryFrom: string;
-	expectedSalaryTo: string;
+	expectedSalary: string;
 }
