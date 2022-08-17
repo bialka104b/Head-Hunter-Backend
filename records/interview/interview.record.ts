@@ -80,8 +80,8 @@ export class InterviewRecord implements InterviewEntity {
 		return resp.length !== 0 ? resp.map(el => new InterviewRecord(el)) : null;
 	}
 
-	static async getInterviewById(id: string): Promise<InterviewRecord | null> {
-		const [resp] = (await pool.execute(getInterviewById, { id }) as DbResult)[0];
+	static async getInterviewByTraineeId(traineeId: string): Promise<InterviewRecord | null> {
+		const [resp] = (await pool.execute(getInterviewById, { traineeId }) as DbResult)[0];
 		return resp ? new InterviewRecord(resp) : null;
 	}
 
@@ -90,8 +90,8 @@ export class InterviewRecord implements InterviewEntity {
 		return resp.length !== 0 ? resp : null;
 	}
 
-	static async deleteInterviewByTraineeId(id: string): Promise<void> {
-		await pool.execute(deleteInterviewById, { id });
+	static async deleteInterviewByTraineeId(hrId: string, traineeId: string): Promise<void> {
+		await pool.execute(deleteInterviewById, { hrId, traineeId });
 	}
 
 	static async getCountOfTraineesInterviewsForHr(hrId: string): Promise<number | null> {

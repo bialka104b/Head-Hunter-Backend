@@ -28,6 +28,8 @@ class InterviewController {
 		}
 
 		const hrMaxReservedStudents = await HrProfileRecord.getHrMaxReservedStudentsInfo(hr.id)
+
+
 		const countOfInterviewByHr = await InterviewRecord.getCountOfTraineesInterviewsForHr(hr.id);
 
 		if(hrMaxReservedStudents <= countOfInterviewByHr) {
@@ -59,21 +61,40 @@ class InterviewController {
 	}
 
 	static async deleteInterview(req: Request, res: Response): Promise<void> {
-		const trainee = await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId);
+		const {hrId, traineeId} = req.body
+
+		const trainee = await TraineeProfileRecord.getTraineeProfileById(traineeId);
 
 		if(trainee === null) {
 			throw new ValidationError(interview.id, 400)
 		}
 
+		const {role, id} = req.user as UserRecord;
+
+		if(role === UserRole.trainee) {
+			if(traineeId !== id) {
+				throw new ValidationError(auth.notAuthorised, 400)
+			}
+		}
+
+
 		try {
-			await InterviewRecord.deleteInterviewByTraineeId(trainee.userId)
+			await InterviewRecord.deleteInterviewByTraineeId(hrId, traineeId)
+
+			const traineeInterviews = await InterviewRecord.getInterviewByTraineeId(traineeId)
+
+			if(traineeInterviews === null) {
+				const traineeProfile = new TraineeProfileRecord(trainee)
+
+				await traineeProfile.updateStatus(TraineeStatus.available)
+			}
 
 			res
 				.status(200)
 				.json(jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee was successfully delete from interview.'
+					message: 'Interview was successfully delete.'
 				}))
 		} catch (e) {
 			console.log(e);

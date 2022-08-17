@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
-import {
-	HrProfileRequest,
-	JsonResponseStatus,
-	UserRole,
-} from '../../types';
+import { HrProfileRequest, JsonResponseStatus, UserRole } from '../../types';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';

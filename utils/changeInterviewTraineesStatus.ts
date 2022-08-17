@@ -12,7 +12,7 @@ export const changeInterviewTraineesStatus = () => setInterval(async () => {
 	if (afterTimeInterviewTrainees.length > 0) {
 		for (const traineeInterviews of afterTimeInterviewTrainees) {
 			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(traineeInterviews.traineeId));
-			await InterviewRecord.deleteInterviewByTraineeId(trainee.userId);
+			await InterviewRecord.deleteInterviewByTraineeId(traineeInterviews.hrId ,trainee.userId);
 			await trainee.updateStatus(TraineeStatus.available);
 		}
 	}
