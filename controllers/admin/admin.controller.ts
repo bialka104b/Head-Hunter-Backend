@@ -49,7 +49,7 @@ class AdminController {
 
 	static async importTraineesFromCsvFile(req: Request, res: Response) {
 		try {
-			const file: string = await readFile(req.body.file, 'utf8');
+			const file: string = await readFile(req.file.path, 'utf8');
 			const convertToJSONFile = parse(file, {
 				header: true,
 				skipEmptyLines: true,
