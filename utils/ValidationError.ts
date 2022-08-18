@@ -5,7 +5,7 @@ export class ValidationError extends Error {
 				incorrectEmail:
 					'Incorrect user\'s object data. Email key can not be empty and has to include "@".',
 				incorrectPassword:
-					"Incorrect user's object data. Password key can not be empty and has to include 6 characters at list.",
+					'Incorrect user\'s object data. Password key can not be empty and has to include 6 characters at list.',
 				incorrectRole:
 					'Incorrect user\'s object data. Allowed roles are: "admin", "hr", "trainee".',
 			},
@@ -26,7 +26,7 @@ export class ValidationError extends Error {
 			traineeProfile: {
 				incorrectMinimumData:
 					'Incorrect trainee-profile\'s object data. "FirstName", "lastName", "githubUsername", "projectUrls" keys can not be empty.',
-				traineeNotExist: "Trainee doesn't exists",
+				traineeNotExist: 'Trainee doesn\'t exists',
 			},
 		},
 		login: {
@@ -43,17 +43,20 @@ export class ValidationError extends Error {
 			notAuthorised: 'Unauthorized User',
 			incorrectEmail:
 				'Incorrect email. Email can not be empty and has to include "@".',
-			userWithThatEmailNotExist: "User with that email don't exist",
-			userWithThatIdNotExist: "User with that ID don't exist",
+			userWithThatEmailNotExist: 'User with that email don\'t exist',
+			userWithThatIdNotExist: 'User with that ID don\'t exist',
 			incorrectCreatePassword:
 				'Incorrect Password. Password can not be empty and should be at least 6 characters long',
-			incorrectId: "User with that ID don't exist",
+			incorrectId: 'User with that ID don\'t exist',
 		},
 		interview: {
-			id: "User with that ID don't exist",
+			id: 'User with that ID don\'t exist',
 			statusHired: 'This user is already hired.',
 			hrMaxReservedStudents:
 				'Hr have max reserved of students to interview',
+		},
+		hr: {
+			hrAlreadyExist: 'Your profile was already added. You can\'t modify anything',
 		},
 	};
 	message: string;
