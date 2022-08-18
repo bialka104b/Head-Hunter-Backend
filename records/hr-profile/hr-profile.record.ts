@@ -5,19 +5,23 @@ import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
 import {
 	getAllHrProfiles,
+	getCountOfHrProfiles,
 	getHrMaxReservedStudentsInfo,
 	getHrProfileById,
+	getHrProfiles,
 	insertMe,
 	updateHr,
 } from './sql';
 
-const {
-	incorrectRelationId,
-	incorrectNameOrCompany,
-} = ValidationError.messages.recordInstanceInit.hrProfile;
+const { incorrectRelationId, incorrectNameOrCompany } =
+	ValidationError.messages.recordInstanceInit.hrProfile;
 
 type DbResult = [HrProfileRecord[], FieldPacket[]];
-type DBResultHrMaxReservedStudentsInfo = [{ maxReservedStudents: number }[], FieldPacket[]];
+type DBResultHrMaxReservedStudentsInfo = [
+	{ maxReservedStudents: number }[],
+	FieldPacket[],
+];
+type DBResultCountOfHr = [{ count: number }[], FieldPacket[]];
 
 export class HrProfileRecord implements HrProfileEntity {
 	id: string;
@@ -40,7 +44,6 @@ export class HrProfileRecord implements HrProfileEntity {
 	private validate() {
 		if (!this.fullName || !this.company) {
 			throw new ValidationError(incorrectNameOrCompany, 400);
-
 		} else if (!this.userId) {
 			console.log(this.userId);
 			throw new ValidationError(incorrectRelationId, 400);
@@ -57,46 +60,73 @@ export class HrProfileRecord implements HrProfileEntity {
 			userId,
 			createdAt,
 		} = this;
-		await pool.execute(insertMe,
-			{
-				id,
-				fullName,
-				company,
-				maxReservedStudents,
-				userId,
-				createdAt,
-			});
+		await pool.execute(insertMe, {
+			id,
+			fullName,
+			company,
+			maxReservedStudents,
+			userId,
+			createdAt,
+		});
 		return id;
 	}
 
 	//static:
 	static async getAllHrProfiles() {
-		const resp = (await pool.execute(getAllHrProfiles) as DbResult)[0];
-		return resp.length !== 0 ? resp.map(el => new HrProfileRecord(el)) : null;
+		const resp = ((await pool.execute(getAllHrProfiles)) as DbResult)[0];
+		return resp.length !== 0
+			? resp.map((el) => new HrProfileRecord(el))
+			: null;
+	}
+
+	static async getCountOfHr(): Promise<number | null> {
+		const [resp] = (
+			(await pool.execute(getCountOfHrProfiles)) as DBResultCountOfHr
+		)[0];
+		return resp.count ?? null;
+	}
+
+	static async getHrList(limit: number, offsetElement: number) {
+		const resp = (
+			(await pool.execute(getHrProfiles, {
+				limit,
+				offsetElement,
+			})) as DbResult
+		)[0];
+		return resp.length !== 0
+			? resp.map((el) => new HrProfileRecord(el))
+			: null;
 	}
 
 	static async getHrProfileById(id: string): Promise<HrProfileRecord | null> {
-		const [resp] = (await pool.execute(getHrProfileById, { id }) as DbResult)[0];
+		const [resp] = (
+			(await pool.execute(getHrProfileById, { id })) as DbResult
+		)[0];
 		return resp ? new HrProfileRecord(resp) : null;
 	}
 
-	static async getHrMaxReservedStudentsInfo(id: string): Promise<number | null> {
-		const [resp] = (await pool.execute(getHrMaxReservedStudentsInfo, {id}) as DBResultHrMaxReservedStudentsInfo)[0];
+	static async getHrMaxReservedStudentsInfo(
+		id: string,
+	): Promise<number | null> {
+		const [resp] = (
+			(await pool.execute(getHrMaxReservedStudentsInfo, {
+				id,
+			})) as DBResultHrMaxReservedStudentsInfo
+		)[0];
 		return resp.maxReservedStudents ?? null;
 	}
 
-	static async updateHr(obj:HrProfileRequest, userId: string): Promise<void> {
-		const {
-			fullName,
-			company,
-			maxReservedStudents,
-		} = obj;
+	static async updateHr(
+		obj: HrProfileRequest,
+		userId: string,
+	): Promise<void> {
+		const { fullName, company, maxReservedStudents } = obj;
 
 		await pool.execute(updateHr, {
 			fullName,
 			company,
 			maxReservedStudents,
-			userId
+			userId,
 		});
 	}
 }
