@@ -1,20 +1,25 @@
 import { Request, Response } from 'express';
-import { HrProfileRequest, JsonResponseStatus, UserRole } from '../../types';
+import {
+	HrProfileEntity,
+	JsonResponseStatus,
+	UserRole,
+} from '../../types';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { HrProfileRecord } from '../../records/hr-profile/hr-profile.record';
 
 const { incorrectId, notAuthorised } = ValidationError.messages.auth;
+const { hrAlreadyExist } = ValidationError.messages.hr;
 
 class hrController {
 
-	static async editProfile(req: Request, res: Response) {
+	static async addProfile(req: Request, res: Response) {
 		const {
 			maxReservedStudents,
 			company,
 			fullName,
-		} = req.body as HrProfileRequest;
+		} = req.body as HrProfileEntity;
 
 		const user = req.user as UserRecord;
 
@@ -26,25 +31,25 @@ class hrController {
 			throw new ValidationError(notAuthorised, 400);
 		}
 
+		const hr = await HrProfileRecord.getHrProfileById(user.id);
+
+		if (hr) {
+			throw new ValidationError(hrAlreadyExist, 200);
+		}
+
 		try {
+			const newHr = new HrProfileRecord({
+				maxReservedStudents,
+				company,
+				fullName,
+				userId: user.id
+			});
 
-			const hr = await HrProfileRecord.getHrProfileById(user.id);
+			newHr.fullName = req.body.fullName;
+			newHr.maxReservedStudents = req.body.maxReservedStudents;
+			newHr.company = req.body.company;
 
-			if (hr) {
-				await HrProfileRecord.updateHr({
-					maxReservedStudents,
-					company,
-					fullName,
-				}, user.id);
-			} else {
-				const editHr = new HrProfileRecord(hr);
-
-				editHr.fullName = req.body.fullName;
-				editHr.maxReservedStudents = req.body.maxReservedStudents;
-				editHr.company = req.body.company;
-
-				await editHr.insertMe();
-			}
+			await newHr.insertMe();
 
 			res.status(200).json(
 				jsonResponse({
