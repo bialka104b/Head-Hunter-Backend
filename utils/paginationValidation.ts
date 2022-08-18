@@ -1,11 +1,11 @@
 export const paginationValidation = (currentPage: number, pages: number) => {
-	if(currentPage < 1) {
-		currentPage = 1
+	if (!currentPage || currentPage < 1) {
+		currentPage = 1;
 	}
 
-	if(currentPage > pages) {
-		currentPage = pages
+	if (currentPage > pages) {
+		currentPage = pages;
 	}
 
-	return currentPage
-}
+	return currentPage;
+};
