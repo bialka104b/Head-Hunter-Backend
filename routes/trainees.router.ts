@@ -15,7 +15,9 @@ traineesRouter
 		passport.authenticate('jwt', { session: false }),
 		TraineesController.getInterviewsTraineesList,
 	)
-	.post('/editProfile', TraineesController.editProfile)
+	.post('/editProfile',
+		passport.authenticate('jwt', { session: false }),
+		TraineesController.editProfile)
 	.get(
 		'/:userId',
 		passport.authenticate('jwt', { session: false }),

@@ -4,13 +4,13 @@ import {
 	JsonResponseStatus,
 	TraineeProfileEntity,
 	UserRole,
+	TraineeProfileRequest
 } from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
-import { TraineeProfileRequest } from '../../types/trainee-profile/trainee-profile.request';
 
 const { notAuthorised, incorrectId } = ValidationError.messages.auth;
 const { traineeNotExist } =
