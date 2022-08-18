@@ -28,8 +28,6 @@ class InterviewController {
 		}
 
 		const hrMaxReservedStudents = await HrProfileRecord.getHrMaxReservedStudentsInfo(hr.id)
-
-
 		const countOfInterviewByHr = await InterviewRecord.getCountOfTraineesInterviewsForHr(hr.id);
 
 		if(hrMaxReservedStudents <= countOfInterviewByHr) {
@@ -62,7 +60,6 @@ class InterviewController {
 
 	static async deleteInterview(req: Request, res: Response): Promise<void> {
 		const {hrId, traineeId} = req.body
-
 		const trainee = await TraineeProfileRecord.getTraineeProfileById(traineeId);
 
 		if(trainee === null) {
@@ -80,7 +77,6 @@ class InterviewController {
 
 		try {
 			await InterviewRecord.deleteInterviewByTraineeId(hrId, traineeId)
-
 			const traineeInterviews = await InterviewRecord.getInterviewByTraineeId(traineeId)
 
 			if(traineeInterviews === null) {
