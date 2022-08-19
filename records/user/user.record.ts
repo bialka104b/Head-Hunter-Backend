@@ -27,10 +27,11 @@ export class UserRecord implements UserEntity {
 	id: string;
 	email: string;
 	name: string;
+	avatar: string;
 	password: string;
 	role: UserRole;
 	currentTokenId: string;
-	registerToken: string
+	registerToken: string;
 	createdAt: Date;
 	isActive: boolean;
 

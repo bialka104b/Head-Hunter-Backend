@@ -43,6 +43,7 @@ class AuthController {
 						role: login.role,
 						id: login.id,
 						name: login.name,
+						avatar: login.avatar,
 					},
 				});
 			}
@@ -59,7 +60,7 @@ class AuthController {
 	}
 
 	static async refresh(req: Request, res: Response) {
-		const { role, id, name } = req.user as UserEntity;
+		const { role, id, name, avatar } = req.user as UserEntity;
 
 		res.json(
 			jsonResponse({
@@ -71,6 +72,7 @@ class AuthController {
 					role: role,
 					id: id,
 					name: name,
+					avatar: avatar,
 				},
 			}),
 		);
