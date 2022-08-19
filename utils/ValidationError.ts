@@ -48,6 +48,7 @@ export class ValidationError extends Error {
 			incorrectCreatePassword:
 				'Incorrect Password. Password can not be empty and should be at least 6 characters long',
 			incorrectId: 'User with that ID don\'t exist',
+			incorrectRole: 'This is not trainee.'
 		},
 		interview: {
 			id: 'User with that ID don\'t exist',

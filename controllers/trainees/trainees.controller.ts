@@ -3,8 +3,9 @@ import { jsonResponse } from '../../utils/jsonResponse';
 import {
 	JsonResponseStatus,
 	TraineeProfileEntity,
+	TraineeProfileRequest,
+	TraineeStatus,
 	UserRole,
-	TraineeProfileRequest
 } from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
@@ -12,7 +13,7 @@ import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
 
-const { notAuthorised, incorrectId } = ValidationError.messages.auth;
+const { notAuthorised, incorrectId, incorrectRole } = ValidationError.messages.auth;
 const { traineeNotExist } =
 	ValidationError.messages.recordInstanceInit.traineeProfile;
 
@@ -242,6 +243,39 @@ class TraineesController {
 							await TraineeProfileRecord.getTraineeProfileById(
 								user.id,
 							),
+					},
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+	static async hire(req: Request, res: Response) {
+		const id = req.query.id as string;
+
+		const userTrainee = await UserRecord.getUserById(id)
+
+		if(!userTrainee) {
+			throw new ValidationError(traineeNotExist, 400)
+		}
+
+		if(userTrainee.role !== UserRole.trainee) {
+			throw new ValidationError(incorrectRole, 400)
+		}
+
+		try {
+			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(id))
+			await trainee.updateStatus(TraineeStatus.hired)
+
+			await UserRecord.deleteUserById(id)
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: "Trainee's is hire. Congratulations !",
+					data: {
+						trainee
 					},
 				}),
 			);
