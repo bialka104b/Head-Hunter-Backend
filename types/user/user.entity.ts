@@ -7,7 +7,8 @@ export interface UserEntity {
 	password: string;
 	role: UserRole;
 	currentTokenId?: string;
-	registerToken? :string;
+	registerToken?: string;
 	createdAt?: Date;
 	isActive?: boolean;
+	avatar?: string;
 }

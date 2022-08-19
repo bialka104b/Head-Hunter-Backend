@@ -19,6 +19,7 @@ export type UserLoginResultsResponse = {
 	role?: string;
 	message?: string;
 	name?: string;
+	avatar?: string;
 };
 
 export type UnregisterUsersResponse = {
@@ -38,6 +39,7 @@ export type TraineeNameResponseFromDatabase = [
 	{
 		firstName: string;
 		lastName: string;
+		githubUsername: string;
 	}[],
 	FieldPacket[],
 ];
