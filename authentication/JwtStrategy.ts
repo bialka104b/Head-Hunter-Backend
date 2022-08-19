@@ -53,6 +53,7 @@ export const JwtStrategy = new Strategy(
 		const { role, email, id } = result[0];
 
 		let name = '';
+		let avatar = '';
 		if (role === UserRole.admin) name = 'Admin';
 		else {
 			try {
@@ -86,13 +87,21 @@ export const JwtStrategy = new Strategy(
 							? email
 							: firstName + ' ' + lastName;
 					name = fullName;
+
+					avatar =
+						traineeResult[0] === null ||
+						!traineeResult[0].githubUsername
+							? ''
+							: traineeResult[0].githubUsername;
 				}
 			} catch (e) {
 				name = email;
+				avatar;
 			}
 		}
 
 		result[0].name = name;
+		result[0].avatar = avatar;
 		done(null, result[0]);
 	},
 );

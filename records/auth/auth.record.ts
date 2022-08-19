@@ -54,6 +54,7 @@ export class AuthRecord implements UserLoginRequest {
 		const { role, email, id } = result[0];
 
 		let name = '';
+		let avatar = '';
 		if (role === UserRole.admin) name = 'Admin';
 		else {
 			try {
@@ -85,9 +86,16 @@ export class AuthRecord implements UserLoginRequest {
 					fullName = firstName + ' ' + lastName;
 					if (fullName.trim() === '') fullName = email;
 					name = fullName;
+
+					avatar =
+						traineeResult[0] === null ||
+						!traineeResult[0].githubUsername
+							? ''
+							: traineeResult[0].githubUsername;
 				}
 			} catch (e) {
 				name = email;
+				avatar;
 			}
 		}
 
@@ -101,6 +109,7 @@ export class AuthRecord implements UserLoginRequest {
 			token,
 			role: result[0].role,
 			name,
+			avatar,
 		};
 	}
 
