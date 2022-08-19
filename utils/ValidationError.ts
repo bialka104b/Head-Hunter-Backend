@@ -8,6 +8,8 @@ export class ValidationError extends Error {
 					'Incorrect user\'s object data. Password key can not be empty and has to include 6 characters at list.',
 				incorrectRole:
 					'Incorrect user\'s object data. Allowed roles are: "admin", "hr", "trainee".',
+				userIsActive:
+					'This user is already Active',
 			},
 			interview: {
 				incorrectRelationId:
