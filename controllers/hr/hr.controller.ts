@@ -49,7 +49,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully update.",
+					message: "Hr's profile successfully update.",
 					data: {
 						hr: await HrProfileRecord.getHrProfileById(user.id),
 					},
@@ -77,8 +77,11 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Hr list successfully fetched.',
+					message: "Hr's list successfully fetched.",
 					data: {
+						page,
+						count,
+						pages,
 						hrList,
 					},
 				}),
