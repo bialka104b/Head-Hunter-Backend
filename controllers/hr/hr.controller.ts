@@ -55,7 +55,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully update.',
+					message: 'HR\'s profile successfully update.',
 					data: {
 						hr: await HrProfileRecord.getHrProfileById(user.id),
 					},
