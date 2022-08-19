@@ -24,7 +24,7 @@ export const login = `
 	`;
 
 export const getTraineeName = `
-	SELECT firstName, lastName
+	SELECT firstName, lastName, githubUsername
 	FROM trainee_profile
 	WHERE userId = :userId
 	`;
