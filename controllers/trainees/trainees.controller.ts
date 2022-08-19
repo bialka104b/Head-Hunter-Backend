@@ -13,7 +13,11 @@ import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
 
-const { notAuthorised, incorrectId, incorrectRole } = ValidationError.messages.auth;
+const {
+	notAuthorised,
+	incorrectId,
+	incorrectRole,
+} = ValidationError.messages.auth;
 const { traineeNotExist } =
 	ValidationError.messages.recordInstanceInit.traineeProfile;
 
@@ -57,7 +61,7 @@ class TraineesController {
 	}
 
 	static async getTraineeProfile(req: Request, res: Response): Promise<void> {
-		let traineeId: string = null;
+		let traineeId: string;
 		const { role, id } = req.user as UserRecord;
 		if (role === UserRole.trainee) {
 			traineeId = id;
@@ -65,24 +69,24 @@ class TraineesController {
 			traineeId = req.params.userId;
 		}
 
-		try {
-			const traineeProfile =
-				await TraineeProfileRecord.getFullTraineeInfo(traineeId);
+		const traineeProfile =
+			await TraineeProfileRecord.getFullTraineeInfo(traineeId);
 
-			if (traineeProfile) {
-				res.status(200).json(
-					jsonResponse({
-						code: 200,
-						status: JsonResponseStatus.success,
-						message: "Trainee's profile successfully fetched.",
-						data: { traineeProfile },
-					}),
-				);
-			} else {
-				throw new ValidationError(traineeNotExist, 404);
-			}
+		if (!traineeProfile) {
+			throw new ValidationError(traineeNotExist, 404);
+		}
+
+		try {
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s profile successfully fetched.',
+					data: { traineeProfile },
+				}),
+			);
 		} catch (e) {
-			throw e;
+			console.log(e);
 		}
 	}
 
@@ -131,7 +135,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
+					message: 'Trainee\'s profile successfully fetched.',
 					data: { interviewsTraineesList },
 				}),
 			);
@@ -237,7 +241,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully update.",
+					message: 'Trainee\'s profile successfully update.',
 					data: {
 						trainee:
 							await TraineeProfileRecord.getTraineeProfileById(
@@ -250,32 +254,33 @@ class TraineesController {
 			console.log(e);
 		}
 	}
+
 	static async hire(req: Request, res: Response) {
-		const id = req.query.id as string;
+		const traineeId = req.params.traineeId as string;
 
-		const userTrainee = await UserRecord.getUserById(id)
+		const userTrainee = await UserRecord.getUserById(traineeId);
 
-		if(!userTrainee) {
-			throw new ValidationError(traineeNotExist, 400)
+		if (!userTrainee) {
+			throw new ValidationError(traineeNotExist, 400);
 		}
 
-		if(userTrainee.role !== UserRole.trainee) {
-			throw new ValidationError(incorrectRole, 400)
+		if (userTrainee.role !== UserRole.trainee) {
+			throw new ValidationError(incorrectRole, 400);
 		}
 
 		try {
-			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(id))
-			await trainee.updateStatus(TraineeStatus.hired)
+			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(traineeId));
+			await trainee.updateStatus(TraineeStatus.hired);
 
-			await UserRecord.deleteUserById(id)
+			await UserRecord.deleteUserById(traineeId);
 
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's is hire. Congratulations !",
+					message: 'Trainee\'s is hire. Congratulations !',
 					data: {
-						trainee
+						trainee,
 					},
 				}),
 			);
