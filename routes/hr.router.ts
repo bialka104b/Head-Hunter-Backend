@@ -10,3 +10,4 @@ hrRouter
 	  passport.authenticate('jwt', { session: false }),
 	  hrController.editProfile,
 );
+

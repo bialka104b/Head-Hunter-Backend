@@ -6,6 +6,7 @@ import {
 	TraineeProfileRequest,
 	TraineeStatus,
 	UserRole,
+	TraineeProfileRequest
 } from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
