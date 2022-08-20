@@ -6,7 +6,6 @@ import {
 	TraineeProfileRequest,
 	TraineeStatus,
 	UserRole,
-	TraineeProfileRequest
 } from '../../types';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 import { InterviewRecord } from '../../records/interview/interview.record';
@@ -14,15 +13,11 @@ import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
 
-const {
-	notAuthorised,
-	incorrectId,
-	incorrectRole,
-} = ValidationError.messages.auth;
+const { notAuthorised, incorrectId, incorrectRole } =
+	ValidationError.messages.auth;
 const { traineeNotExist } =
 	ValidationError.messages.recordInstanceInit.traineeProfile;
-const { userIsActive } =
-	ValidationError.messages.recordInstanceInit.user;
+const { userIsActive } = ValidationError.messages.recordInstanceInit.user;
 
 class TraineesController {
 	static async getAllListedTrainees(
@@ -72,8 +67,9 @@ class TraineesController {
 			traineeId = req.params.userId;
 		}
 
-		const traineeProfile =
-			await TraineeProfileRecord.getFullTraineeInfo(traineeId);
+		const traineeProfile = await TraineeProfileRecord.getFullTraineeInfo(
+			traineeId,
+		);
 
 		if (!traineeProfile) {
 			throw new ValidationError(traineeNotExist, 404);
@@ -84,7 +80,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully fetched.',
+					message: "Trainee's profile successfully fetched.",
 					data: { traineeProfile },
 				}),
 			);
@@ -138,7 +134,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully fetched.',
+					message: "Trainee's profile successfully fetched.",
 					data: { interviewsTraineesList },
 				}),
 			);
@@ -244,7 +240,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully update.',
+					message: "Trainee's profile successfully update.",
 					data: {
 						trainee:
 							await TraineeProfileRecord.getTraineeProfileById(
@@ -272,7 +268,9 @@ class TraineesController {
 		}
 
 		try {
-			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(traineeId));
+			const trainee = new TraineeProfileRecord(
+				await TraineeProfileRecord.getTraineeProfileById(traineeId),
+			);
 			await trainee.updateStatus(TraineeStatus.hired);
 
 			await UserRecord.deleteUserById(traineeId);
@@ -281,7 +279,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s is hire. Congratulations !',
+					message: "Trainee's is hire. Congratulations !",
 				}),
 			);
 		} catch (e) {
@@ -290,10 +288,10 @@ class TraineesController {
 	}
 
 	static async cancelHired(req: Request, res: Response) {
-		const {role} = req.user as UserRecord;
+		const { role } = req.user as UserRecord;
 
-		if(role !== UserRole.admin) {
-			throw new ValidationError(notAuthorised, 400)
+		if (role !== UserRole.admin) {
+			throw new ValidationError(notAuthorised, 400);
 		}
 
 		const traineeId = req.params.traineeId as string;
@@ -310,12 +308,14 @@ class TraineesController {
 			throw new ValidationError(incorrectRole, 400);
 		}
 
-		if(Boolean(userTrainee.isActive) === true) {
-			throw new ValidationError(userIsActive ,400)
+		if (Boolean(userTrainee.isActive) === true) {
+			throw new ValidationError(userIsActive, 400);
 		}
 
 		try {
-			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(traineeId));
+			const trainee = new TraineeProfileRecord(
+				await TraineeProfileRecord.getTraineeProfileById(traineeId),
+			);
 			await trainee.updateStatus(TraineeStatus.available);
 
 			await UserRecord.reactivateUser(traineeId);
@@ -324,7 +324,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s is successfully reactivate.',
+					message: "Trainee's is successfully reactivate.",
 				}),
 			);
 		} catch (e) {
