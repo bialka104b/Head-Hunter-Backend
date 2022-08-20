@@ -27,18 +27,23 @@ type DbUnregisterUsersResponse = [UnregisterUsersResponse[],  FieldPacket[]];
 export class UserRecord implements UserEntity {
 	id: string;
 	email: string;
+	name: string;
+	avatar: string;
 	password: string;
 	role: UserRole;
 	currentTokenId: string;
+	registerToken: string;
 	createdAt: Date;
 	isActive: boolean;
 
 	constructor(obj: UserEntity) {
 		this.id = obj.id ?? uuid();
 		this.email = obj.email;
+		this.name = obj.email;
 		this.password = obj.password;
 		this.role = obj.role;
 		this.currentTokenId = obj.currentTokenId ?? '';
+		this.registerToken = obj.registerToken ?? uuid();
 		this.createdAt = obj.createdAt ?? new Date();
 		this.isActive = obj.isActive ?? true;
 		this.validate();
