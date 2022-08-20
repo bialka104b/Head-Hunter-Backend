@@ -20,6 +20,8 @@ const {
 } = ValidationError.messages.auth;
 const { traineeNotExist } =
 	ValidationError.messages.recordInstanceInit.traineeProfile;
+const { userIsActive } =
+	ValidationError.messages.recordInstanceInit.user;
 
 class TraineesController {
 	static async getAllListedTrainees(
@@ -279,9 +281,49 @@ class TraineesController {
 					code: 200,
 					status: JsonResponseStatus.success,
 					message: 'Trainee\'s is hire. Congratulations !',
-					data: {
-						trainee,
-					},
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async cancelHired(req: Request, res: Response) {
+		const {role} = req.user as UserRecord;
+
+		if(role !== UserRole.admin) {
+			throw new ValidationError(notAuthorised, 400)
+		}
+
+		const traineeId = req.params.traineeId as string;
+
+		const userTrainee = await UserRecord.getInactiveUserById(traineeId);
+
+		console.log(userTrainee);
+
+		if (!userTrainee) {
+			throw new ValidationError(traineeNotExist, 400);
+		}
+
+		if (userTrainee.role !== UserRole.trainee) {
+			throw new ValidationError(incorrectRole, 400);
+		}
+
+		if(Boolean(userTrainee.isActive) === true) {
+			throw new ValidationError(userIsActive ,400)
+		}
+
+		try {
+			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(traineeId));
+			await trainee.updateStatus(TraineeStatus.available);
+
+			await UserRecord.reactivateUser(traineeId);
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s is successfully reactivate.',
 				}),
 			);
 		} catch (e) {

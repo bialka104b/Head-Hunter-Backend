@@ -3,6 +3,7 @@ import passport from 'passport';
 import { AdminController } from '../controllers/admin/admin.controller';
 import { hrController } from '../controllers/hr/hr.controller';
 import { upload } from '../importFile/importFile';
+import { TraineesController } from '../controllers/trainees/trainees.controller';
 
 export const adminRouter = Router();
 

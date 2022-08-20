@@ -4,8 +4,9 @@ import { hrController } from '../controllers/hr/hr.controller';
 
 export const hrRouter = Router();
 
-hrRouter.post(
-	'/editProfile',
-	passport.authenticate('jwt', { session: false }),
-	hrController.editProfile,
+hrRouter
+  .post(
+	  '/editProfile',
+	  passport.authenticate('jwt', { session: false }),
+	  hrController.editProfile,
 );
