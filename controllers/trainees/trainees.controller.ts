@@ -3,6 +3,8 @@ import { jsonResponse } from '../../utils/jsonResponse';
 import {
 	JsonResponseStatus,
 	TraineeProfileEntity,
+	TraineeProfileRequest,
+	TraineeStatus,
 	UserRole,
 	TraineeProfileRequest
 } from '../../types';
@@ -12,9 +14,15 @@ import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
 
-const { notAuthorised, incorrectId } = ValidationError.messages.auth;
+const {
+	notAuthorised,
+	incorrectId,
+	incorrectRole,
+} = ValidationError.messages.auth;
 const { traineeNotExist } =
 	ValidationError.messages.recordInstanceInit.traineeProfile;
+const { userIsActive } =
+	ValidationError.messages.recordInstanceInit.user;
 
 class TraineesController {
 	static async getAllListedTrainees(
@@ -56,7 +64,7 @@ class TraineesController {
 	}
 
 	static async getTraineeProfile(req: Request, res: Response): Promise<void> {
-		let traineeId: string = null;
+		let traineeId: string;
 		const { role, id } = req.user as UserRecord;
 		if (role === UserRole.trainee) {
 			traineeId = id;
@@ -64,24 +72,24 @@ class TraineesController {
 			traineeId = req.params.userId;
 		}
 
-		try {
-			const traineeProfile =
-				await TraineeProfileRecord.getFullTraineeInfo(traineeId);
+		const traineeProfile =
+			await TraineeProfileRecord.getFullTraineeInfo(traineeId);
 
-			if (traineeProfile) {
-				res.status(200).json(
-					jsonResponse({
-						code: 200,
-						status: JsonResponseStatus.success,
-						message: "Trainee's profile successfully fetched.",
-						data: { traineeProfile },
-					}),
-				);
-			} else {
-				throw new ValidationError(traineeNotExist, 404);
-			}
+		if (!traineeProfile) {
+			throw new ValidationError(traineeNotExist, 404);
+		}
+
+		try {
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s profile successfully fetched.',
+					data: { traineeProfile },
+				}),
+			);
 		} catch (e) {
-			throw e;
+			console.log(e);
 		}
 	}
 
@@ -130,7 +138,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
+					message: 'Trainee\'s profile successfully fetched.',
 					data: { interviewsTraineesList },
 				}),
 			);
@@ -236,13 +244,87 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully update.",
+					message: 'Trainee\'s profile successfully update.',
 					data: {
 						trainee:
 							await TraineeProfileRecord.getTraineeProfileById(
 								user.id,
 							),
 					},
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async hire(req: Request, res: Response) {
+		const traineeId = req.params.traineeId as string;
+
+		const userTrainee = await UserRecord.getUserById(traineeId);
+
+		if (!userTrainee) {
+			throw new ValidationError(traineeNotExist, 400);
+		}
+
+		if (userTrainee.role !== UserRole.trainee) {
+			throw new ValidationError(incorrectRole, 400);
+		}
+
+		try {
+			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(traineeId));
+			await trainee.updateStatus(TraineeStatus.hired);
+
+			await UserRecord.deleteUserById(traineeId);
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s is hire. Congratulations !',
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async cancelHired(req: Request, res: Response) {
+		const {role} = req.user as UserRecord;
+
+		if(role !== UserRole.admin) {
+			throw new ValidationError(notAuthorised, 400)
+		}
+
+		const traineeId = req.params.traineeId as string;
+
+		const userTrainee = await UserRecord.getInactiveUserById(traineeId);
+
+		console.log(userTrainee);
+
+		if (!userTrainee) {
+			throw new ValidationError(traineeNotExist, 400);
+		}
+
+		if (userTrainee.role !== UserRole.trainee) {
+			throw new ValidationError(incorrectRole, 400);
+		}
+
+		if(Boolean(userTrainee.isActive) === true) {
+			throw new ValidationError(userIsActive ,400)
+		}
+
+		try {
+			const trainee = new TraineeProfileRecord(await TraineeProfileRecord.getTraineeProfileById(traineeId));
+			await trainee.updateStatus(TraineeStatus.available);
+
+			await UserRecord.reactivateUser(traineeId);
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s is successfully reactivate.',
 				}),
 			);
 		} catch (e) {

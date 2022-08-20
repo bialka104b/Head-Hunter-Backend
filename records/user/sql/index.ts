@@ -42,6 +42,15 @@ export const getUserById =
 		  AND isActive = true
 	`
 ;
+
+export const getInactiveUserById =
+	`
+		SELECT *
+		FROM users
+		WHERE id = :id
+	`
+;
+
 export const findUserByEmail =
 	`SELECT *
 	 FROM users
@@ -63,5 +72,13 @@ export const unregisterUsers =
 	SELECT id, email, registerToken
 	FROM users
 	WHERE registerToken IS NOT NULL
+	`
+;
+
+export const reactivateUser =
+	`
+	UPDATE users
+	SET isActive = true
+	WHERE id = :id
 	`
 ;

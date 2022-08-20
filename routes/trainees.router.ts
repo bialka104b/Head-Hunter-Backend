@@ -5,6 +5,10 @@ import passport from 'passport';
 const traineesRouter = express.Router();
 
 traineesRouter
+	.get('/hire/:traineeId',
+		passport.authenticate('jwt', { session: false }),
+		TraineesController.hire,
+	)
 	.get(
 		'/:limit/:currentPage',
 		passport.authenticate('jwt', { session: false }),
