@@ -26,4 +26,9 @@ adminRouter
 	.post(
 		'/addHr',
 		passport.authenticate('jwt', { session: false }),
-		hrController.addProfile);
+		hrController.addProfile)
+	.post(
+		'/updateHrMaxReservedStudents',
+		passport.authenticate('jwt', { session: false }),
+		hrController.updateMaxReservedStudents);
+
