@@ -8,7 +8,7 @@ hrRouter.post(
 	'/editProfile',
 	passport.authenticate('jwt', { session: false }),
 	() => {
-		console.log('fix it!');
+		console.log('fix it');
 	},
 	// hrController.editProfile,
 );
