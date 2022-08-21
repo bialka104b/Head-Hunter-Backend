@@ -1,31 +1,22 @@
-import { TraineeScoreEntity } from '../../../../types/trainee-score/trainee-score.entity';
+import {
+	TraineeScoreEntity,
+} from '../../../../types';
+import { faker } from '@faker-js/faker';
+import { getRandomNumber } from './utils/getRandomIncludes';
 
-export const traineeScores: TraineeScoreEntity[] = [
-	{
-		id: 'ts1',
-		courseCompletion: 4.3,
-		courseEngagment: 5,
-		projectDegree: 4.5,
-		teamProjectDegree: 5,
-		bonusProjectUrls: ['https://github.com', 'https://github.com'],
-		userId: 'u3',
-	},
-	{
-		id: 'ts2',
-		courseCompletion: 3.5,
-		courseEngagment: 2.8,
-		projectDegree: 4,
-		teamProjectDegree: 3.4,
-		bonusProjectUrls: ['https://github.com'],
-		userId: 'u4',
-	},
-	{
-		id: 'ts3',
-		courseCompletion: 4.5,
-		courseEngagment: 2.7,
-		projectDegree: 4,
-		teamProjectDegree: 3.5,
-		bonusProjectUrls: [],
-		userId: 'u4',
-	},
-];
+export const generateTraineeScores = (amount: number): TraineeScoreEntity[] => {
+	const traineeScoresArr = [];
+	for (let i = 0; i < amount; i++) {
+		const traineeScore = {
+			id: `ts${i + 1}`,
+			courseCompletion: getRandomNumber(1, 5),
+			courseEngagment: getRandomNumber(1, 5),
+			projectDegree: getRandomNumber(1, 5),
+			teamProjectDegree: getRandomNumber(1, 5),
+			bonusProjectUrls: [faker.internet.url(), faker.internet.url()],
+			userId: `trainee${i + 1}`,
+		};
+		traineeScoresArr.push(traineeScore);
+	}
+	return traineeScoresArr;
+};

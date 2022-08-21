@@ -1,59 +1,85 @@
-import { TraineeProfileEntity } from '../../../../types/trainee-profile/trainee-profile.entity';
 import {
 	TraineeExpectedContractType,
 	TraineeExpectedTypeWork,
 	TraineeStatus,
-} from '../../../../types/trainee-profile/trainee-profile';
+} from '../../../../types';
+import { faker } from '@faker-js/faker';
+import { getRandomNumber } from './utils/getRandomIncludes';
 
-export const traineeProfiles: TraineeProfileEntity[] = [
-	{
-		id: 'tp1',
-		tel: '+11 111 111 111',
-		firstName: 'Dmitri',
-		lastName: 'Razumikhin',
-		githubUsername: 'razumikhin',
-		portfolioUrls: ['https://github.com/razumikhin'],
-		projectUrls: ['https://github.com/razumikhin-project'],
-		bio: 'Really nice bio of a really nice guy.',
-		expectedTypeWork: TraineeExpectedTypeWork.hybrid,
-		targetWorkCity: 'Petersburg',
-		expectedContractType: [
-			TraineeExpectedContractType.b2b,
-			TraineeExpectedContractType.uop,
-		],
-		expectedSalary: '3500$',
-		canTakeApprenticeship: false,
-		monthsOfCommercialExp: 0,
-		education: 'Very well educated.',
-		workExperience: null,
-		courses: 'MegaK, Udemy',
-		status: TraineeStatus.interviewed,
-		registrationUrl: null,
-		userId: 'u3',
-	},
-	{
-		id: 'tp2',
-		tel: '+22 222 222 222',
-		firstName: 'Semyon',
-		lastName: 'Marmeladov',
-		githubUsername: 'marmeladov',
-		portfolioUrls: ['https://github.com/marmeladov'],
-		projectUrls: ['https://github.com/marmeladov-project'],
-		bio: 'Really nice bio of a really nice guy.',
-		expectedTypeWork: TraineeExpectedTypeWork.onsite,
-		targetWorkCity: 'Lvov',
-		expectedContractType: [
-			TraineeExpectedContractType.uzuod,
-			TraineeExpectedContractType.b2b,
-		],
-		expectedSalary: '8000PLN',
-		canTakeApprenticeship: true,
-		monthsOfCommercialExp: 3,
-		education: 'Very well educated.',
-		workExperience: 'Three months small startup project.',
-		courses: 'MegaK',
-		status: TraineeStatus.available,
-		registrationUrl: null,
-		userId: 'u4',
-	},
-];
+const getRandomTypeWork = (): TraineeExpectedTypeWork => {
+	const random = getRandomNumber(0, 3);
+	switch (random) {
+		case 0:
+			return TraineeExpectedTypeWork.onsite;
+		case 1:
+			return TraineeExpectedTypeWork.hybrid;
+		case 2:
+			return TraineeExpectedTypeWork.remote;
+		case 3:
+			return TraineeExpectedTypeWork.readyToMove;
+		default:
+			return TraineeExpectedTypeWork.hybrid;
+	}
+};
+
+
+const getRandomCanTakeApprenticeship = () => {
+	const random = getRandomNumber(0, 1);
+	let canTakeApprenticeship;
+	canTakeApprenticeship = random === 0;
+	return canTakeApprenticeship;
+};
+
+const getRandomExpectedContractType = (): TraineeExpectedContractType[] => {
+	const expectedContractTypeArr = [];
+	for (let i = 0; i < 3; i++) {
+		const random = getRandomNumber(0, 2);
+		let expectedContractType;
+		if (random === 0) {
+			expectedContractType = TraineeExpectedContractType.uop;
+		}
+		if (random === 1) {
+			expectedContractType = TraineeExpectedContractType.b2b;
+		}
+		if (random === 2) {
+			expectedContractType = TraineeExpectedContractType.uzuod;
+		}
+		expectedContractTypeArr.push(expectedContractType);
+	}
+
+	function onlyUniqueFilter(value: any, index: any, self: any) {
+		return self.indexOf(value) === index;
+	}
+
+	return expectedContractTypeArr.filter(onlyUniqueFilter);
+};
+
+export const generateTraineeProfiles = (amount: number, interviewedAmount: number) => {
+	const TraineeProfileArr = [];
+	for (let i = 0; i < amount; i++) {
+		const traineeProfile = {
+			id: `tp${i + 1}`,
+			tel: faker.phone.number(),
+			firstName: faker.name.firstName(),
+			lastName: faker.name.lastName(),
+			githubUsername: faker.internet.userName(),
+			portfolioUrls: [faker.internet.url(), faker.internet.url()],
+			projectUrls: [faker.internet.url()],
+			bio: faker.lorem.paragraph(),
+			expectedTypeWork: getRandomTypeWork(),
+			targetWorkCity: faker.address.city(),
+			expectedContractType: getRandomExpectedContractType(),
+			expectedSalary: getRandomNumber(3000, 10000),
+			canTakeApprenticeship: getRandomCanTakeApprenticeship(),
+			monthsOfCommercialExp: getRandomNumber(0, 6),
+			education: faker.lorem.paragraph(1),
+			workExperience: faker.lorem.paragraph(2),
+			courses: faker.lorem.paragraph(1),
+			status: i < interviewedAmount ? TraineeStatus.interviewed : TraineeStatus.available,
+			registrationUrl: '',
+			userId: `trainee${i + 1}`,
+		};
+		TraineeProfileArr.push(traineeProfile);
+	}
+	return TraineeProfileArr;
+};
