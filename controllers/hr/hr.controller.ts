@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
-import {
-	HrProfileEntity,
-	JsonResponseStatus,
-	UserRole,
-} from '../../types';
+import { HrProfileEntity, JsonResponseStatus, UserRole } from '../../types';
 import { jsonResponse } from '../../utils/jsonResponse';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
@@ -15,11 +11,8 @@ const { hrAlreadyExist } = ValidationError.messages.hr;
 
 class hrController {
 	static async addProfile(req: Request, res: Response) {
-		const {
-			maxReservedStudents,
-			company,
-			fullName,
-		} = req.body as HrProfileEntity;
+		const { maxReservedStudents, company, fullName } =
+			req.body as HrProfileEntity;
 
 		const user = req.user as UserRecord;
 
@@ -42,7 +35,7 @@ class hrController {
 				maxReservedStudents,
 				company,
 				fullName,
-				userId: user.id
+				userId: user.id,
 			});
 
 			newHr.fullName = req.body.fullName;
@@ -55,7 +48,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'HR\'s profile successfully update.',
+					message: "HR's profile successfully update.",
 					data: {
 						hr: await HrProfileRecord.getHrProfileById(user.id),
 					},
@@ -74,10 +67,10 @@ class hrController {
 			let page = paginationValidation(Number(req.query.page), pages);
 			const offsetElement = limit * (page - 1);
 
-			const hrList = await HrProfileRecord.getHrList(
+			const users = (await HrProfileRecord.getHrList(
 				limit,
 				offsetElement,
-			);
+			)) as HrProfileEntity[];
 
 			res.status(200).json(
 				jsonResponse({
@@ -88,7 +81,7 @@ class hrController {
 						page,
 						count,
 						pages,
-						hrList,
+						users,
 					},
 				}),
 			);

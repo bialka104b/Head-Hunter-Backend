@@ -95,7 +95,7 @@ export class HrProfileRecord implements HrProfileEntity {
 		)[0];
 		return resp.length !== 0
 			? resp.map((el) => new HrProfileRecord(el))
-			: null;
+			: [];
 	}
 
 	static async getHrProfileById(id: string): Promise<HrProfileRecord | null> {
