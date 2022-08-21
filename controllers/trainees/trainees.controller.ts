@@ -298,8 +298,6 @@ class TraineesController {
 
 		const userTrainee = await UserRecord.getInactiveUserById(traineeId);
 
-		console.log(userTrainee);
-
 		if (!userTrainee) {
 			throw new ValidationError(traineeNotExist, 400);
 		}

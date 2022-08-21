@@ -59,7 +59,8 @@ export class ValidationError extends Error {
 				'Hr have max reserved of students to interview',
 		},
 		hr: {
-			hrAlreadyExist: 'Your profile was already added. You can\'t modify anything',
+			hrAlreadyExist: 'HR was already added.',
+			hrNotExist: 'Hr with that ID don\'t exist',
 		},
 	};
 	message: string;
