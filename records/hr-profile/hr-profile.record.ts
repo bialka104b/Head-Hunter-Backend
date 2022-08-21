@@ -1,4 +1,4 @@
-import { HrProfileEntity, HrProfileRequest } from '../../types';
+import { HrProfileEntity } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
@@ -116,15 +116,12 @@ export class HrProfileRecord implements HrProfileEntity {
 		return resp.maxReservedStudents ?? null;
 	}
 
-	static async updateHr(
-		obj: HrProfileRequest,
+	static async updateMaxReservedStudents(
 		userId: string,
+		maxReservedStudents: number,
 	): Promise<void> {
-		const { fullName, company, maxReservedStudents } = obj;
 
 		await pool.execute(updateHr, {
-			fullName,
-			company,
 			maxReservedStudents,
 			userId,
 		});
