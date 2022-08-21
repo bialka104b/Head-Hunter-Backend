@@ -60,6 +60,7 @@ export class ValidationError extends Error {
 		},
 		hr: {
 			hrAlreadyExist: 'HR was already added.',
+			hrNotExist: 'Hr with that ID don\'t exist',
 		},
 	};
 	message: string;

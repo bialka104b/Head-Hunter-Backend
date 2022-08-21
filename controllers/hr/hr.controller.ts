@@ -9,7 +9,7 @@ import { getRandomPassword } from '../../utils/getRandomPassword';
 import { sendRegisterMail } from '../../mailService/sendMail';
 
 const { notAuthorised } = ValidationError.messages.auth;
-const { hrAlreadyExist } = ValidationError.messages.hr;
+const { hrAlreadyExist, hrNotExist } = ValidationError.messages.hr;
 const { incorrectEmail } = ValidationError.messages.recordInstanceInit.user;
 
 class hrController {
@@ -21,8 +21,8 @@ class hrController {
 			fullName,
 		} = req.body;
 
-		if(!email.includes('@')) {
-			throw new ValidationError(incorrectEmail, 400)
+		if (!email.includes('@')) {
+			throw new ValidationError(incorrectEmail, 400);
 		}
 
 		const user = req.user as UserRecord;
@@ -96,6 +96,41 @@ class hrController {
 					},
 				}),
 			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
+	static async updateMaxReservedStudents(req: Request, res: Response) {
+		const user = req.user as UserRecord;
+
+		const hrId = String(req.query.hrId);
+		const maxReservedStudents = Number(req.query.maxReservedStudents);
+
+		if (user.role !== UserRole.admin) {
+			throw new ValidationError(notAuthorised, 400);
+		}
+
+		const hr = await HrProfileRecord.getHrProfileById(hrId);
+
+		if (!hr) {
+			throw new ValidationError(hrNotExist, 400);
+		}
+
+		try {
+			await HrProfileRecord.updateMaxReservedStudents(hrId, maxReservedStudents);
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Hr\'s list successfully fetched.',
+					data: {
+						hr: await HrProfileRecord.getHrProfileById(hrId),
+					},
+				}),
+			);
+
 		} catch (e) {
 			console.log(e);
 		}
