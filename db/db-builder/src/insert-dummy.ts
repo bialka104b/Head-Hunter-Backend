@@ -13,10 +13,10 @@ import { generateUsers } from './data/users';
 4) `interviewedAmount` argument of `generateTraineeProfiles` function will set `status` property of first 5(or another provided amount) generated profiles as interviewed.
 Because of that, it has to match `amount` argument of `generateInterviews` function.
 */
-const users = generateUsers(15, 100);
-const traineeScores = generateTraineeScores(100);
-const hrProfiles = generateHrProfiles(10);
-const traineeProfiles = generateTraineeProfiles(100, 10);
+const users = generateUsers(20, 180);
+const traineeScores = generateTraineeScores(180);
+const hrProfiles = generateHrProfiles(20);
+const traineeProfiles = generateTraineeProfiles(180, 10);
 const interviews = generateInterviews(10);
 
 const insertDummyUsers = async () => {
