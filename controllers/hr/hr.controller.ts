@@ -14,12 +14,7 @@ const { incorrectEmail } = ValidationError.messages.recordInstanceInit.user;
 
 class hrController {
 	static async addProfile(req: Request, res: Response) {
-		const {
-			email,
-			maxReservedStudents,
-			company,
-			fullName,
-		} = req.body;
+		const { email, maxReservedStudents, company, fullName } = req.body;
 
 		if (!email.includes('@')) {
 			throw new ValidationError(incorrectEmail, 400);
@@ -42,7 +37,6 @@ class hrController {
 				role: UserRole.hr,
 			});
 
-
 			const newHr = new HrProfileRecord({
 				maxReservedStudents,
 				company,
@@ -59,7 +53,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'HR\'s profile successfully added.',
+					message: "HR's profile successfully added.",
 					data: {
 						hr: await HrProfileRecord.getHrProfileById(user.id),
 					},
@@ -78,21 +72,18 @@ class hrController {
 			let page = paginationValidation(Number(req.query.page), pages);
 			const offsetElement = limit * (page - 1);
 
-			const hrList = await HrProfileRecord.getHrList(
-				limit,
-				offsetElement,
-			);
+			const users = await HrProfileRecord.getHrList(limit, offsetElement);
 
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Hr\'s list successfully fetched.',
+					message: "Hr's list successfully fetched.",
 					data: {
 						page,
 						count,
 						pages,
-						hrList,
+						users,
 					},
 				}),
 			);
@@ -118,19 +109,21 @@ class hrController {
 		}
 
 		try {
-			await HrProfileRecord.updateMaxReservedStudents(hrId, maxReservedStudents);
+			await HrProfileRecord.updateMaxReservedStudents(
+				hrId,
+				maxReservedStudents,
+			);
 
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Hr\'s list successfully fetched.',
+					message: "Hr's list successfully fetched.",
 					data: {
 						hr: await HrProfileRecord.getHrProfileById(hrId),
 					},
 				}),
 			);
-
 		} catch (e) {
 			console.log(e);
 		}
