@@ -25,6 +25,7 @@ type DBResultCountOfHr = [{ count: number }[], FieldPacket[]];
 
 export class HrProfileRecord implements HrProfileEntity {
 	id: string;
+	email: string;
 	fullName: string;
 	company: string;
 	maxReservedStudents: number;
@@ -34,6 +35,7 @@ export class HrProfileRecord implements HrProfileEntity {
 	constructor(obj: HrProfileEntity) {
 		this.id = obj.id ?? uuid();
 		this.fullName = obj.fullName;
+		this.email = obj.email;
 		this.company = obj.company;
 		this.maxReservedStudents = obj.maxReservedStudents ?? 1;
 		this.userId = obj.userId;
