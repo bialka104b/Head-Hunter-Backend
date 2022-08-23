@@ -94,9 +94,10 @@ class hrController {
 
 	static async updateMaxReservedStudents(req: Request, res: Response) {
 		const user = req.user as UserRecord;
+		const { id } = req.body;
 
-		const hrId = String(req.query.hrId);
-		const maxReservedStudents = Number(req.query.maxReservedStudents);
+		const hrId = String(id);
+		const maxReservedStudents = Number(req.body.maxReservedStudents);
 
 		if (user.role !== UserRole.admin) {
 			throw new ValidationError(notAuthorised, 400);
@@ -120,7 +121,9 @@ class hrController {
 					status: JsonResponseStatus.success,
 					message: "Hr's list successfully fetched.",
 					data: {
-						hr: await HrProfileRecord.getHrProfileById(hrId),
+						maxReservedStudents: await (
+							await HrProfileRecord.getHrProfileById(hrId)
+						).maxReservedStudents,
 					},
 				}),
 			);
