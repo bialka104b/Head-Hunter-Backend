@@ -6,7 +6,7 @@ const traineesRouter = express.Router();
 
 traineesRouter
 	.get(
-		'/hire/:traineeId',
+		'/hire',
 		passport.authenticate('jwt', { session: false }),
 		TraineesController.hire,
 	)

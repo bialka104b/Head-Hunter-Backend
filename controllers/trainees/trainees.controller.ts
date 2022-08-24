@@ -13,6 +13,11 @@ import { InterviewRecord } from '../../records/interview/interview.record';
 import { UserRecord } from '../../records/user/user.record';
 import { ValidationError } from '../../utils/ValidationError';
 import { paginationValidation } from '../../utils/paginationValidation';
+import {
+	sendApproveHireMail,
+	sendHireInformationMail,
+} from '../../mailService/sendMail';
+import { HrProfileRecord } from '../../records/hr-profile/hr-profile.record';
 
 const { notAuthorised, incorrectId, incorrectRole } =
 	ValidationError.messages.auth;
@@ -144,11 +149,11 @@ class TraineesController {
 	}
 
 	static async getTraineeProfile(req: Request, res: Response): Promise<void> {
-		const traineeId = req.params.userId
+		const traineeId = req.params.userId;
 		const { role, id } = req.user as UserRecord;
 
-		if(role === UserRole.trainee && id !== traineeId) {
-			throw new ValidationError(notAuthorised, 400)
+		if (role === UserRole.trainee && id !== traineeId) {
+			throw new ValidationError(notAuthorised, 400);
 		}
 
 		const traineeProfile = await TraineeProfileRecord.getFullTraineeInfo(
@@ -164,7 +169,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
+					message: 'Trainee\'s profile successfully fetched.',
 					data: { traineeProfile },
 				}),
 			);
@@ -218,7 +223,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
+					message: 'Trainee\'s profile successfully fetched.',
 					data: { interviewsTraineesList },
 				}),
 			);
@@ -324,7 +329,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully update.",
+					message: 'Trainee\'s profile successfully update.',
 					data: {
 						trainee:
 							await TraineeProfileRecord.getTraineeProfileById(
@@ -339,7 +344,13 @@ class TraineesController {
 	}
 
 	static async hire(req: Request, res: Response) {
-		const traineeId = req.params.traineeId as string;
+		const { id , role } = req.user as UserRecord;
+
+		if (role !== UserRole.hr) {
+			throw new ValidationError(notAuthorised, 400);
+		}
+
+		const { traineeId } = req.body;
 
 		const userTrainee = await UserRecord.getUserById(traineeId);
 
@@ -352,23 +363,32 @@ class TraineesController {
 		}
 
 		try {
-			const trainee = new TraineeProfileRecord(
-				await TraineeProfileRecord.getTraineeProfileById(traineeId),
-			);
-			await trainee.updateStatus(TraineeStatus.hired);
+			const hr = await HrProfileRecord.getHrProfileById(id)
+			const admin = await UserRecord.getAdminEmail();
+			const trainee = await TraineeProfileRecord.getTraineeProfileById(traineeId)
 
-			await UserRecord.deleteUserById(traineeId);
+			await sendApproveHireMail(userTrainee.email, hr.fullName)
+			await sendHireInformationMail(admin[0].email, trainee.firstName, trainee.lastName, hr.fullName)
 
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's is hire. Congratulations !",
+					message: 'Trainee\'s is hire. Congratulations !',
 				}),
 			);
 		} catch (e) {
 			console.log(e);
 		}
+	}
+
+	static async approveHire(req: Request, res: Response) {
+		// const trainee = new TraineeProfileRecord(
+		// 	await TraineeProfileRecord.getTraineeProfileById(traineeId),
+		// );
+		// await trainee.updateStatus(TraineeStatus.hired);
+		//
+		// await UserRecord.deleteUserById(traineeId);
 	}
 
 	static async cancelHired(req: Request, res: Response) {
@@ -406,7 +426,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's is successfully reactivate.",
+					message: 'Trainee\'s is successfully reactivate.',
 				}),
 			);
 		} catch (e) {
