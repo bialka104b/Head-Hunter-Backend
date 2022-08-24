@@ -12,8 +12,8 @@ import {
 	unregisterUsers,
 	updateMe,
 	updatePassword,
-	reactivateUser,
 	getInactiveUserById,
+	activateUser,
 } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
 
@@ -109,6 +109,13 @@ export class UserRecord implements UserEntity {
 		});
 	}
 
+	async activate() {
+		const {id} = this;
+		await pool.execute(activateUser, {
+			id,
+		})
+	}
+
 	//static:
 	static async getAllUsers(): Promise<UserRecord[] | null> {
 		const resp = ((await pool.execute(getAllUsers)) as DbResult)[0];
@@ -150,6 +157,6 @@ export class UserRecord implements UserEntity {
 	}
 
 	static async reactivateUser(id: string): Promise<void> {
-		await pool.execute(reactivateUser, { id });
+		await pool.execute(activateUser, { id });
 	}
 }

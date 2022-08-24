@@ -176,7 +176,7 @@ class AuthController {
 	static async createPassword(req: Request, res: Response) {
 		const { id, password } = req.body;
 
-		const userById = await UserRecord.getUserById(id);
+		const userById = await UserRecord.getInactiveUserById(id);
 
 		if (!userById) {
 			throw new ValidationError(userWithThatIdNotExist, 200);
@@ -192,6 +192,7 @@ class AuthController {
 			user.password = password;
 
 			await user.updatePassword();
+			await user.activate();
 
 			res.status(200).json(
 				jsonResponse({

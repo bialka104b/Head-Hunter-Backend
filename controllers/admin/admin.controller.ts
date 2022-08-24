@@ -68,6 +68,7 @@ class AdminController {
 						email: trainee.email,
 						password: getRandomPassword(),
 						role: UserRole.trainee,
+						isActive: false,
 					});
 
 					const userId = await user.insertMe();

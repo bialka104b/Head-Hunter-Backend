@@ -31,4 +31,3 @@ adminRouter
 		'/updateHrMaxReservedStudents',
 		passport.authenticate('jwt', { session: false }),
 		hrController.updateMaxReservedStudents);
-
