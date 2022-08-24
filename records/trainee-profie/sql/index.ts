@@ -171,7 +171,6 @@ export const getTraineesList = (
 			expectedTypeWork,
 			targetWorkCity,
 			expectedContractType,
-			${/* zamienic na number w bazie */ ''}
 			expectedSalary,
 			canTakeApprenticeship,
 			monthsOfCommercialExp
@@ -180,28 +179,20 @@ export const getTraineesList = (
 			INNER JOIN trainee_score ts on users.id = ts.userId
 		WHERE users.isActive = true
 			AND users.role = 'trainee'
-			${/* status warunkowy, wszystko lub wybrane */ ''}
 			${status ? 'AND tp.status = :status' : ''}
 			AND ts.courseCompletion >= :courseCompletion
 			AND ts.courseEngagment >= :courseEngagment
 			AND ts.projectDegree >= :projectDegree
 			AND ts.teamProjectDegree >= :teamProjectDegree
-			${/* "true" - true, "false" - wszyscy */ ''}
-			${canTakeApprenticeship === 'true' ? 'canTakeApprenticeship = 1' : ''}
+			${canTakeApprenticeship === 'true' ? 'AND tp.canTakeApprenticeship = 1' : ''}
 			${
 				monthsOfCommercialExp
 					? 'AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp'
 					: ''
 			}
-			${/* moze byc pusty */ ''}
 			${expectedTypeWork ? 'AND tp.expectedTypeWork = :expectedTypeWork' : ''}
-			${/* warunkowe, moze byc pusty */ ''}
 			${expectedSalaryFrom ? 'AND tp.expectedSalary >= :expectedSalaryFrom' : ''}
-			${/* warunkowe, moze byc pusty */ ''}
 			${expectedSalaryTo ? 'AND tp.expectedSalary <= :expectedSalaryTo' : ''}
-			${
-				/* warunkowe, nic albo jedno z nich, posortowac wczesniej i zamienic na tablice */ ''
-			}
 			${
 				expectedContractType.length === 1
 					? 'AND tp.expectedContractType LIKE "%' +
@@ -233,7 +224,89 @@ export const getTraineesList = (
 					: ''
 			}
 			${
-				/* search: targetWorkCity, expectedTypeWork, expectedContractType, firstName, lastName*/ ''
+				search
+					? 'AND (targetWorkCity LIKE "%' +
+					  search +
+					  '%" OR expectedTypeWork LIKE "%' +
+					  search +
+					  '%" OR expectedContractType LIKE "%' +
+					  search +
+					  '%" OR firstName LIKE "%' +
+					  search +
+					  '%" OR lastName LIKE "%' +
+					  search +
+					  '%")'
+					: ''
+			}
+
+		ORDER BY ${sortByType ? sortByType : `courseCompletion`} ${
+		sortType === 'ascending' ? 'ASC' : 'DESC'
+	}
+
+		LIMIT :limit OFFSET :offsetElement
+	`;
+};
+
+export const getCountOfTraineesList = (
+	status: string,
+	canTakeApprenticeship: string,
+	monthsOfCommercialExp: number,
+	expectedTypeWork: string,
+	expectedSalaryFrom: string,
+	expectedSalaryTo: string,
+	expectedContractType: string[],
+	search: string,
+): string => {
+	return `
+		SELECT COUNT(*) as count
+		FROM users
+			INNER JOIN trainee_profile tp on users.id = tp.userId
+			INNER JOIN trainee_score ts on users.id = ts.userId
+		WHERE users.isActive = true
+			AND users.role = 'trainee'
+			${status ? 'AND tp.status = :status' : ''}
+			AND ts.courseCompletion >= :courseCompletion
+			AND ts.courseEngagment >= :courseEngagment
+			AND ts.projectDegree >= :projectDegree
+			AND ts.teamProjectDegree >= :teamProjectDegree
+			${canTakeApprenticeship === 'true' ? 'AND tp.canTakeApprenticeship = 1' : ''}
+			${
+				monthsOfCommercialExp
+					? 'AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp'
+					: ''
+			}
+			${expectedTypeWork ? 'AND tp.expectedTypeWork = :expectedTypeWork' : ''}
+			${expectedSalaryFrom ? 'AND tp.expectedSalary >= :expectedSalaryFrom' : ''}
+			${expectedSalaryTo ? 'AND tp.expectedSalary <= :expectedSalaryTo' : ''}
+			${
+				expectedContractType.length === 1
+					? 'AND tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"'
+					: ''
+			}
+			${
+				expectedContractType.length === 2
+					? 'AND (tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[1] +
+					  '%")'
+					: ''
+			}
+			${
+				expectedContractType.length === 3
+					? 'AND (tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[1] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[2] +
+					  '%")'
+					: ''
 			}
 			${
 				search
@@ -250,9 +323,5 @@ export const getTraineesList = (
 					  '%")'
 					: ''
 			}
-
-		ORDER BY ${sortByType} ${sortType === 'ascending' ? 'ASC' : 'DESC'}
-
-		${/* LIMIT :limit OFFSET :offsetElement */ ''}
 	`;
 };

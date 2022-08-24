@@ -43,6 +43,28 @@ class TraineesController {
 		}: TraineeFilterRequest = req.query;
 
 		try {
+			const count = await TraineeProfileRecord.getCountOfTraineesList(
+				status,
+				Number(courseCompletion),
+				Number(courseEngagment),
+				Number(projectDegree),
+				Number(teamProjectDegree),
+				Number(monthsOfCommercialExp),
+				expectedTypeWork,
+				expectedSalaryFrom,
+				expectedSalaryTo,
+				canTakeApprenticeship,
+				expectedContractType
+					?.split(',')
+					.sort()
+					.filter((type) => type !== '') || [],
+				search,
+			);
+			const limit = Number(req.query.limit) || 10;
+			const pages = Math.ceil(count / limit);
+			let page = paginationValidation(Number(req.query.page), pages);
+			const offsetElement = limit * (page - 1);
+
 			const users = await TraineeProfileRecord.getTraineesList(
 				status,
 				Number(courseCompletion),
@@ -61,6 +83,8 @@ class TraineesController {
 				search,
 				sortByType,
 				sortType,
+				limit,
+				offsetElement,
 			);
 
 			res.status(200).json(
@@ -69,6 +93,9 @@ class TraineesController {
 					status: JsonResponseStatus.success,
 					message: 'Listed trainees successfully fetched.',
 					data: {
+						count,
+						page,
+						pages,
 						users,
 					},
 				}),

@@ -23,6 +23,7 @@ import {
 	updateTrainee,
 	updateStatus,
 	getTraineesList,
+	getCountOfTraineesList,
 } from './sql';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
@@ -191,6 +192,48 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		return resp.count ?? null;
 	}
 
+	static async getCountOfTraineesList(
+		status: string,
+		courseCompletion: number,
+		courseEngagment: number,
+		projectDegree: number,
+		teamProjectDegree: number,
+		monthsOfCommercialExp: number,
+		expectedTypeWork: string,
+		expectedSalaryFrom: string,
+		expectedSalaryTo: string,
+		canTakeApprenticeship: string,
+		expectedContractType: string[],
+		search: string,
+	): Promise<number | null> {
+		const [resp] = (
+			(await pool.execute(
+				getCountOfTraineesList(
+					status,
+					canTakeApprenticeship,
+					monthsOfCommercialExp,
+					expectedTypeWork,
+					expectedSalaryFrom,
+					expectedSalaryTo,
+					expectedContractType,
+					search,
+				),
+				{
+					status,
+					courseCompletion,
+					courseEngagment,
+					projectDegree,
+					teamProjectDegree,
+					monthsOfCommercialExp,
+					expectedTypeWork,
+					expectedSalaryFrom,
+					expectedSalaryTo,
+				},
+			)) as DBResultCountOfTrainees
+		)[0];
+		return resp.count ?? null;
+	}
+
 	static async getTraineesList(
 		status: string,
 		courseCompletion: number,
@@ -206,6 +249,8 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		search: string,
 		sortByType: string,
 		sortType: string,
+		limit: number,
+		offsetElement: number,
 	): Promise<TraineeListedEntity[]> {
 		const resp = (
 			(await pool.execute(
@@ -231,6 +276,8 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 					expectedTypeWork,
 					expectedSalaryFrom,
 					expectedSalaryTo,
+					limit,
+					offsetElement,
 				},
 			)) as DbResultTraineeListed
 		)[0];
