@@ -9,6 +9,7 @@ import {
 	updateMe,
 	getTraineesInterviewsListByHrId,
 	getCountOfTraineesInterviewsForHr,
+	deleteTraineeFromInterviewTable
 } from './sql';
 import { pool } from '../../db/pool';
 import { v4 as uuid } from 'uuid';
@@ -92,6 +93,9 @@ export class InterviewRecord implements InterviewEntity {
 
 	static async deleteInterviewByTraineeId(hrId: string, traineeId: string): Promise<void> {
 		await pool.execute(deleteInterviewById, { hrId, traineeId });
+	}
+	static async deleteTraineeFromInterviewTable(traineeId: string): Promise<void> {
+		await pool.execute(deleteTraineeFromInterviewTable, { traineeId });
 	}
 
 	static async getCountOfTraineesInterviewsForHr(hrId: string): Promise<number | null> {

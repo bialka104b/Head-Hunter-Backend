@@ -374,7 +374,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Trainee\'s is hire. Congratulations !',
+					message: 'Hire process is successfully start. Right now trainee must approve hire.',
 				}),
 			);
 		} catch (e) {
@@ -383,12 +383,30 @@ class TraineesController {
 	}
 
 	static async approveHire(req: Request, res: Response) {
-		// const trainee = new TraineeProfileRecord(
-		// 	await TraineeProfileRecord.getTraineeProfileById(traineeId),
-		// );
-		// await trainee.updateStatus(TraineeStatus.hired);
-		//
-		// await UserRecord.deleteUserById(traineeId);
+		const {id, role} = req.user as UserRecord
+
+		if(role !== UserRole.trainee) {
+			throw new ValidationError(notAuthorised, 400);
+		}
+
+		try {
+			const trainee = new TraineeProfileRecord(
+				await TraineeProfileRecord.getTraineeProfileById(id),
+			);
+			await trainee.updateStatus(TraineeStatus.hired);
+			await UserRecord.deleteUserById(id);
+			await InterviewRecord.deleteTraineeFromInterviewTable(id);
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Trainee\'s is hire. Congratulations !',
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
 	}
 
 	static async cancelHired(req: Request, res: Response) {
