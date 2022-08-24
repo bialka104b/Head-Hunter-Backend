@@ -165,6 +165,7 @@ export const getTraineesList = (
 			email,
 			firstName,
 			lastName,
+			githubUsername,
 			courseCompletion,
 			courseEngagment,
 			projectDegree,
