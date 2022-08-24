@@ -260,7 +260,7 @@ class TraineesController {
 			expectedContractType,
 			canTakeApprenticeship: canTakeApprenticeship === 'true' ?? true,
 			monthsOfCommercialExp: Number(monthsOfCommercialExp),
-			expectedSalary: expectedSalary,
+			expectedSalary: Number(expectedSalary),
 			courses,
 		};
 

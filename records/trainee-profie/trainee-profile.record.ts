@@ -46,7 +46,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	expectedTypeWork: TraineeExpectedTypeWork | null;
 	targetWorkCity: string;
 	expectedContractType: TraineeExpectedContractType[] | null;
-	expectedSalary: string;
+	expectedSalary: number;
 	canTakeApprenticeship: boolean;
 	monthsOfCommercialExp: number;
 	education: string;
@@ -69,7 +69,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		this.expectedTypeWork = obj.expectedTypeWork ?? null;
 		this.targetWorkCity = obj.targetWorkCity ?? '';
 		this.expectedContractType = obj.expectedContractType ?? null;
-		this.expectedSalary = obj.expectedSalary ?? '';
+		this.expectedSalary = obj.expectedSalary ?? 0;
 		this.canTakeApprenticeship = obj.canTakeApprenticeship ?? false;
 		this.monthsOfCommercialExp = obj.monthsOfCommercialExp ?? 0;
 		this.education = obj.education ?? '';
