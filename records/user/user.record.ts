@@ -14,6 +14,7 @@ import {
 	updatePassword,
 	getInactiveUserById,
 	activateUser,
+	createPassword,
 } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
 
@@ -106,6 +107,15 @@ export class UserRecord implements UserEntity {
 		await pool.execute(updatePassword, {
 			id,
 			password: hashPassword(password),
+		});
+	}
+
+	async createPassword() {
+		const { id, password } = this;
+		await pool.execute(createPassword, {
+			id,
+			password: hashPassword(password),
+			registerToken: null,
 		});
 	}
 

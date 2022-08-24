@@ -144,12 +144,11 @@ class TraineesController {
 	}
 
 	static async getTraineeProfile(req: Request, res: Response): Promise<void> {
-		let traineeId: string;
+		const traineeId = req.params.userId
 		const { role, id } = req.user as UserRecord;
-		if (role === UserRole.trainee) {
-			traineeId = id;
-		} else {
-			traineeId = req.params.userId;
+
+		if(role === UserRole.trainee && id !== traineeId) {
+			throw new ValidationError(notAuthorised, 400)
 		}
 
 		const traineeProfile = await TraineeProfileRecord.getFullTraineeInfo(
