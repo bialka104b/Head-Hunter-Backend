@@ -158,6 +158,7 @@ export const getTraineesList = (
 	search: string,
 	sortByType: string,
 	sortType: string,
+	id: string,
 ): string => {
 	return `
 		SELECT users.id,
@@ -177,7 +178,9 @@ export const getTraineesList = (
 		FROM users
 			INNER JOIN trainee_profile tp on users.id = tp.userId
 			INNER JOIN trainee_score ts on users.id = ts.userId
+			${id ? 'INNER JOIN interviews intv on users.id = intv.traineeId' : ''}
 		WHERE users.isActive = true
+			${id ? 'AND intv.hrId = :id' : ''}
 			AND users.role = 'trainee'
 			${status ? 'AND tp.status = :status' : ''}
 			AND ts.courseCompletion >= :courseCompletion
@@ -256,13 +259,16 @@ export const getCountOfTraineesList = (
 	expectedSalaryTo: string,
 	expectedContractType: string[],
 	search: string,
+	id: string,
 ): string => {
 	return `
 		SELECT COUNT(*) as count
 		FROM users
 			INNER JOIN trainee_profile tp on users.id = tp.userId
 			INNER JOIN trainee_score ts on users.id = ts.userId
+			${id ? 'INNER JOIN interviews intv on users.id = intv.traineeId' : ''}
 		WHERE users.isActive = true
+			${id ? 'AND intv.hrId = :id' : ''}
 			AND users.role = 'trainee'
 			${status ? 'AND tp.status = :status' : ''}
 			AND ts.courseCompletion >= :courseCompletion
