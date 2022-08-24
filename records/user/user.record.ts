@@ -15,6 +15,7 @@ import {
 	getInactiveUserById,
 	activateUser,
 	createPassword,
+	getAdminEmail
 } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
 
@@ -23,6 +24,7 @@ const { incorrectEmail, incorrectPassword, incorrectRole } =
 
 type DbResult = [UserRecord[], FieldPacket[]];
 type DbUnregisterUsersResponse = [UnregisterUsersResponse[], FieldPacket[]];
+type DbAdminEmailResponse = [{ email: string }[], FieldPacket[]];
 
 export class UserRecord implements UserEntity {
 	id: string;
@@ -159,14 +161,20 @@ export class UserRecord implements UserEntity {
 	}
 
 	static async findUnregisterUsers(): Promise<UnregisterUsersResponse[]> {
-		const [result] = (await pool.execute(
+		const [resp] = (await pool.execute(
 			unregisterUsers,
 		)) as DbUnregisterUsersResponse;
 
-		return result.length === 0 ? null : result;
+		return resp.length === 0 ? null : resp;
 	}
 
 	static async reactivateUser(id: string): Promise<void> {
 		await pool.execute(activateUser, { id });
+	}
+
+	static async getAdminEmail(): Promise<{email: string}[]> {
+		const [resp] = (await pool.execute(getAdminEmail) as DbAdminEmailResponse)
+
+		return resp ?? null;
 	}
 }

@@ -91,3 +91,11 @@ export const activateUser =
 	WHERE id = :id
 	`
 ;
+
+export const getAdminEmail =
+	`
+	SELECT email
+	FROM users
+	WHERE role = 'admin'
+	`
+;

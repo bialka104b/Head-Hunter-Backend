@@ -39,6 +39,14 @@ export const deleteInterviewById =
 	`
 ;
 
+export const deleteTraineeFromInterviewTable =
+	`
+		UPDATE interviews
+		SET isActive = false
+		WHERE traineeId = :traineeId
+	`
+;
+
 export const getTraineesInterviewsListByHrId =
 	`
 	SELECT traineeId
