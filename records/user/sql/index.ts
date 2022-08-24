@@ -21,7 +21,16 @@ export const updateMe =
 export const updatePassword =
 	`
 		UPDATE users
-		SET password = :password
+		SET password = :password,
+		WHERE id = :id
+	`
+;
+
+export const createPassword =
+	`
+		UPDATE users
+		SET password = :password,
+		registerToken = :registerToken
 		WHERE id = :id
 	`
 ;

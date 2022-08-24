@@ -5,14 +5,20 @@ import { AuthController } from '../controllers/auth/auth.controller';
 export const authRouter = Router();
 
 authRouter
-	.post('/login', AuthController.login)
+	.post(
+		'/login',
+		AuthController.login)
 	.get(
 		'/refresh',
 		passport.authenticate('jwt', { session: false }),
 		AuthController.refresh,
 	)
-	.post('/forgotPassword', AuthController.forgotPassword)
-	.post('/createPassword', AuthController.createPassword)
+	.post(
+		'/forgotPassword',
+		AuthController.forgotPassword)
+	.post(
+		'/createPassword/:id/:registerToken',
+		AuthController.createPassword)
 	.get(
 		'/logout',
 		passport.authenticate('jwt', { session: false }),
