@@ -5,7 +5,8 @@ import passport from 'passport';
 const traineesRouter = express.Router();
 
 traineesRouter
-	.get('/hire/:traineeId',
+	.get(
+		'/hire/:traineeId',
 		passport.authenticate('jwt', { session: false }),
 		TraineesController.hire,
 	)
@@ -19,13 +20,20 @@ traineesRouter
 		passport.authenticate('jwt', { session: false }),
 		TraineesController.getInterviewsTraineesList,
 	)
-	.post('/editProfile',
+	.post(
+		'/editProfile',
 		passport.authenticate('jwt', { session: false }),
-		TraineesController.editProfile)
+		TraineesController.editProfile,
+	)
 	.get(
 		'/:userId',
 		passport.authenticate('jwt', { session: false }),
 		TraineesController.getTraineeProfile,
+	)
+	.get(
+		'/',
+		passport.authenticate('jwt', { session: false }),
+		TraineesController.getTrainees,
 	);
 
 export { traineesRouter };

@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { jsonResponse } from '../../utils/jsonResponse';
 import {
 	JsonResponseStatus,
+	TraineeFilterRequest,
 	TraineeProfileEntity,
 	TraineeProfileRequest,
 	TraineeStatus,
@@ -20,6 +21,63 @@ const { traineeNotExist } =
 const { userIsActive } = ValidationError.messages.recordInstanceInit.user;
 
 class TraineesController {
+	static async getTrainees(
+		req: Request<{}, {}, {}, TraineeFilterRequest>,
+		res: Response,
+	): Promise<void> {
+		const {
+			search,
+			courseCompletion,
+			courseEngagment,
+			projectDegree,
+			teamProjectDegree,
+			canTakeApprenticeship,
+			monthsOfCommercialExp,
+			expectedTypeWork,
+			expectedSalaryFrom,
+			expectedSalaryTo,
+			sortType,
+			sortByType,
+			expectedContractType,
+			status,
+		}: TraineeFilterRequest = req.query;
+
+		try {
+			const users = await TraineeProfileRecord.getTraineesList(
+				status,
+				Number(courseCompletion),
+				Number(courseEngagment),
+				Number(projectDegree),
+				Number(teamProjectDegree),
+				Number(monthsOfCommercialExp),
+				expectedTypeWork,
+				expectedSalaryFrom,
+				expectedSalaryTo,
+				canTakeApprenticeship,
+				expectedContractType
+					?.split(',')
+					.sort()
+					.filter((type) => type !== '') || [],
+				search,
+				sortByType,
+				sortType,
+			);
+
+			res.status(200).json(
+				jsonResponse({
+					code: 200,
+					status: JsonResponseStatus.success,
+					message: 'Listed trainees successfully fetched.',
+					data: {
+						users,
+					},
+				}),
+			);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+
 	static async getAllListedTrainees(
 		req: Request,
 		res: Response,

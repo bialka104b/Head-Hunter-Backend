@@ -52,7 +52,7 @@ class AuthController {
 				secure: true,
 				domain: 'localhost',
 				httpOnly: false,
-				maxAge: 1000 * 60 * 60,
+				maxAge: 1000 * 60 * 60 * 4,
 			}).json(response);
 		} catch (e) {
 			console.log(e);
