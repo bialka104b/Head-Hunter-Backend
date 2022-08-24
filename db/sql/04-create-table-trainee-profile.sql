@@ -11,7 +11,7 @@ CREATE TABLE trainee_profile
     expectedTypeWork      ENUM ('onsite', 'remote', 'readyToMove','hybrid') DEFAULT NULL,
     targetWorkCity        VARCHAR(256),
     expectedContractType  JSON                                              DEFAULT NULL,
-    expectedSalary        VARCHAR(256)                                      DEFAULT NULL,
+    expectedSalary        SMALLINT(5) UNSIGNED NULL DEFAULT 0,
     canTakeApprenticeship BOOLEAN                                           DEFAULT FALSE,
     monthsOfCommercialExp TINYINT                                           DEFAULT 0,
     education             TEXT,

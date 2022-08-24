@@ -22,6 +22,8 @@ import {
 	insertMe,
 	updateTrainee,
 	updateStatus,
+	getTraineesList,
+	getCountOfTraineesList,
 } from './sql';
 //TODO - declare it in a separate file?
 type DbResult = [TraineeProfileRecord[], FieldPacket[]];
@@ -45,7 +47,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	expectedTypeWork: TraineeExpectedTypeWork | null;
 	targetWorkCity: string;
 	expectedContractType: TraineeExpectedContractType[] | null;
-	expectedSalary: string;
+	expectedSalary: number;
 	canTakeApprenticeship: boolean;
 	monthsOfCommercialExp: number;
 	education: string;
@@ -68,7 +70,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		this.expectedTypeWork = obj.expectedTypeWork ?? null;
 		this.targetWorkCity = obj.targetWorkCity ?? '';
 		this.expectedContractType = obj.expectedContractType ?? null;
-		this.expectedSalary = obj.expectedSalary ?? '';
+		this.expectedSalary = obj.expectedSalary ?? 0;
 		this.canTakeApprenticeship = obj.canTakeApprenticeship ?? false;
 		this.monthsOfCommercialExp = obj.monthsOfCommercialExp ?? 0;
 		this.education = obj.education ?? '';
@@ -188,6 +190,98 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 			(await pool.execute(getCountOfTrainees)) as DBResultCountOfTrainees
 		)[0];
 		return resp.count ?? null;
+	}
+
+	static async getCountOfTraineesList(
+		status: string,
+		courseCompletion: number,
+		courseEngagment: number,
+		projectDegree: number,
+		teamProjectDegree: number,
+		monthsOfCommercialExp: number,
+		expectedTypeWork: string,
+		expectedSalaryFrom: string,
+		expectedSalaryTo: string,
+		canTakeApprenticeship: string,
+		expectedContractType: string[],
+		search: string,
+	): Promise<number | null> {
+		const [resp] = (
+			(await pool.execute(
+				getCountOfTraineesList(
+					status,
+					canTakeApprenticeship,
+					monthsOfCommercialExp,
+					expectedTypeWork,
+					expectedSalaryFrom,
+					expectedSalaryTo,
+					expectedContractType,
+					search,
+				),
+				{
+					status,
+					courseCompletion,
+					courseEngagment,
+					projectDegree,
+					teamProjectDegree,
+					monthsOfCommercialExp,
+					expectedTypeWork,
+					expectedSalaryFrom,
+					expectedSalaryTo,
+				},
+			)) as DBResultCountOfTrainees
+		)[0];
+		return resp.count ?? null;
+	}
+
+	static async getTraineesList(
+		status: string,
+		courseCompletion: number,
+		courseEngagment: number,
+		projectDegree: number,
+		teamProjectDegree: number,
+		monthsOfCommercialExp: number,
+		expectedTypeWork: string,
+		expectedSalaryFrom: string,
+		expectedSalaryTo: string,
+		canTakeApprenticeship: string,
+		expectedContractType: string[],
+		search: string,
+		sortByType: string,
+		sortType: string,
+		limit: number,
+		offsetElement: number,
+	): Promise<TraineeListedEntity[]> {
+		const resp = (
+			(await pool.execute(
+				getTraineesList(
+					status,
+					canTakeApprenticeship,
+					monthsOfCommercialExp,
+					expectedTypeWork,
+					expectedSalaryFrom,
+					expectedSalaryTo,
+					expectedContractType,
+					search,
+					sortByType,
+					sortType,
+				),
+				{
+					status,
+					courseCompletion,
+					courseEngagment,
+					projectDegree,
+					teamProjectDegree,
+					monthsOfCommercialExp,
+					expectedTypeWork,
+					expectedSalaryFrom,
+					expectedSalaryTo,
+					limit,
+					offsetElement,
+				},
+			)) as DbResultTraineeListed
+		)[0];
+		return resp;
 	}
 
 	static async updateTrainee(

@@ -81,8 +81,8 @@ class hrController {
 					status: JsonResponseStatus.success,
 					message: "Hr's list successfully fetched.",
 					data: {
-						page,
 						count,
+						page,
 						pages,
 						users,
 					},

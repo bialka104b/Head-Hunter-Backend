@@ -22,7 +22,6 @@ const getRandomTypeWork = (): TraineeExpectedTypeWork => {
 	}
 };
 
-
 const getRandomCanTakeApprenticeship = () => {
 	const random = getRandomNumber(0, 1);
 	let canTakeApprenticeship;
@@ -54,7 +53,10 @@ const getRandomExpectedContractType = (): TraineeExpectedContractType[] => {
 	return expectedContractTypeArr.filter(onlyUniqueFilter);
 };
 
-export const generateTraineeProfiles = (amount: number, interviewedAmount: number) => {
+export const generateTraineeProfiles = (
+	amount: number,
+	interviewedAmount: number,
+) => {
 	const TraineeProfileArr = [];
 	for (let i = 0; i < amount; i++) {
 		const traineeProfile = {
@@ -69,13 +71,16 @@ export const generateTraineeProfiles = (amount: number, interviewedAmount: numbe
 			expectedTypeWork: getRandomTypeWork(),
 			targetWorkCity: faker.address.city(),
 			expectedContractType: getRandomExpectedContractType(),
-			expectedSalary: getRandomNumber(3000, 10000),
+			expectedSalary: getRandomNumber(500, 15000),
 			canTakeApprenticeship: getRandomCanTakeApprenticeship(),
 			monthsOfCommercialExp: getRandomNumber(0, 6),
 			education: faker.lorem.paragraph(1),
 			workExperience: faker.lorem.paragraph(2),
 			courses: faker.lorem.paragraph(1),
-			status: i < interviewedAmount ? TraineeStatus.interviewed : TraineeStatus.available,
+			status:
+				i < interviewedAmount
+					? TraineeStatus.interviewed
+					: TraineeStatus.available,
 			registrationUrl: '',
 			userId: `trainee${i + 1}`,
 		};

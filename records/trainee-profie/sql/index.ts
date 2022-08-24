@@ -1,5 +1,4 @@
-export const insertMe =
-	`
+export const insertMe = `
 		INSERT INTO trainee_profile
 		VALUES (:id,
 				:tel,
@@ -22,11 +21,9 @@ export const insertMe =
 				:registrationUrl,
 				:userId,
 				:createdAt)
-	`
-;
+	`;
 
-export const updateTrainee =
-	`
+export const updateTrainee = `
 		UPDATE trainee_profile
 		SET tel                   = :tel,
 			firstName             = :firstName,
@@ -45,34 +42,26 @@ export const updateTrainee =
 			workExperience        = :workExperience,
 			courses               = :courses
 		WHERE userId = :userId
-	`
-;
+	`;
 
-export const updateStatus =
-	`
+export const updateStatus = `
 		UPDATE trainee_profile
 		SET status = :status
 		WHERE id = :id
-	`
-;
+	`;
 
-export const getAllTraineesProfiles =
-	`
+export const getAllTraineesProfiles = `
 		SELECT *
 		FROM trainee_profile
-	`
-;
+	`;
 
-export const getTraineeProfileById =
-	`
+export const getTraineeProfileById = `
 		SELECT *
 		FROM trainee_profile
 		WHERE userId = :id
-	`
-;
+	`;
 
-export const getFullTraineeInfo =
-	`
+export const getFullTraineeInfo = `
 		SELECT users.id,
 			   users.email,
 			   ts.bonusProjectUrls,
@@ -102,11 +91,9 @@ export const getFullTraineeInfo =
 				 JOIN trainee_score ts on users.id = ts.userId
 		WHERE users.id = :id
 			AND users.isActive = true
-	`
-;
+	`;
 
-export const getAllListedTrainees =
-	`
+export const getAllListedTrainees = `
 		SELECT users.id,
 			   email,
 			   firstName,
@@ -129,11 +116,9 @@ export const getAllListedTrainees =
 			AND tp.status != 'hired'
 			LIMIT :limit
 			OFFSET :offsetElement
-	`
-;
+	`;
 
-export const getTraineesInfoForTraineesInterviewsListById=
-	`
+export const getTraineesInfoForTraineesInterviewsListById = `
 		SELECT users.id,
 			   email,
 			   firstName,
@@ -154,13 +139,189 @@ export const getTraineesInfoForTraineesInterviewsListById=
 		WHERE users.id = :id
 			AND tp.status != 'hired'
 			AND users.isActive = true
-	`
-;
+	`;
 
-export const getCountOfTrainees =
-	`
+export const getCountOfTrainees = `
 		SELECT COUNT(*) as count
 		FROM trainee_profile
 		WHERE status != 'hired'
 	`;
 
+export const getTraineesList = (
+	status: string,
+	canTakeApprenticeship: string,
+	monthsOfCommercialExp: number,
+	expectedTypeWork: string,
+	expectedSalaryFrom: string,
+	expectedSalaryTo: string,
+	expectedContractType: string[],
+	search: string,
+	sortByType: string,
+	sortType: string,
+): string => {
+	return `
+		SELECT users.id,
+			email,
+			firstName,
+			lastName,
+			courseCompletion,
+			courseEngagment,
+			projectDegree,
+			teamProjectDegree,
+			expectedTypeWork,
+			targetWorkCity,
+			expectedContractType,
+			expectedSalary,
+			canTakeApprenticeship,
+			monthsOfCommercialExp
+		FROM users
+			INNER JOIN trainee_profile tp on users.id = tp.userId
+			INNER JOIN trainee_score ts on users.id = ts.userId
+		WHERE users.isActive = true
+			AND users.role = 'trainee'
+			${status ? 'AND tp.status = :status' : ''}
+			AND ts.courseCompletion >= :courseCompletion
+			AND ts.courseEngagment >= :courseEngagment
+			AND ts.projectDegree >= :projectDegree
+			AND ts.teamProjectDegree >= :teamProjectDegree
+			${canTakeApprenticeship === 'true' ? 'AND tp.canTakeApprenticeship = 1' : ''}
+			${
+				monthsOfCommercialExp
+					? 'AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp'
+					: ''
+			}
+			${expectedTypeWork ? 'AND tp.expectedTypeWork = :expectedTypeWork' : ''}
+			${expectedSalaryFrom ? 'AND tp.expectedSalary >= :expectedSalaryFrom' : ''}
+			${expectedSalaryTo ? 'AND tp.expectedSalary <= :expectedSalaryTo' : ''}
+			${
+				expectedContractType.length === 1
+					? 'AND tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"'
+					: ''
+			}
+			${
+				expectedContractType.length === 2
+					? 'AND (tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[1] +
+					  '%")'
+					: ''
+			}
+			${
+				expectedContractType.length === 3
+					? 'AND (tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[1] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[2] +
+					  '%")'
+					: ''
+			}
+			${
+				search
+					? 'AND (targetWorkCity LIKE "%' +
+					  search +
+					  '%" OR expectedTypeWork LIKE "%' +
+					  search +
+					  '%" OR expectedContractType LIKE "%' +
+					  search +
+					  '%" OR firstName LIKE "%' +
+					  search +
+					  '%" OR lastName LIKE "%' +
+					  search +
+					  '%")'
+					: ''
+			}
+
+		ORDER BY ${sortByType ? sortByType : `courseCompletion`} ${
+		sortType === 'ascending' ? 'ASC' : 'DESC'
+	}
+
+		LIMIT :limit OFFSET :offsetElement
+	`;
+};
+
+export const getCountOfTraineesList = (
+	status: string,
+	canTakeApprenticeship: string,
+	monthsOfCommercialExp: number,
+	expectedTypeWork: string,
+	expectedSalaryFrom: string,
+	expectedSalaryTo: string,
+	expectedContractType: string[],
+	search: string,
+): string => {
+	return `
+		SELECT COUNT(*) as count
+		FROM users
+			INNER JOIN trainee_profile tp on users.id = tp.userId
+			INNER JOIN trainee_score ts on users.id = ts.userId
+		WHERE users.isActive = true
+			AND users.role = 'trainee'
+			${status ? 'AND tp.status = :status' : ''}
+			AND ts.courseCompletion >= :courseCompletion
+			AND ts.courseEngagment >= :courseEngagment
+			AND ts.projectDegree >= :projectDegree
+			AND ts.teamProjectDegree >= :teamProjectDegree
+			${canTakeApprenticeship === 'true' ? 'AND tp.canTakeApprenticeship = 1' : ''}
+			${
+				monthsOfCommercialExp
+					? 'AND tp.monthsOfCommercialExp >= :monthsOfCommercialExp'
+					: ''
+			}
+			${expectedTypeWork ? 'AND tp.expectedTypeWork = :expectedTypeWork' : ''}
+			${expectedSalaryFrom ? 'AND tp.expectedSalary >= :expectedSalaryFrom' : ''}
+			${expectedSalaryTo ? 'AND tp.expectedSalary <= :expectedSalaryTo' : ''}
+			${
+				expectedContractType.length === 1
+					? 'AND tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"'
+					: ''
+			}
+			${
+				expectedContractType.length === 2
+					? 'AND (tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[1] +
+					  '%")'
+					: ''
+			}
+			${
+				expectedContractType.length === 3
+					? 'AND (tp.expectedContractType LIKE "%' +
+					  expectedContractType[0] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[1] +
+					  '%"' +
+					  ` OR tp.expectedContractType LIKE "%` +
+					  expectedContractType[2] +
+					  '%")'
+					: ''
+			}
+			${
+				search
+					? 'AND (targetWorkCity LIKE "%' +
+					  search +
+					  '%" OR expectedTypeWork LIKE "%' +
+					  search +
+					  '%" OR expectedContractType LIKE "%' +
+					  search +
+					  '%" OR firstName LIKE "%' +
+					  search +
+					  '%" OR lastName LIKE "%' +
+					  search +
+					  '%")'
+					: ''
+			}
+	`;
+};
