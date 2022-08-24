@@ -35,6 +35,7 @@ class hrController {
 				email,
 				password: getRandomPassword(),
 				role: UserRole.hr,
+				isActive: false,
 			});
 
 			const newHr = new HrProfileRecord({

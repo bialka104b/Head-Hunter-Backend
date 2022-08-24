@@ -75,7 +75,7 @@ export const unregisterUsers =
 	`
 ;
 
-export const reactivateUser =
+export const activateUser =
 	`
 	UPDATE users
 	SET isActive = true
