@@ -205,6 +205,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		canTakeApprenticeship: string,
 		expectedContractType: string[],
 		search: string,
+		id: string,
 	): Promise<number | null> {
 		const [resp] = (
 			(await pool.execute(
@@ -217,6 +218,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 					expectedSalaryTo,
 					expectedContractType,
 					search,
+					id,
 				),
 				{
 					status,
@@ -228,6 +230,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 					expectedTypeWork,
 					expectedSalaryFrom,
 					expectedSalaryTo,
+					id,
 				},
 			)) as DBResultCountOfTrainees
 		)[0];
@@ -251,6 +254,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		sortType: string,
 		limit: number,
 		offsetElement: number,
+		id: string,
 	): Promise<TraineeListedEntity[]> {
 		const resp = (
 			(await pool.execute(
@@ -265,6 +269,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 					search,
 					sortByType,
 					sortType,
+					id,
 				),
 				{
 					status,
@@ -278,6 +283,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 					expectedSalaryTo,
 					limit,
 					offsetElement,
+					id,
 				},
 			)) as DbResultTraineeListed
 		)[0];
