@@ -51,8 +51,6 @@ class TraineesController {
 		const userId =
 			role === UserRole.hr && status === 'interviewed' ? id : null;
 
-		console.log(userId);
-
 		try {
 			const count = await TraineeProfileRecord.getCountOfTraineesList(
 				status,
