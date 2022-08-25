@@ -39,12 +39,21 @@ class InterviewController {
 		}
 
 		try {
-			const interview = new InterviewRecord({
-				hrId: hr.id,
-				traineeId: trainee.userId,
-			});
+			let interview = await InterviewRecord.getTraineesInterviewIfExists(
+				hr.id,
+				trainee.userId,
+			);
 
-			await interview.insertMe();
+			if (interview) {
+				interview = new InterviewRecord(interview);
+				interview.setInterviewActive();
+			} else {
+				interview = new InterviewRecord({
+					hrId: hr.id,
+					traineeId: trainee.userId,
+				});
+				await interview.insertMe();
+			}
 
 			await trainee.updateStatus(TraineeStatus.interviewed);
 
@@ -87,7 +96,7 @@ class InterviewController {
 			const traineeInterviews =
 				await InterviewRecord.getInterviewByTraineeId(traineeId);
 
-			if (traineeInterviews === null) {
+			if (traineeInterviews !== null) {
 				const traineeProfile = new TraineeProfileRecord(trainee);
 
 				await traineeProfile.updateStatus(TraineeStatus.available);
