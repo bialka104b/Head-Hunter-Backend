@@ -57,46 +57,80 @@ class AdminController {
 				dynamicTyping: true,
 			});
 
+			const correctCsvFileColumnName = [
+				'email',
+				'courseCompletion',
+				'courseEngagment',
+				'projectDegree',
+				'teamProjectDegree',
+				'bonusProjectUrls',
+			];
+			const csvFileColumnName = convertToJSONFile.meta.fields;
+
 			const JSONListOfImportTrainees = convertToJSONFile.data as UserImport[];
-			const userThatWasAlreadyExist = [];
+			let countOfAddedTrainee = 0;
+			const traineeWithBadData = [];
 
-			for (const trainee of JSONListOfImportTrainees) {
-				if (await UserRecord.findUserByEmail(trainee.email)) {
-					userThatWasAlreadyExist.push(trainee.email);
-				} else {
-					const user = new UserRecord({
-						email: trainee.email,
-						password: getRandomPassword(),
-						role: UserRole.trainee,
-						isActive: false,
-					});
+			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i])) {
+				res
+					.status(400)
+					.json(jsonResponse({
+						code: 400,
+						status: JsonResponseStatus.failed,
+						message: 'Incorrect column name in csv file. Check that column names are the same as in example',
+						data: {
+							columnName: csvFileColumnName,
+						},
+					}));
+			} else {
+				for (const trainee of JSONListOfImportTrainees) {
+					try {
+						if (!(await UserRecord.findUserByEmail(trainee.email))) {
+							const user = new UserRecord({
+								email: trainee.email,
+								password: getRandomPassword(),
+								role: UserRole.trainee,
+								isActive: false,
+							});
 
-					const userId = await user.insertMe();
+							const traineeScore = new TraineeScoreRecord({
+								courseCompletion: Number(trainee.courseCompletion),
+								courseEngagment: Number(trainee.courseEngagment),
+								projectDegree: Number(trainee.projectDegree),
+								teamProjectDegree: Number(trainee.teamProjectDegree),
+								bonusProjectUrls: trainee.bonusProjectUrls,
+							});
 
-					const traineeScore = new TraineeScoreRecord({
-						courseCompletion: Number(trainee.courseCompletion),
-						courseEngagment: Number(trainee.courseEngagment),
-						projectDegree: Number(trainee.projectDegree),
-						teamProjectDegree: Number(trainee.teamProjectDegree),
-						bonusProjectUrls: trainee.bonusProjectUrls,
-						userId,
-					});
+							const userId = await user.insertMe();
 
-					await traineeScore.insertMe();
+							traineeScore.userId = userId;
 
-					await sendRegisterMail(user.email, userId, user.registerToken);
+							await traineeScore.insertMe();
+
+							await sendRegisterMail(user.email, userId, user.registerToken);
+
+							countOfAddedTrainee++;
+						}
+					} catch (e) {
+						traineeWithBadData.push({
+							trainee,
+							error: e.message,
+						});
+					}
 				}
+
+				res
+					.status(200)
+					.json(jsonResponse({
+						code: 200,
+						status: JsonResponseStatus.success,
+						message: 'Trainee\'s profile successfully fetched.',
+						data: {
+							countOfAddedTrainee,
+							traineeWithBadData,
+						},
+					}));
 			}
-
-			res
-				.status(200)
-				.json(jsonResponse({
-					code: 200,
-					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully fetched.',
-					data: { userThatWasAlreadyExist },
-				}));
-
 		} catch (e) {
 			console.log(e);
 		}

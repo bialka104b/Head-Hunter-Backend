@@ -49,7 +49,6 @@ export const getInactiveUserById = `
 export const findUserByEmail = `SELECT *
 	 FROM users
 	 WHERE email = :email
-	   AND isActive = true
 	`;
 
 export const deleteUserById = `
