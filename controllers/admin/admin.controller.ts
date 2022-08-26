@@ -58,22 +58,20 @@ class AdminController {
 			});
 
 			const correctCsvFileColumnName = [
-				'emails',
-				'courseCompletions',
+				'email',
+				'courseCompletion',
 				'courseEngagment',
 				'projectDegree',
-				'teamProjectDegree',
 				'teamProjectDegree',
 				'bonusProjectUrls',
 			];
 			const csvFileColumnName = convertToJSONFile.meta.fields;
 
-
 			const JSONListOfImportTrainees = convertToJSONFile.data as UserImport[];
 			let countOfAddedTrainee = 0;
 			const traineeWithBadData = [];
 
-			if (correctCsvFileColumnName.length !== csvFileColumnName.length || correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i])) {
+			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i])) {
 				res
 					.status(400)
 					.json(jsonResponse({
