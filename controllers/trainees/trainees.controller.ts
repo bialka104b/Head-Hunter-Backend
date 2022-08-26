@@ -411,13 +411,15 @@ class TraineesController {
 			await UserRecord.deleteUserById(id);
 			await InterviewRecord.deleteTraineeFromInterviewTable(id);
 
-			res.status(200).json(
-				jsonResponse({
-					code: 200,
-					status: JsonResponseStatus.success,
-					message: "Trainee's is hire. Congratulations !",
-				}),
-			);
+			res.status(200)
+				.clearCookie('jwt')
+				.json(
+					jsonResponse({
+						code: 200,
+						status: JsonResponseStatus.success,
+						message: "Trainee's is hire. Congratulations !",
+					}),
+				);
 		} catch (e) {
 			console.log(e);
 		}
