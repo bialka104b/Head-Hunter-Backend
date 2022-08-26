@@ -1,3 +1,5 @@
+import { TraineeStatus } from '../../../types';
+
 export const insertMe = `
 		INSERT INTO trainee_profile
 		VALUES (:id,
@@ -90,7 +92,6 @@ export const getFullTraineeInfo = `
 				 JOIN trainee_profile tp on users.id = tp.userId
 				 JOIN trainee_score ts on users.id = ts.userId
 		WHERE users.id = :id
-			AND users.isActive = true
 	`;
 
 export const getAllListedTrainees = `
@@ -180,9 +181,9 @@ export const getTraineesList = (
 			INNER JOIN trainee_profile tp on users.id = tp.userId
 			INNER JOIN trainee_score ts on users.id = ts.userId
 			${id ? 'INNER JOIN interviews intv on users.id = intv.traineeId' : ''}
-		WHERE users.isActive = true
+		WHERE users.role = 'trainee'
 			${id ? 'AND intv.hrId = :id' : ''}
-			AND users.role = 'trainee'
+			${status !== TraineeStatus.hired ? `AND users.isActive = true` : ''}
 			${status ? 'AND tp.status = :status' : ''}
 			AND ts.courseCompletion >= :courseCompletion
 			AND ts.courseEngagment >= :courseEngagment
@@ -268,9 +269,9 @@ export const getCountOfTraineesList = (
 			INNER JOIN trainee_profile tp on users.id = tp.userId
 			INNER JOIN trainee_score ts on users.id = ts.userId
 			${id ? 'INNER JOIN interviews intv on users.id = intv.traineeId' : ''}
-		WHERE users.isActive = true
+		WHERE users.role = 'trainee'
 			${id ? 'AND intv.hrId = :id' : ''}
-			AND users.role = 'trainee'
+			${status !== TraineeStatus.hired ? `AND users.isActive = true` : ''}
 			${status ? 'AND tp.status = :status' : ''}
 			AND ts.courseCompletion >= :courseCompletion
 			AND ts.courseEngagment >= :courseEngagment
