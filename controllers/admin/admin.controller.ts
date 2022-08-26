@@ -71,16 +71,18 @@ class AdminController {
 							isActive: false,
 						});
 
-						const userId = await user.insertMe();
-
 						const traineeScore = new TraineeScoreRecord({
 							courseCompletion: Number(trainee.courseCompletion),
 							courseEngagment: Number(trainee.courseEngagment),
 							projectDegree: Number(trainee.projectDegree),
 							teamProjectDegree: Number(trainee.teamProjectDegree),
 							bonusProjectUrls: trainee.bonusProjectUrls,
-							userId,
 						});
+
+
+						const userId = await user.insertMe();
+
+						traineeScore.userId = userId;
 
 						await traineeScore.insertMe();
 
