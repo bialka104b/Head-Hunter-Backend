@@ -58,33 +58,41 @@ class AdminController {
 			});
 
 			const JSONListOfImportTrainees = convertToJSONFile.data as UserImport[];
-			const userThatWasAlreadyExist = [];
+			let countOfAddedTrainee = 0;
+			const traineeWithBadData = [];
 
 			for (const trainee of JSONListOfImportTrainees) {
-				if (await UserRecord.findUserByEmail(trainee.email)) {
-					userThatWasAlreadyExist.push(trainee.email);
-				} else {
-					const user = new UserRecord({
-						email: trainee.email,
-						password: getRandomPassword(),
-						role: UserRole.trainee,
-						isActive: false,
+				try {
+					if (!(await UserRecord.findUserByEmail(trainee.email))) {
+						const user = new UserRecord({
+							email: trainee.email,
+							password: getRandomPassword(),
+							role: UserRole.trainee,
+							isActive: false,
+						});
+
+						const userId = await user.insertMe();
+
+						const traineeScore = new TraineeScoreRecord({
+							courseCompletion: Number(trainee.courseCompletion),
+							courseEngagment: Number(trainee.courseEngagment),
+							projectDegree: Number(trainee.projectDegree),
+							teamProjectDegree: Number(trainee.teamProjectDegree),
+							bonusProjectUrls: trainee.bonusProjectUrls,
+							userId,
+						});
+
+						await traineeScore.insertMe();
+
+						await sendRegisterMail(user.email, userId, user.registerToken);
+
+						countOfAddedTrainee++;
+					}
+				} catch (e) {
+					traineeWithBadData.push({
+						trainee,
+						error: e.message,
 					});
-
-					const userId = await user.insertMe();
-
-					const traineeScore = new TraineeScoreRecord({
-						courseCompletion: Number(trainee.courseCompletion),
-						courseEngagment: Number(trainee.courseEngagment),
-						projectDegree: Number(trainee.projectDegree),
-						teamProjectDegree: Number(trainee.teamProjectDegree),
-						bonusProjectUrls: trainee.bonusProjectUrls,
-						userId,
-					});
-
-					await traineeScore.insertMe();
-
-					await sendRegisterMail(user.email, userId, user.registerToken);
 				}
 			}
 
@@ -94,7 +102,10 @@ class AdminController {
 					code: 200,
 					status: JsonResponseStatus.success,
 					message: 'Trainee\'s profile successfully fetched.',
-					data: { userThatWasAlreadyExist },
+					data: {
+						countOfAddedTrainee,
+						traineeWithBadData,
+					},
 				}));
 
 		} catch (e) {
