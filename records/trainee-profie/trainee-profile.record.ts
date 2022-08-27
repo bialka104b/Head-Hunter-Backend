@@ -262,7 +262,6 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 		if (
 			!this.firstName ||
 			!this.lastName ||
-			!this.githubUsername ||
 			!this.projectUrls
 		) {
 			throw new ValidationError(incorrectMinimumData, 400);

@@ -7,6 +7,7 @@ import { parse } from 'papaparse';
 import { getRandomPassword } from '../../utils/getRandomPassword';
 import { TraineeScoreRecord } from '../../records/trainee-score/trainee-score.record';
 import { sendRegisterMail } from '../../mailService/sendMail';
+import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 
 const { readFile } = require('fs').promises;
 
@@ -96,11 +97,21 @@ class AdminController {
 								bonusProjectUrls: trainee.bonusProjectUrls,
 							});
 
+							const traineeProfile = new TraineeProfileRecord({
+								githubUsername: '',
+								firstName: 'empty',
+								lastName: 'empty',
+								projectUrls: [],
+								expectedContractType: [],
+							})
+
 							const userId = await user.insertMe();
 
 							traineeScore.userId = userId;
+							traineeProfile.userId = userId
 
 							await traineeScore.insertMe();
+							await traineeProfile.insertMe();
 
 							await sendRegisterMail(user.email, userId, user.registerToken);
 
