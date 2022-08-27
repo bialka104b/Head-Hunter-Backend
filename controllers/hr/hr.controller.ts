@@ -118,7 +118,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Hr\'s list successfully fetched.',
+					message: 'Hr\'s max reserved student successfully updated.',
 					data: {
 						maxReservedStudents: (await HrProfileRecord.getHrProfileById(hrId)).maxReservedStudents,
 					},
