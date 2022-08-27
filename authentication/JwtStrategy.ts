@@ -1,5 +1,6 @@
+import passport from 'passport';
 import { Strategy } from 'passport-jwt';
-import e, { Request } from 'express';
+import { Request } from 'express';
 import { pool } from '../db/pool';
 import { FieldPacket } from 'mysql2';
 import { config } from '../config/config';
@@ -14,9 +15,7 @@ import { getHrName, getTraineeName } from '../records/auth/sql';
 
 const { notAuthorised } = ValidationError.messages.auth;
 
-const passport = require('passport');
-
-const cookieExtractor = function (req: Request): null | string {
+const cookieExtractor = function(req: Request): null | string {
 	let token = null;
 	if (req && req.cookies?.jwt) {
 		token = req.cookies['jwt'];
@@ -54,8 +53,9 @@ export const JwtStrategy = new Strategy(
 
 		let name = '';
 		let avatar = '';
-		if (role === UserRole.admin) name = 'Admin';
-		else {
+		if (role === UserRole.admin) {
+			name = 'Admin';
+		} else {
 			try {
 				if (role === UserRole.hr) {
 					const [hrResult] = (await pool.execute(getHrName, {
@@ -107,8 +107,3 @@ export const JwtStrategy = new Strategy(
 );
 
 passport.use(JwtStrategy);
-
-//if you want to authorization a path you must to add a function: passport.authenticate('jwt', { session: false })
-// fro example:
-//app.get('/test', passport.authenticate('jwt', { session: false }), (req, res) => {
-// })

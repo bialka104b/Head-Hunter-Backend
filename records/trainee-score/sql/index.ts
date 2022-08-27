@@ -7,19 +7,6 @@ export const insertMe =
 	`
 ;
 
-export const updateMe =
-	`
-		UPDATE trainee_score
-		SET courseCompletion  = :courseCompletion,
-			courseEngagment   = :courseEngagment,
-			projectDegree     = :projectDegree,
-			teamProjectDegree = :teamProjectDegree,
-			bonusProjectUrls  = :bonusProjectUrls,
-			userId            = :userId
-		WHERE id = :id
-	`
-;
-
 export const getAllTraineeScore =
 	`
 		SELECT *
@@ -32,4 +19,5 @@ export const getTraineeScoreById =
 		SELECT *
 		FROM trainee_score
 		WHERE id = :id;
-	`;
+	`
+;

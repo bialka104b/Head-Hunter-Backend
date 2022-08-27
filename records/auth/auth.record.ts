@@ -4,14 +4,13 @@ import { config } from '../../config/config';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
 import {
-	UserLoginRequest,
-	UserLoginResultsResponse,
-	UserLoginResponseFromDatabase,
-	UserRole,
 	HrNameResponseFromDatabase,
 	TraineeNameResponseFromDatabase,
+	UserLoginRequest,
+	UserLoginResponseFromDatabase,
+	UserLoginResultsResponse,
+	UserRole,
 } from '../../types';
-import { ValidationError } from '../../utils/ValidationError';
 import {
 	changePassword,
 	findTokenId,
@@ -21,6 +20,7 @@ import {
 	login,
 	logout,
 } from './sql';
+import { ValidationError } from '../../utils/ValidationError';
 import { hashPassword } from '../../utils/hashPassword';
 
 const { incorrectData, incorrectEmail } = ValidationError.messages.login;
@@ -35,6 +35,29 @@ export class AuthRecord implements UserLoginRequest {
 		}
 		this.email = obj.email;
 		this.password = obj.password;
+	}
+
+	//static
+	static async findTokenId(
+		currentTokenId: string,
+	): Promise<{ currentTokenId: string } | null> {
+		const [result] = (await pool.execute(findTokenId, {
+			currentTokenId,
+		})) as [{ currentTokenId: string }[], FieldPacket[]];
+
+		return result.length === 0 ? null : result[0];
+	}
+
+	static async logout(id: string) {
+		await pool.execute(logout, {
+			id,
+		});
+	}
+
+	static async changePassword(id: string, newPassword: string) {
+		const hashPwd = hashPassword(newPassword);
+
+		await pool.execute(changePassword, { id, hashPwd });
 	}
 
 	//dynamic
@@ -55,8 +78,9 @@ export class AuthRecord implements UserLoginRequest {
 
 		let name = '';
 		let avatar = '';
-		if (role === UserRole.admin) name = 'Admin';
-		else {
+		if (role === UserRole.admin) {
+			name = 'Admin';
+		} else {
 			try {
 				if (role === UserRole.hr) {
 					const [hrResult] = (await pool.execute(getHrName, {
@@ -84,7 +108,9 @@ export class AuthRecord implements UserLoginRequest {
 							? ''
 							: traineeResult[0].lastName;
 					fullName = firstName + ' ' + lastName;
-					if (fullName.trim() === '') fullName = email;
+					if (fullName.trim() === '') {
+						fullName = email;
+					}
 					name = fullName;
 
 					avatar =
@@ -134,28 +160,5 @@ export class AuthRecord implements UserLoginRequest {
 		});
 
 		return token;
-	}
-
-	//static
-	static async findTokenId(
-		currentTokenId: string,
-	): Promise<{ currentTokenId: string } | null> {
-		const [result] = (await pool.execute(findTokenId, {
-			currentTokenId,
-		})) as [{ currentTokenId: string }[], FieldPacket[]];
-
-		return result.length === 0 ? null : result[0];
-	}
-
-	static async logout(id: string) {
-		await pool.execute(logout, {
-			id,
-		});
-	}
-
-	static async changePassword(id: string, newPassword: string) {
-		const hashPwd = hashPassword(newPassword);
-
-		await pool.execute(changePassword, { id, hashPwd });
 	}
 }

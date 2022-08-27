@@ -2,7 +2,7 @@ import express = require('express');
 import { TraineesController } from '../controllers/trainees/trainees.controller';
 import passport from 'passport';
 
-const traineesRouter = express.Router();
+export const traineesRouter = express.Router();
 
 traineesRouter
 	.post(
@@ -40,5 +40,3 @@ traineesRouter
 		passport.authenticate('jwt', { session: false }),
 		TraineesController.getTrainees,
 	);
-
-export { traineesRouter };

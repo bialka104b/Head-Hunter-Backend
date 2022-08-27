@@ -11,9 +11,7 @@ const { interview, auth } = ValidationError.messages;
 
 class InterviewController {
 	static async addInterview(req: Request, res: Response): Promise<void> {
-		const trainee = await TraineeProfileRecord.getTraineeProfileById(
-			req.params.traineeId,
-		);
+		const trainee = await TraineeProfileRecord.getTraineeProfileById(req.params.traineeId);
 
 		if (trainee === null) {
 			throw new ValidationError(interview.id, 400);
@@ -29,24 +27,19 @@ class InterviewController {
 			throw new ValidationError(auth.notAuthorised, 400);
 		}
 
-		const hrMaxReservedStudents =
-			await HrProfileRecord.getHrMaxReservedStudentsInfo(hr.id);
-		const countOfInterviewByHr =
-			await InterviewRecord.getCountOfTraineesInterviewsForHr(hr.id);
+		const hrMaxReservedStudents = await HrProfileRecord.getHrMaxReservedStudentsInfo(hr.id);
+		const countOfInterviewByHr = await InterviewRecord.getCountOfTraineesInterviewsForHr(hr.id);
 
 		if (hrMaxReservedStudents <= countOfInterviewByHr) {
 			throw new ValidationError(interview.hrMaxReservedStudents, 400);
 		}
 
 		try {
-			let interview = await InterviewRecord.getTraineesInterviewIfExists(
-				hr.id,
-				trainee.userId,
-			);
+			let interview = await InterviewRecord.getTraineesInterviewIfExists(hr.id, trainee.userId);
 
 			if (interview) {
 				interview = new InterviewRecord(interview);
-				interview.setInterviewActive();
+				await interview.setInterviewActive();
 			} else {
 				interview = new InterviewRecord({
 					hrId: hr.id,
@@ -75,9 +68,7 @@ class InterviewController {
 
 	static async deleteInterview(req: Request, res: Response): Promise<void> {
 		const { hrId, traineeId } = req.body;
-		const trainee = await TraineeProfileRecord.getTraineeProfileById(
-			traineeId,
-		);
+		const trainee = await TraineeProfileRecord.getTraineeProfileById(traineeId);
 
 		if (trainee === null) {
 			throw new ValidationError(interview.id, 400);
@@ -93,12 +84,10 @@ class InterviewController {
 
 		try {
 			await InterviewRecord.deleteInterviewByTraineeId(hrId, traineeId);
-			const traineeInterviews =
-				await InterviewRecord.getInterviewByTraineeId(traineeId);
+			const traineeInterviews = await InterviewRecord.getInterviewByTraineeId(traineeId);
 
 			if (traineeInterviews !== null) {
 				const traineeProfile = new TraineeProfileRecord(trainee);
-
 				await traineeProfile.updateStatus(TraineeStatus.available);
 			}
 

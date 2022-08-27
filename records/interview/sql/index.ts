@@ -15,13 +15,6 @@ export const getInterviewById = `
 		WHERE traineeId = :traineeId
 	`;
 
-export const updateMe = `    UPDATE interviews
-		 SET hrId         = :hrId,
-			 traineeId    = :traineeId,
-			 scheduledFor = :scheduledFor
-		 WHERE id = :id
-	`;
-
 export const deleteInterviewById = `
 		UPDATE interviews
 		SET isActive = false

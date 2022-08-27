@@ -10,15 +10,11 @@ import { sendRegisterMail } from '../../mailService/sendMail';
 
 const { readFile } = require('fs').promises;
 
-const {
-	notAuthorised,
-	incorrectId,
-} =
-	ValidationError.messages.auth;
+const { notAuthorised, incorrectId } = ValidationError.messages.auth;
 
 class AdminController {
 
-	static async deleteUser(req: Request, res: Response) {
+	static async deleteUser(req: Request, res: Response): Promise<void> {
 		const { id } = req.body;
 		const { role } = req.user as UserRecord;
 
@@ -31,7 +27,6 @@ class AdminController {
 		}
 
 		try {
-
 			await UserRecord.deleteUserById(id);
 
 			res.status(200).json(
@@ -48,7 +43,7 @@ class AdminController {
 		}
 	}
 
-	static async importTraineesFromCsvFile(req: Request, res: Response) {
+	static async importTraineesFromCsvFile(req: Request, res: Response): Promise<void> {
 		try {
 			const file: string = await readFile(req.file.path, 'utf8');
 			const convertToJSONFile = parse(file, {
@@ -71,7 +66,7 @@ class AdminController {
 			let countOfAddedTrainee = 0;
 			const traineeWithBadData = [];
 
-			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i]) || JSONListOfImportTrainees.find(el => el.hasOwnProperty("__parsed_extra"))) {
+			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i]) || JSONListOfImportTrainees.find(el => el.hasOwnProperty('__parsed_extra'))) {
 				res
 					.status(400)
 					.json(jsonResponse({

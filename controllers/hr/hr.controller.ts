@@ -13,7 +13,7 @@ const { hrAlreadyExist, hrNotExist } = ValidationError.messages.hr;
 const { incorrectEmail } = ValidationError.messages.recordInstanceInit.user;
 
 class hrController {
-	static async addProfile(req: Request, res: Response) {
+	static async addProfile(req: Request, res: Response): Promise<void> {
 		const { email, maxReservedStudents, company, fullName } = req.body;
 
 		if (!email.includes('@')) {
@@ -54,7 +54,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "HR's profile successfully added.",
+					message: 'HR\'s profile successfully added.',
 					data: {
 						hr: await HrProfileRecord.getHrProfileById(user.id),
 					},
@@ -79,7 +79,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Hr's list successfully fetched.",
+					message: 'Hr\'s list successfully fetched.',
 					data: {
 						count,
 						page,
@@ -93,12 +93,10 @@ class hrController {
 		}
 	}
 
-	static async updateMaxReservedStudents(req: Request, res: Response) {
+	static async updateMaxReservedStudents(req: Request, res: Response): Promise<void> {
 		const user = req.user as UserRecord;
-		const { id } = req.body;
-
+		const { id, maxReservedStudents } = req.body;
 		const hrId = String(id);
-		const maxReservedStudents = Number(req.body.maxReservedStudents);
 
 		if (user.role !== UserRole.admin) {
 			throw new ValidationError(notAuthorised, 400);
@@ -113,18 +111,16 @@ class hrController {
 		try {
 			await HrProfileRecord.updateMaxReservedStudents(
 				hrId,
-				maxReservedStudents,
+				Number(maxReservedStudents),
 			);
 
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Hr's list successfully fetched.",
+					message: 'Hr\'s list successfully fetched.',
 					data: {
-						maxReservedStudents: await (
-							await HrProfileRecord.getHrProfileById(hrId)
-						).maxReservedStudents,
+						maxReservedStudents: (await HrProfileRecord.getHrProfileById(hrId)).maxReservedStudents,
 					},
 				}),
 			);
