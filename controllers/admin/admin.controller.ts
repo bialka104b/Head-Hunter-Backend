@@ -71,7 +71,7 @@ class AdminController {
 			let countOfAddedTrainee = 0;
 			const traineeWithBadData = [];
 
-			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i])) {
+			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i]) || JSONListOfImportTrainees.find(el => el.hasOwnProperty("__parsed_extra"))) {
 				res
 					.status(400)
 					.json(jsonResponse({
