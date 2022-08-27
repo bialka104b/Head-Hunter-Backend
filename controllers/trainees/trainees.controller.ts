@@ -173,54 +173,6 @@ class TraineesController {
 		}
 	}
 
-	static async getInterviewsTraineesList(req: Request, res: Response): Promise<void> {
-		const { id, role } = req.user as UserRecord;
-
-		if (role !== UserRole.hr) {
-			throw new ValidationError(notAuthorised, 400);
-		}
-
-		try {
-			const count =
-				await InterviewRecord.getCountOfTraineesInterviewsForHr(id);
-			const limit = Number(req.params.limit);
-			const pages = Math.ceil(count / limit);
-			let currentPage = Number(req.params.currentPage);
-
-			currentPage = paginationValidation(currentPage, pages);
-
-			const offsetElement = limit * (currentPage - 1);
-			const traineesIdList =
-				await InterviewRecord.getInterviewsTraineeList(
-					id,
-					limit,
-					offsetElement,
-				);
-
-			const interviewsTraineesList = [];
-
-			if (traineesIdList !== null) {
-				for (const { traineeId } of traineesIdList) {
-					const traineeInfo = await TraineeProfileRecord.getTraineesInfoForTraineesInterviewsListById(traineeId);
-					if (traineeInfo !== null) {
-						interviewsTraineesList.push(traineeInfo);
-					}
-				}
-			}
-
-			res.status(200).json(
-				jsonResponse({
-					code: 200,
-					status: JsonResponseStatus.success,
-					message: 'Trainee\'s profile successfully fetched.',
-					data: { interviewsTraineesList },
-				}),
-			);
-		} catch (e) {
-			console.log(e);
-		}
-	}
-
 	static async editProfile(req: Request, res: Response) {
 		const {
 			userId,

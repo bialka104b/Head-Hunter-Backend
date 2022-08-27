@@ -20,11 +20,6 @@ traineesRouter
 		passport.authenticate('jwt', { session: false }),
 		TraineesController.getAllListedTrainees,
 	)
-	.get(
-		'/interviewsList/:limit/:currentPage',
-		passport.authenticate('jwt', { session: false }),
-		TraineesController.getInterviewsTraineesList,
-	)
 	.post(
 		'/editProfile',
 		passport.authenticate('jwt', { session: false }),
