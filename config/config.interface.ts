@@ -10,4 +10,8 @@ export interface Config {
 		passportSecretOrKey: string;
 		salt: string;
 	};
+	email: {
+		email: string;
+		pass: string;
+	},
 }

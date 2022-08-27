@@ -7,18 +7,15 @@ import { parse } from 'papaparse';
 import { getRandomPassword } from '../../utils/getRandomPassword';
 import { TraineeScoreRecord } from '../../records/trainee-score/trainee-score.record';
 import { sendRegisterMail } from '../../mailService/sendMail';
+import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
 
 const { readFile } = require('fs').promises;
 
-const {
-	notAuthorised,
-	incorrectId,
-} =
-	ValidationError.messages.auth;
+const { notAuthorised, incorrectId } = ValidationError.messages.auth;
 
 class AdminController {
 
-	static async deleteUser(req: Request, res: Response) {
+	static async deleteUser(req: Request, res: Response): Promise<void> {
 		const { id } = req.body;
 		const { role } = req.user as UserRecord;
 
@@ -31,7 +28,6 @@ class AdminController {
 		}
 
 		try {
-
 			await UserRecord.deleteUserById(id);
 
 			res.status(200).json(
@@ -48,7 +44,7 @@ class AdminController {
 		}
 	}
 
-	static async importTraineesFromCsvFile(req: Request, res: Response) {
+	static async importTraineesFromCsvFile(req: Request, res: Response): Promise<void> {
 		try {
 			const file: string = await readFile(req.file.path, 'utf8');
 			const convertToJSONFile = parse(file, {
@@ -71,7 +67,7 @@ class AdminController {
 			let countOfAddedTrainee = 0;
 			const traineeWithBadData = [];
 
-			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i]) || JSONListOfImportTrainees.find(el => el.hasOwnProperty("__parsed_extra"))) {
+			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i]) || JSONListOfImportTrainees.find(el => el.hasOwnProperty('__parsed_extra'))) {
 				res
 					.status(400)
 					.json(jsonResponse({
@@ -101,11 +97,21 @@ class AdminController {
 								bonusProjectUrls: trainee.bonusProjectUrls,
 							});
 
+							const traineeProfile = new TraineeProfileRecord({
+								githubUsername: '',
+								firstName: 'empty',
+								lastName: 'empty',
+								projectUrls: [],
+								expectedContractType: [],
+							})
+
 							const userId = await user.insertMe();
 
 							traineeScore.userId = userId;
+							traineeProfile.userId = userId
 
 							await traineeScore.insertMe();
+							await traineeProfile.insertMe();
 
 							await sendRegisterMail(user.email, userId, user.registerToken);
 

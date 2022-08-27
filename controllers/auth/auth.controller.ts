@@ -19,7 +19,7 @@ const {
 } = ValidationError.messages.auth;
 
 class AuthController {
-	static async login(req: Request, res: Response) {
+	static async login(req: Request, res: Response): Promise<void> {
 		const user = new AuthRecord(req.body);
 
 		try {
@@ -59,7 +59,7 @@ class AuthController {
 		}
 	}
 
-	static async refresh(req: Request, res: Response) {
+	static async refresh(req: Request, res: Response): Promise<void> {
 		const { role, id, name, avatar } = req.user as UserEntity;
 
 		res.json(
@@ -78,7 +78,7 @@ class AuthController {
 		);
 	}
 
-	static async logout(req: Request, res: Response) {
+	static async logout(req: Request, res: Response): Promise<void> {
 		const { id } = req.user as UserRecord;
 
 		try {
@@ -98,7 +98,7 @@ class AuthController {
 		}
 	}
 
-	static async changePassword(req: Request, res: Response) {
+	static async changePassword(req: Request, res: Response): Promise<void> {
 		const { id, oldPassword, newPassword } = req.body;
 
 		const user = await UserRecord.getUserById(id);
@@ -108,10 +108,7 @@ class AuthController {
 			throw new ValidationError(notAuthorised, 401);
 		}
 
-		if (
-			hashPassword(newPassword) === user.password ||
-			oldPassword === newPassword
-		) {
+		if (hashPassword(newPassword) === user.password || oldPassword === newPassword) {
 			throw new ValidationError(passwordIsTheSame, 200);
 		}
 
@@ -137,7 +134,7 @@ class AuthController {
 		}
 	}
 
-	static async forgotPassword(req: Request, res: Response) {
+	static async forgotPassword(req: Request, res: Response): Promise<void> {
 		const { email } = req.body;
 
 		if (!email.includes('@')) {
@@ -173,19 +170,14 @@ class AuthController {
 		}
 	}
 
-	static async createPassword(req: Request, res: Response) {
+	static async createPassword(req: Request, res: Response): Promise<void> {
 		const { password } = req.body;
-		const {
-			id,
-			registerToken,
-		} = req.params
-
-		console.log({ id , registerToken});
+		const { id, registerToken } = req.params;
 
 		const userById = await UserRecord.getInactiveUserById(id);
 
-		if(userById.registerToken !== registerToken) {
-			throw new ValidationError(notAuthorised, 400)
+		if (userById.registerToken !== registerToken) {
+			throw new ValidationError(notAuthorised, 400);
 		}
 
 		if (!userById) {

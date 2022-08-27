@@ -1,6 +1,7 @@
 import { TraineeStatus } from '../../../types';
 
-export const insertMe = `
+export const insertMe =
+	`
 		INSERT INTO trainee_profile
 		VALUES (:id,
 				:tel,
@@ -23,9 +24,11 @@ export const insertMe = `
 				:registrationUrl,
 				:userId,
 				:createdAt)
-	`;
+	`
+;
 
-export const updateTrainee = `
+export const updateTrainee =
+	`
 		UPDATE trainee_profile
 		SET tel                   = :tel,
 			firstName             = :firstName,
@@ -44,26 +47,34 @@ export const updateTrainee = `
 			workExperience        = :workExperience,
 			courses               = :courses
 		WHERE userId = :userId
-	`;
+	`
+;
 
-export const updateStatus = `
+export const updateStatus =
+	`
 		UPDATE trainee_profile
 		SET status = :status
 		WHERE id = :id
-	`;
+	`
+;
 
-export const getAllTraineesProfiles = `
+export const getAllTraineesProfiles =
+	`
 		SELECT *
 		FROM trainee_profile
-	`;
+	`
+;
 
-export const getTraineeProfileById = `
+export const getTraineeProfileById =
+	`
 		SELECT *
 		FROM trainee_profile
 		WHERE userId = :id
-	`;
+	`
+;
 
-export const getFullTraineeInfo = `
+export const getFullTraineeInfo =
+	`
 		SELECT users.id,
 			   users.email,
 			   ts.bonusProjectUrls,
@@ -92,9 +103,11 @@ export const getFullTraineeInfo = `
 				 JOIN trainee_profile tp on users.id = tp.userId
 				 JOIN trainee_score ts on users.id = ts.userId
 		WHERE users.id = :id
-	`;
+	`
+;
 
-export const getAllListedTrainees = `
+export const getAllListedTrainees =
+	`
 		SELECT users.id,
 			   email,
 			   firstName,
@@ -117,9 +130,11 @@ export const getAllListedTrainees = `
 			AND tp.status != 'hired'
 			LIMIT :limit
 			OFFSET :offsetElement
-	`;
+	`
+;
 
-export const getTraineesInfoForTraineesInterviewsListById = `
+export const getTraineesInfoForTraineesInterviewsListById =
+	`
 		SELECT users.id,
 			   email,
 			   firstName,
@@ -140,13 +155,16 @@ export const getTraineesInfoForTraineesInterviewsListById = `
 		WHERE users.id = :id
 			AND tp.status != 'hired'
 			AND users.isActive = true
-	`;
+	`
+;
 
-export const getCountOfTrainees = `
+export const getCountOfTrainees =
+	`
 		SELECT COUNT(*) as count
 		FROM trainee_profile
 		WHERE status != 'hired'
-	`;
+	`
+;
 
 export const getTraineesList = (
 	status: string,

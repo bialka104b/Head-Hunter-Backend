@@ -1,26 +1,28 @@
 import { FieldPacket } from 'mysql2';
-import { UserEntity, UserRole, UnregisterUsersResponse } from '../../types';
+import { UnregisterUsersResponse, UserEntity, UserRole } from '../../types';
 import { ValidationError } from '../../utils/ValidationError';
 import { pool } from '../../db/pool';
 import { v4 as uuid } from 'uuid';
 import {
+	activateUser,
+	createPassword,
 	deleteUserById,
 	findUserByEmail,
+	getAdminEmail,
 	getAllUsers,
+	getInactiveUserById,
 	getUserById,
 	insertMe,
 	unregisterUsers,
-	updateMe,
 	updatePassword,
-	getInactiveUserById,
-	activateUser,
-	createPassword,
-	getAdminEmail
 } from './sql';
 import { hashPassword } from '../../utils/hashPassword';
 
-const { incorrectEmail, incorrectPassword, incorrectRole } =
-	ValidationError.messages.recordInstanceInit.user;
+const {
+	incorrectEmail,
+	incorrectPassword,
+	incorrectRole,
+} = ValidationError.messages.recordInstanceInit.user;
 
 type DbResult = [UserRecord[], FieldPacket[]];
 type DbUnregisterUsersResponse = [UnregisterUsersResponse[], FieldPacket[]];
@@ -49,83 +51,6 @@ export class UserRecord implements UserEntity {
 		this.createdAt = obj.createdAt ?? new Date();
 		this.isActive = obj.isActive ?? true;
 		this.validate();
-	}
-
-	//dynamic:
-	private validate() {
-		if (!this.email || !this.email.includes('@')) {
-			throw new ValidationError(incorrectEmail, 400);
-		}
-
-		if (!this.password || this.password.length < 6) {
-			throw new ValidationError(incorrectPassword, 400);
-		}
-
-		if (!this.role || !Object.values(UserRole).includes(this.role)) {
-			throw new ValidationError(incorrectRole, 400);
-		}
-	}
-
-	async insertMe(): Promise<string> {
-		const {
-			id,
-			email,
-			password,
-			role,
-			currentTokenId,
-			registerToken,
-			createdAt,
-			isActive,
-		} = this;
-
-		await pool.execute(insertMe, {
-			id,
-			email,
-			password: hashPassword(password),
-			role,
-			currentTokenId,
-			registerToken,
-			createdAt,
-			isActive,
-		});
-		return id;
-	}
-
-	/*Function doesn't include password change to avoid hashing previous password if it is not changed. */
-	async updateMe(): Promise<string> {
-		const { id, email, role, currentTokenId } = this;
-
-		await pool.execute(updateMe, {
-			id,
-			email,
-			role,
-			currentTokenId,
-		});
-		return id;
-	}
-
-	async updatePassword() {
-		const { id, password } = this;
-		await pool.execute(updatePassword, {
-			id,
-			password: hashPassword(password),
-		});
-	}
-
-	async createPassword() {
-		const { id, password } = this;
-		await pool.execute(createPassword, {
-			id,
-			password: hashPassword(password),
-			registerToken: null,
-		});
-	}
-
-	async activate() {
-		const {id} = this;
-		await pool.execute(activateUser, {
-			id,
-		})
 	}
 
 	//static:
@@ -161,10 +86,7 @@ export class UserRecord implements UserEntity {
 	}
 
 	static async findUnregisterUsers(): Promise<UnregisterUsersResponse[]> {
-		const [resp] = (await pool.execute(
-			unregisterUsers,
-		)) as DbUnregisterUsersResponse;
-
+		const [resp] = (await pool.execute(unregisterUsers)) as DbUnregisterUsersResponse;
 		return resp.length === 0 ? null : resp;
 	}
 
@@ -172,9 +94,72 @@ export class UserRecord implements UserEntity {
 		await pool.execute(activateUser, { id });
 	}
 
-	static async getAdminEmail(): Promise<{email: string}[]> {
-		const [resp] = (await pool.execute(getAdminEmail) as DbAdminEmailResponse)
-
+	static async getAdminEmail(): Promise<{ email: string }[]> {
+		const [resp] = (await pool.execute(getAdminEmail) as DbAdminEmailResponse);
 		return resp ?? null;
+	}
+
+	async insertMe(): Promise<string> {
+		const {
+			id,
+			email,
+			password,
+			role,
+			currentTokenId,
+			registerToken,
+			createdAt,
+			isActive,
+		} = this;
+
+		await pool.execute(insertMe, {
+			id,
+			email,
+			password: hashPassword(password),
+			role,
+			currentTokenId,
+			registerToken,
+			createdAt,
+			isActive,
+		});
+		return id;
+	}
+
+	async updatePassword() {
+		const { id, password } = this;
+		await pool.execute(updatePassword, {
+			id,
+			password: hashPassword(password),
+		});
+	}
+
+	async createPassword() {
+		const { id, password } = this;
+		await pool.execute(createPassword, {
+			id,
+			password: hashPassword(password),
+			registerToken: null,
+		});
+	}
+
+	async activate() {
+		const { id } = this;
+		await pool.execute(activateUser, {
+			id,
+		});
+	}
+
+	//dynamic:
+	private validate() {
+		if (!this.email || !this.email.includes('@')) {
+			throw new ValidationError(incorrectEmail, 400);
+		}
+
+		if (!this.password || this.password.length < 6) {
+			throw new ValidationError(incorrectPassword, 400);
+		}
+
+		if (!this.role || !Object.values(UserRole).includes(this.role)) {
+			throw new ValidationError(incorrectRole, 400);
+		}
 	}
 }

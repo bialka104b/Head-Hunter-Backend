@@ -19,17 +19,16 @@ import {
 } from '../../mailService/sendMail';
 import { HrProfileRecord } from '../../records/hr-profile/hr-profile.record';
 
-const { notAuthorised, incorrectId, incorrectRole } =
-	ValidationError.messages.auth;
-const { traineeNotExist } =
-	ValidationError.messages.recordInstanceInit.traineeProfile;
+const {
+	notAuthorised,
+	incorrectId,
+	incorrectRole,
+} = ValidationError.messages.auth;
+const { traineeNotExist } = ValidationError.messages.recordInstanceInit.traineeProfile;
 const { userIsActive } = ValidationError.messages.recordInstanceInit.user;
 
 class TraineesController {
-	static async getTrainees(
-		req: Request<{}, {}, {}, TraineeFilterRequest>,
-		res: Response,
-	): Promise<void> {
+	static async getTrainees(req: Request<{}, {}, {}, TraineeFilterRequest>, res: Response): Promise<void> {
 		const {
 			search,
 			courseCompletion,
@@ -48,8 +47,7 @@ class TraineesController {
 		}: TraineeFilterRequest = req.query;
 		const { id, role } = req.user as UserRecord;
 
-		const userId =
-			role === UserRole.hr && status === 'interviewed' ? id : null;
+		const userId = role === UserRole.hr && status === 'interviewed' ? id : null;
 
 		try {
 			const count = await TraineeProfileRecord.getCountOfTraineesList(
@@ -116,10 +114,7 @@ class TraineesController {
 		}
 	}
 
-	static async getAllListedTrainees(
-		req: Request,
-		res: Response,
-	): Promise<void> {
+	static async getAllListedTrainees(req: Request, res: Response): Promise<void> {
 		try {
 			const count = await TraineeProfileRecord.getCountOfTrainees();
 			const limit = Number(req.params.limit);
@@ -130,12 +125,8 @@ class TraineesController {
 			currentPage = paginationValidation(currentPage, pages);
 
 			const offsetElement = limit * (currentPage - 1);
+			const listedTrainees = await TraineeProfileRecord.getAllListedTrainees(limit, offsetElement);
 
-			const listedTrainees =
-				await TraineeProfileRecord.getAllListedTrainees(
-					limit,
-					offsetElement,
-				);
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
@@ -162,9 +153,7 @@ class TraineesController {
 			throw new ValidationError(notAuthorised, 400);
 		}
 
-		const traineeProfile = await TraineeProfileRecord.getFullTraineeInfo(
-			traineeId,
-		);
+		const traineeProfile = await TraineeProfileRecord.getFullTraineeInfo(traineeId);
 
 		if (!traineeProfile) {
 			throw new ValidationError(traineeNotExist, 404);
@@ -175,62 +164,8 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
+					message: 'Trainee\'s profile successfully fetched.',
 					data: { traineeProfile },
-				}),
-			);
-		} catch (e) {
-			console.log(e);
-		}
-	}
-
-	static async getInterviewsTraineesList(
-		req: Request,
-		res: Response,
-	): Promise<void> {
-		const { id, role } = req.user as UserRecord;
-
-		if (role !== UserRole.hr) {
-			throw new ValidationError(notAuthorised, 400);
-		}
-
-		try {
-			const count =
-				await InterviewRecord.getCountOfTraineesInterviewsForHr(id);
-			const limit = Number(req.params.limit);
-			const pages = Math.ceil(count / limit);
-			let currentPage = Number(req.params.currentPage);
-
-			currentPage = paginationValidation(currentPage, pages);
-
-			const offsetElement = limit * (currentPage - 1);
-			const traineesIdList =
-				await InterviewRecord.getInterviewsTraineeList(
-					id,
-					limit,
-					offsetElement,
-				);
-
-			const interviewsTraineesList = [];
-
-			if (traineesIdList !== null) {
-				for (const { traineeId } of traineesIdList) {
-					const traineeInfo =
-						await TraineeProfileRecord.getTraineesInfoForTraineesInterviewsListById(
-							traineeId,
-						);
-					if (traineeInfo !== null) {
-						interviewsTraineesList.push(traineeInfo);
-					}
-				}
-			}
-
-			res.status(200).json(
-				jsonResponse({
-					code: 200,
-					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully fetched.",
-					data: { interviewsTraineesList },
 				}),
 			);
 		} catch (e) {
@@ -312,35 +247,24 @@ class TraineesController {
 		}
 
 		try {
-			const trainee = await TraineeProfileRecord.getTraineeProfileById(
-				user.id,
-			);
+			const trainee = await TraineeProfileRecord.getTraineeProfileById(user.id);
 
 			if (!trainee) {
-				const newTrainee = new TraineeProfileRecord(
-					traineeProfileValues,
-				);
+				const newTrainee = new TraineeProfileRecord(traineeProfileValues);
 
 				newTrainee.userId = user.id;
-
 				await newTrainee.insertMe();
 			} else {
-				await TraineeProfileRecord.updateTrainee(
-					traineeProfileValues,
-					user.id,
-				);
+				await TraineeProfileRecord.updateTrainee(traineeProfileValues, user.id);
 			}
 
 			res.status(200).json(
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's profile successfully update.",
+					message: 'Trainee\'s profile successfully update.',
 					data: {
-						trainee:
-							await TraineeProfileRecord.getTraineeProfileById(
-								user.id,
-							),
+						trainee: await TraineeProfileRecord.getTraineeProfileById(user.id),
 					},
 				}),
 			);
@@ -417,7 +341,7 @@ class TraineesController {
 					jsonResponse({
 						code: 200,
 						status: JsonResponseStatus.success,
-						message: "Trainee's is hire. Congratulations !",
+						message: 'Trainee\'s is hire. Congratulations !',
 					}),
 				);
 		} catch (e) {
@@ -460,7 +384,7 @@ class TraineesController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: "Trainee's is successfully reactivate.",
+					message: 'Trainee\'s is successfully reactivate.',
 				}),
 			);
 		} catch (e) {

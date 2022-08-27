@@ -17,11 +17,11 @@ const { incorrectRelationId, incorrectNameOrCompany } =
 	ValidationError.messages.recordInstanceInit.hrProfile;
 
 type DbResult = [HrProfileRecord[], FieldPacket[]];
+type DBResultCountOfHr = [{ count: number }[], FieldPacket[]];
 type DBResultHrMaxReservedStudentsInfo = [
 	{ maxReservedStudents: number }[],
 	FieldPacket[],
 ];
-type DBResultCountOfHr = [{ count: number }[], FieldPacket[]];
 
 export class HrProfileRecord implements HrProfileEntity {
 	id: string;
@@ -41,36 +41,6 @@ export class HrProfileRecord implements HrProfileEntity {
 		this.userId = obj.userId;
 		this.createdAt = obj.createdAt ?? new Date();
 		this.validate();
-	}
-
-	private validate() {
-		if (!this.fullName || !this.company) {
-			throw new ValidationError(incorrectNameOrCompany, 400);
-		} else if (!this.userId) {
-			console.log(this.userId);
-			throw new ValidationError(incorrectRelationId, 400);
-		}
-	}
-
-	//dynamic:
-	async insertMe(): Promise<string> {
-		const {
-			id,
-			fullName,
-			company,
-			maxReservedStudents,
-			userId,
-			createdAt,
-		} = this;
-		await pool.execute(insertMe, {
-			id,
-			fullName,
-			company,
-			maxReservedStudents,
-			userId,
-			createdAt,
-		});
-		return id;
 	}
 
 	//static:
@@ -126,5 +96,35 @@ export class HrProfileRecord implements HrProfileEntity {
 			maxReservedStudents,
 			userId,
 		});
+	}
+
+	//dynamic:
+	async insertMe(): Promise<string> {
+		const {
+			id,
+			fullName,
+			company,
+			maxReservedStudents,
+			userId,
+			createdAt,
+		} = this;
+		await pool.execute(insertMe, {
+			id,
+			fullName,
+			company,
+			maxReservedStudents,
+			userId,
+			createdAt,
+		});
+		return id;
+	}
+
+	private validate() {
+		if (!this.fullName || !this.company) {
+			throw new ValidationError(incorrectNameOrCompany, 400);
+		} else if (!this.userId) {
+			console.log(this.userId);
+			throw new ValidationError(incorrectRelationId, 400);
+		}
 	}
 }

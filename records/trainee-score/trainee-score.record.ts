@@ -1,6 +1,6 @@
 import {
 	TraineeScoreEntity,
-} from '../../types/trainee-score/trainee-score.entity';
+} from '../../types';
 import { FieldPacket } from 'mysql2';
 import { v4 as uuid } from 'uuid';
 import { pool } from '../../db/pool';
@@ -8,13 +8,12 @@ import {
 	getAllTraineeScore,
 	getTraineeScoreById,
 	insertMe,
-	updateMe,
 } from './sql';
 import { ValidationError } from '../../utils/ValidationError';
 
-type DbResult = [TraineeScoreRecord[], FieldPacket[]];
-
 const { incorrectScore } = ValidationError.messages.recordInstanceInit.traineeScore;
+
+type DbResult = [TraineeScoreRecord[], FieldPacket[]];
 
 export class TraineeScoreRecord implements TraineeScoreEntity {
 	id: string;
@@ -68,30 +67,6 @@ export class TraineeScoreRecord implements TraineeScoreEntity {
 			createdAt,
 		} = this;
 		await pool.execute(insertMe, {
-			id,
-			courseCompletion,
-			courseEngagment,
-			projectDegree,
-			teamProjectDegree,
-			bonusProjectUrls: JSON.stringify(bonusProjectUrls),
-			userId,
-			createdAt,
-		});
-		return id;
-	}
-
-	async updateMe() {
-		const {
-			id,
-			courseCompletion,
-			courseEngagment,
-			projectDegree,
-			teamProjectDegree,
-			bonusProjectUrls,
-			userId,
-			createdAt,
-		} = this;
-		await pool.execute(updateMe, {
 			id,
 			courseCompletion,
 			courseEngagment,
