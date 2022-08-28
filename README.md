@@ -34,10 +34,12 @@
 
 <p align="center">
   <a href="#dart-about">About</a> &#xa0; | &#xa0;
-  <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
+  <a href="#example-data">ExampleData</a> &#xa0; | &#xa0;
   <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
   <a href="#white_check_mark-requirements">Requirements</a> &#xa0; | &#xa0;
   <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
+  <a href="#structure-of-database">Database</a> &#xa0; | &#xa0;
+  <a href="#api-request">Api</a> &#xa0; | &#xa0;
   <a href="#memo-license">License</a> &#xa0; | &#xa0;
   <a href="https://github.com/bialka104b" target="_blank">Author</a>
 </p>
@@ -47,12 +49,23 @@
 ## :dart: About ##
 
 This is a group project at the end of MegaK course. This backend allows to searching and hire students who ended a course. Project was made for 100% by students of MegaK.
+Frontend Of project: https://github.com/airfortech/Head-Hunter-Frontend
 
-## :sparkles: Features ##
+## Example Data ##
 
-:heavy_check_mark: Feature 1;\
-:heavy_check_mark: Feature 2;\
-:heavy_check_mark: Feature 3;
+Example data to test the application:
+
+Admin:
+	email: admin@admin.admin
+	password: test1234
+
+HR:
+email: hr@hr.hr
+password: test1234
+
+trainee:
+email: trainee@trainee.trainee
+password: test1234
 
 ## :rocket: Technologies ##
 
