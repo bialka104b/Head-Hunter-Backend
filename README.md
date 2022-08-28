@@ -104,6 +104,34 @@ $ npm start:dev
 ![tekst alternatywny](images/db/trainee_score.PNG)
 ![tekst alternatywny](images/db/users.PNG)
 
+## API Request
+ - Login by admin
+   ![tekst alternatywny](images/loginAdmin.PNG)
+ - Login by Hr
+   ![tekst alternatywny](images/loginHR.PNG)
+ - Login by student
+   ![tekst alternatywny](images/loginTrainee.PNG)
+ - List of students
+   ![tekst alternatywny](images/traineeList.PNG)
+ - List of Hr
+   ![tekst alternatywny](images/hrList.PNG)
+ - Import trainee from CSV file
+   ![tekst alternatywny](images/importTraineeFromCsvFile.PNG)
+ - Add Hr
+   ![tekst alternatywny](images/addHR.PNG)
+ - bad CSV file
+   ![tekst alternatywny](images/badCsvFile.PNG)
+ - Add interview
+   ![tekst alternatywny](images/addInterview.PNG)
+ - Delete Interview
+   ![tekst alternatywny](images/deleteInterview.PNG)
+ - Change password
+   ![tekst alternatywny](images/changePassword.PNG)
+ - Student profile
+   ![tekst alternatywny](images/traineeProfile.PNG)
+ - Update student profile
+   ![tekst alternatywny](images/updateTraineeProfile.PNG)
+
 ## :memo: License ##
 
 This project is under license from MIT. For more details, see the [LICENSE](LICENSE.md) file.
