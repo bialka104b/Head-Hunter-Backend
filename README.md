@@ -46,7 +46,7 @@
 
 ## :dart: About ##
 
-Describe your project
+This is a group project at the end of MegaK course. This backend allows to searching and hire students who ended a course. Project was made for 100% by students of MegaK.
 
 ## :sparkles: Features ##
 
@@ -60,15 +60,21 @@ The following tools were used in this project:
 
 - [Expo](https://expo.io/)
 - [Node.js](https://nodejs.org/en/)
-- [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
+- [Express](https://expressjs.com/)
 - [TypeScript](https://www.typescriptlang.org/)
+- [PassportJS](https://www.passportjs.org/)
+- [Papaparse](https://www.papaparse.com/)
+- [Nodemailer](https://nodemailer.com/about/)
+- multer
+- mysql2
 
 ## :white_check_mark: Requirements ##
 
 Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
 
 ## :checkered_flag: Starting ##
+
+Complete file config.ts
 
 ```bash
 # Clone this project
@@ -78,12 +84,15 @@ $ git clone https://github.com/bialka104b/head-hunter-backend
 $ cd head-hunter-backend
 
 # Install dependencies
-$ yarn
+$ npm install
+
+# Create database with random data
+$ npm db:build
 
 # Run the project
-$ yarn start
+$ npm start:dev
 
-# The server will initialize in the <http://localhost:3000>
+# The server will initialize in the <http://localhost:3001>
 ```
 
 ## :memo: License ##
