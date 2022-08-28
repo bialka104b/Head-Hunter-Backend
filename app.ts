@@ -9,14 +9,14 @@ import { traineesRouter } from './routes/trainees.router';
 import { interviewRouter } from './routes/interviewRouter';
 import { adminRouter } from './routes/admin.router';
 import { changeInterviewTraineesStatus } from './utils/changeInterviewTraineesStatus';
+import { config } from './config/config';
 
-const port = process.env.PORT || 3001;
 const app = express();
 
 // middleware:
 app.use(
 	cors({
-		origin: 'http://localhost:3000',
+		origin: config.frontend.host,
 		credentials: true,
 		methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
 	}),
@@ -38,6 +38,6 @@ changeInterviewTraineesStatus();
 app.use(globalErrorHandler);
 
 // Run:
-app.listen(Number(port), '0.0.0.0', () => {
-	console.log(`Listening on: http://localhost:${port}`);
+app.listen(config.app.port, config.app.host, () => {
+	console.log(`Listening on: ${config.app.host}:${config.app.port}`);
 });
