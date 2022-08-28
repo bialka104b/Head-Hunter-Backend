@@ -49,7 +49,9 @@
 
 This is a group project at the end of MegaK course. This backend allows to searching and hire students who ended a course. Project was made for 100% by students of MegaK. </br>
 </br>
-Frontend of project: https://github.com/airfortech/Head-Hunter-Frontend
+Frontend of project: https://github.com/airfortech/Head-Hunter-Frontend </br>
+</br>
+App: https://head-hunter.airm.ct8.pl/
 
 ## Example Data ##
 
