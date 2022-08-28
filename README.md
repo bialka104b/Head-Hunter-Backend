@@ -49,21 +49,22 @@
 ## :dart: About ##
 
 This is a group project at the end of MegaK course. This backend allows to searching and hire students who ended a course. Project was made for 100% by students of MegaK. </br>
+</br>
 Frontend of project: https://github.com/airfortech/Head-Hunter-Frontend
 
 ## Example Data ##
 
 Example data to test the application:
 
-Admin:
+Admin: </br>
 	email: admin@admin.admin </br>
 	password: test1234 </br>
 </br>
-HR:
+HR: </br>
 	email: hr@hr.hr </br>
 	password: test1234 </br>
 </br>
-trainee:
+trainee: </br>
 	email: trainee@trainee.trainee </br>
 	password: test1234 </br>
 
