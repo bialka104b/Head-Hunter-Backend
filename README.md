@@ -60,12 +60,12 @@ Admin:
 	password: test1234
 
 HR:
-email: hr@hr.hr
-password: test1234
+	email: hr@hr.hr
+	password: test1234
 
 trainee:
-email: trainee@trainee.trainee
-password: test1234
+	email: trainee@trainee.trainee
+	password: test1234
 
 ## :rocket: Technologies ##
 
