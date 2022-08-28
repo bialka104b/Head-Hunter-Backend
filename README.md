@@ -74,7 +74,7 @@ Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) an
 
 ## :checkered_flag: Starting ##
 
-Complete file config.ts
+Complete file config/config.ts
 
 ```bash
 # Clone this project
@@ -94,6 +94,15 @@ $ npm start:dev
 
 # The server will initialize in the <http://localhost:3001>
 ```
+
+## Structure of Database
+
+![tekst alternatywny](images/db/tabele.PNG)
+![tekst alternatywny](images/db/hr_profile.PNG)
+![tekst alternatywny](images/db/interviews.PNG)
+![tekst alternatywny](images/db/trainee_profiles.PNG)
+![tekst alternatywny](images/db/trainee_score.PNG)
+![tekst alternatywny](images/db/users.PNG)
 
 ## :memo: License ##
 
