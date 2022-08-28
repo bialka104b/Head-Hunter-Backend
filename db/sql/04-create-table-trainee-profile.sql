@@ -4,7 +4,7 @@ CREATE TABLE trainee_profile
     tel                   VARCHAR(36),
     firstName             VARCHAR(256)        NOT NULL,
     lastName              VARCHAR(256)        NOT NULL,
-    githubUsername        VARCHAR(256) UNIQUE NOT NULL,
+    githubUsername        VARCHAR(256)		  NOT NULL,
     portfolioUrls         JSON,
     projectUrls           JSON                NOT NULL,
     bio                   TEXT,

@@ -34,25 +34,40 @@
 
 <p align="center">
   <a href="#dart-about">About</a> &#xa0; | &#xa0;
-  <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
+  <a href="#example-data">ExampleData</a> &#xa0; | &#xa0;
   <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
   <a href="#white_check_mark-requirements">Requirements</a> &#xa0; | &#xa0;
   <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
-  <a href="#memo-license">License</a> &#xa0; | &#xa0;
-  <a href="https://github.com/bialka104b" target="_blank">Author</a>
+  <a href="#structure-of-database">Database</a> &#xa0; | &#xa0;
+  <a href="#api-request">Api</a> &#xa0; | &#xa0;
+  <a href="#authors">Authors</a> &#xa0; | &#xa0;
 </p>
 
 <br>
 
 ## :dart: About ##
 
-Describe your project
+This is a group project at the end of MegaK course. This backend allows to searching and hire students who ended a course. Project was made for 100% by students of MegaK. </br>
+</br>
+Frontend of project: https://github.com/airfortech/Head-Hunter-Frontend </br>
+</br>
+App: https://head-hunter.airm.ct8.pl/
 
-## :sparkles: Features ##
+## Example Data ##
 
-:heavy_check_mark: Feature 1;\
-:heavy_check_mark: Feature 2;\
-:heavy_check_mark: Feature 3;
+Example data to test the application:
+
+Admin: </br>
+	email: admin@admin.admin </br>
+	password: test1234 </br>
+</br>
+HR: </br>
+	email: hr@hr.hr </br>
+	password: test1234 </br>
+</br>
+trainee: </br>
+	email: trainee@trainee.trainee </br>
+	password: test1234 </br>
 
 ## :rocket: Technologies ##
 
@@ -60,15 +75,21 @@ The following tools were used in this project:
 
 - [Expo](https://expo.io/)
 - [Node.js](https://nodejs.org/en/)
-- [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
+- [Express](https://expressjs.com/)
 - [TypeScript](https://www.typescriptlang.org/)
+- [PassportJS](https://www.passportjs.org/)
+- [Papaparse](https://www.papaparse.com/)
+- [Nodemailer](https://nodemailer.com/about/)
+- multer
+- mysql2
 
 ## :white_check_mark: Requirements ##
 
 Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
 
 ## :checkered_flag: Starting ##
+
+Complete file config/config.ts
 
 ```bash
 # Clone this project
@@ -78,21 +99,56 @@ $ git clone https://github.com/bialka104b/head-hunter-backend
 $ cd head-hunter-backend
 
 # Install dependencies
-$ yarn
+$ npm install
+
+# Create database with random data
+$ npm db:build
 
 # Run the project
-$ yarn start
+$ npm start:dev
 
-# The server will initialize in the <http://localhost:3000>
+# The server will initialize in the <http://localhost:3001>
 ```
 
-## :memo: License ##
+## Structure of Database
 
-This project is under license from MIT. For more details, see the [LICENSE](LICENSE.md) file.
+![tekst alternatywny](images/db/tabele.PNG)
+![tekst alternatywny](images/db/hr_profile.PNG)
+![tekst alternatywny](images/db/interviews.PNG)
+![tekst alternatywny](images/db/trainee_profiles.PNG)
+![tekst alternatywny](images/db/trainee_score.PNG)
+![tekst alternatywny](images/db/users.PNG)
 
+## API Request
+ - Login by admin
+   ![tekst alternatywny](images/loginAdmin.PNG)
+ - Login by Hr
+   ![tekst alternatywny](images/loginHR.PNG)
+ - Login by student
+   ![tekst alternatywny](images/loginTrainee.PNG)
+ - List of students
+   ![tekst alternatywny](images/traineeList.PNG)
+ - List of Hr
+   ![tekst alternatywny](images/hrList.PNG)
+ - Import trainee from CSV file
+   ![tekst alternatywny](images/importTraineeFromCsvFile.PNG)
+ - Add Hr
+   ![tekst alternatywny](images/addHR.PNG)
+ - bad CSV file
+   ![tekst alternatywny](images/badCsvFile.PNG)
+ - Add interview
+   ![tekst alternatywny](images/addInterview.PNG)
+ - Delete Interview
+   ![tekst alternatywny](images/deleteInterview.PNG)
+ - Change password
+   ![tekst alternatywny](images/changePassword.PNG)
+ - Student profile
+   ![tekst alternatywny](images/traineeProfile.PNG)
+ - Update student profile
+   ![tekst alternatywny](images/updateTraineeProfile.PNG)
 
-Made with :heart: by <a href="https://github.com/bialka104b" target="_blank">bialka104b</a>
-
-&#xa0;
-
-<a href="#top">Back to top</a>
+## Authors ##
+- https://github.com/ItachiPM
+- https://github.com/airfortech
+- https://github.com/sextus-empiricus
+- https://github.com/bialka104b

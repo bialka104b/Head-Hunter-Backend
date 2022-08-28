@@ -14,9 +14,29 @@ const generateAdmin = (): UserEntity => {
 	};
 };
 
+const generateExampleHr = (): UserEntity => {
+	return {
+		id: 'hr1',
+		email: 'hr@hr.hr',
+		role: UserRole.hr,
+		password: hashedPassword,
+		registerToken: null,
+	};
+}
+
+const generateExampleTrainee = (): UserEntity => {
+	return {
+		id: 'trainee1',
+		email: 'trainee@trainee.trainee',
+		role: UserRole.trainee,
+		password: hashedPassword,
+		registerToken: null,
+	};
+}
+
 const generateHrs = (amount: number): UserEntity[] => {
 	const hrsArr = [];
-	for (let i = 0; i < amount; i++) {
+	for (let i = 1; i < amount; i++) {
 		const hr = {
 			id: `hr${i + 1}`,
 			email: faker.internet.email(),
@@ -31,7 +51,7 @@ const generateHrs = (amount: number): UserEntity[] => {
 
 const generateTrainees = (amount: number): UserEntity[] => {
 	const hrsArr = [];
-	for (let i = 0; i < amount; i++) {
+	for (let i = 1; i < amount; i++) {
 		const trainee = {
 			id: `trainee${i + 1}`,
 			email: faker.internet.email(),
@@ -46,10 +66,14 @@ const generateTrainees = (amount: number): UserEntity[] => {
 
 const generateUsers = (hrsAmount: number, traineesAmount: number): UserEntity[] => {
 	const admin = generateAdmin();
+	const exampleHr = generateExampleHr();
+	const exampleTrainee = generateExampleTrainee();
 	const hrsArr = generateHrs(hrsAmount);
 	const traineesArr = generateTrainees(traineesAmount);
 	return [
 		admin,
+		exampleHr,
+		exampleTrainee,
 		...hrsArr,
 		...traineesArr,
 	];
