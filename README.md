@@ -40,8 +40,7 @@
   <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
   <a href="#structure-of-database">Database</a> &#xa0; | &#xa0;
   <a href="#api-request">Api</a> &#xa0; | &#xa0;
-  <a href="#memo-license">License</a> &#xa0; | &#xa0;
-  <a href="https://github.com/bialka104b" target="_blank">Author</a>
+  <a href="#authors">Authors</a> &#xa0; | &#xa0;
 </p>
 
 <br>
@@ -146,13 +145,8 @@ $ npm start:dev
  - Update student profile
    ![tekst alternatywny](images/updateTraineeProfile.PNG)
 
-## :memo: License ##
-
-This project is under license from MIT. For more details, see the [LICENSE](LICENSE.md) file.
-
-
-Made with :heart: by <a href="https://github.com/bialka104b" target="_blank">bialka104b</a>
-
-&#xa0;
-
-<a href="#top">Back to top</a>
+## Authors ##
+- https://github.com/ItachiPM
+- https://github.com/airfortech
+- https://github.com/sextus-empiricus
+- https://github.com/bialka104b
