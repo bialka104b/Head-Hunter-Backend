@@ -7,6 +7,7 @@ import { ValidationError } from '../../utils/ValidationError';
 import { hashPassword } from '../../utils/hashPassword';
 import { getRandomPassword } from '../../utils/getRandomPassword';
 import { sendResetPasswordMail } from '../../mailService/sendMail';
+import { config } from '../../config/config';
 
 const {
 	notAuthorised,
@@ -50,7 +51,7 @@ class AuthController {
 
 			res.cookie('jwt', login.token, {
 				secure: true,
-				domain: 'localhost',
+				// domain: config.frontend.host,
 				httpOnly: false,
 				maxAge: 1000 * 60 * 60 * 4,
 			}).json(response);
@@ -108,7 +109,10 @@ class AuthController {
 			throw new ValidationError(notAuthorised, 401);
 		}
 
-		if (hashPassword(newPassword) === user.password || oldPassword === newPassword) {
+		if (
+			hashPassword(newPassword) === user.password ||
+			oldPassword === newPassword
+		) {
 			throw new ValidationError(passwordIsTheSame, 200);
 		}
 

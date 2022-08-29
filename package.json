@@ -1,8 +1,8 @@
 {
 	"name": "head-hunter-backend",
 	"version": "1.0.0",
-	"description": "aplikacja backendowa do rekrutacji kandydatów",
-	"main": "index.js",
+	"description": "Backend app for recruiting students",
+	"main": "app.js",
 	"scripts": {
 		"start": "ts-node app.ts",
 		"start:dev": "tsnd app.ts",
@@ -10,7 +10,8 @@
 		"build": "tsc",
 		"test": "test",
 		"lint": "tslint --force --project tsconfig.json ./*/.ts -t verbose",
-		"db:build": "ts-node ./db/db-builder/index.ts"
+		"db:build": "ts-node ./db/db-builder/index.ts",
+		"db:build:production": "node ./db/db-builder/index.js HEAD_HUNTER_STAGE=production"
 	},
 	"repository": {
 		"type": "git",
@@ -28,6 +29,7 @@
 	},
 	"homepage": "https://github.com/bialka104b/Head-Hunter-Backend#readme",
 	"dependencies": {
+		"@faker-js/faker": "^7.4.0",
 		"bcrypt": "^5.0.1",
 		"body-parser": "^1.19.2",
 		"cli-progress": "^3.11.2",
@@ -43,12 +45,10 @@
 		"papaparse": "^5.3.2",
 		"passport": "^0.6.0",
 		"passport-jwt": "^4.0.0",
-		"typescript": "^4.7.4",
 		"uuid": "^8.3.2"
 	},
 	"devDependencies": {
 		"@types/papaparse": "^5.3.3",
-		"@faker-js/faker": "^7.4.0",
 		"@types/bcrypt": "^5.0.0",
 		"@types/cli-progress": "^3.11.0",
 		"@types/cookie-parser": "^1.4.3",

@@ -61,8 +61,8 @@ export class HrProfileRecord implements HrProfileEntity {
 	static async getHrList(limit: number, offsetElement: number) {
 		const resp = (
 			(await pool.execute(getHrProfiles, {
-				limit,
-				offsetElement,
+				limit: limit.toString(),
+				offsetElement: offsetElement.toString(),
 			})) as DbResult
 		)[0];
 		return resp.length !== 0

@@ -10,22 +10,19 @@ const initPool = createPool({
 	host,
 	user,
 	password,
+	namedPlaceholders: true,
 });
 
-const createDb = fs
-	.readFileSync(path.resolve('db/sql/00-create-db.sql'))
-	.toString();
-
 export const createDatabase = async () => {
-	const dbName = createDb
-		.split('CREATE DATABASE IF NOT EXISTS ')[1]
-		.split('\r\n')[0];
 	try {
 		console.log('DATABASE:');
-		await initPool.execute(`DROP DATABASE IF EXISTS ${dbName}`);
-		console.log(`\t✔ ${dbName} database dropped`);
-		await initPool.execute(createDb);
-		console.log(`\t✔ ${dbName} database created`);
+		await initPool.execute('DROP DATABASE IF EXISTS `m24389_head-hunter`');
+		await initPool.execute(`DROP DATABASE IF EXISTS ${config.db.database}`);
+		console.log(`\t✔ ${config.db.database} database dropped`);
+		await initPool.execute(`CREATE DATABASE IF NOT EXISTS ${config.db.database}
+		CHARACTER SET utf8mb4
+		COLLATE utf8mb4_unicode_ci`);
+		console.log(`\t✔ ${config.db.database} database created`);
 		initPool.end();
 	} catch (e) {
 		throw e;

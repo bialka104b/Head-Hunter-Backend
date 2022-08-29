@@ -12,7 +12,7 @@ export const config: Config = {
 		port: 3306,
 		host: 'localhost',
 		user: 'root',
-		password: '',
+		password: 'root',
 		database: 'head_hunter_megak',
 	},
 	jwt: {

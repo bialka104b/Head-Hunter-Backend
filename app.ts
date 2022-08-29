@@ -1,4 +1,5 @@
 import express from 'express';
+const { join } = require('path');
 import cookieParser from 'cookie-parser';
 import 'express-async-errors';
 import cors from 'cors';
@@ -30,6 +31,10 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/trainees', traineesRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/interview', interviewRouter);
+
+app.get('/*', function (req, res) {
+	res.sendFile(join(__dirname, './public', 'index.html'));
+});
 
 // Change interview trainees status when they was in interviews list long than 10 days
 changeInterviewTraineesStatus();

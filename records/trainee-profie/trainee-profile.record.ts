@@ -30,7 +30,8 @@ type DbResultTraineeListed = [TraineeListedEntity[], FieldPacket[]];
 type DbResultInterviewsListTraineesInfoById = DbResultTraineeListed;
 type DBResultCountOfTrainees = [{ count: number }[], FieldPacket[]];
 
-const { incorrectMinimumData } = ValidationError.messages.recordInstanceInit.traineeProfile;
+const { incorrectMinimumData } =
+	ValidationError.messages.recordInstanceInit.traineeProfile;
 
 export class TraineeProfileRecord implements TraineeProfileEntity {
 	id: string;
@@ -81,40 +82,65 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	}
 
 	//static:
-	static async getAllTraineesProfiles(): Promise<TraineeProfileRecord[] | null> {
-		const resp = ((await pool.execute(getAllTraineesProfiles)) as DbResult)[0];
-		return resp.length !== 0 ? resp.map((el) => new TraineeProfileRecord(el)) : null;
+	static async getAllTraineesProfiles(): Promise<
+		TraineeProfileRecord[] | null
+	> {
+		const resp = (
+			(await pool.execute(getAllTraineesProfiles)) as DbResult
+		)[0];
+		return resp.length !== 0
+			? resp.map((el) => new TraineeProfileRecord(el))
+			: null;
 	}
 
-	static async getTraineeProfileById(id: string): Promise<TraineeProfileRecord | null> {
-		const [resp] = ((await pool.execute(getTraineeProfileById, { id })) as DbResult)[0];
+	static async getTraineeProfileById(
+		id: string,
+	): Promise<TraineeProfileRecord | null> {
+		const [resp] = (
+			(await pool.execute(getTraineeProfileById, { id })) as DbResult
+		)[0];
 		return resp ? new TraineeProfileRecord(resp) : null;
 	}
 
-	static async getAllListedTrainees(limit: number, offsetElement: number): Promise<TraineeListedEntity[] | null> {
-		const resp = ((await pool.execute(getAllListedTrainees, {
-			limit,
-			offsetElement,
-		})) as DbResultTraineeListed)[0];
+	static async getAllListedTrainees(
+		limit: number,
+		offsetElement: number,
+	): Promise<TraineeListedEntity[] | null> {
+		const resp = (
+			(await pool.execute(getAllListedTrainees, {
+				limit: limit.toString(),
+				offsetElement: offsetElement.toString(),
+			})) as DbResultTraineeListed
+		)[0];
 		return resp.length !== 0 ? resp : null;
 	}
 
-	static async getFullTraineeInfo(id: string): Promise<TraineeFullInfoEntity | null> {
-		const [resp] = ((await pool.execute(getFullTraineeInfo, {
-			id,
-		})) as DbResultTraineeFullInfo)[0];
+	static async getFullTraineeInfo(
+		id: string,
+	): Promise<TraineeFullInfoEntity | null> {
+		const [resp] = (
+			(await pool.execute(getFullTraineeInfo, {
+				id,
+			})) as DbResultTraineeFullInfo
+		)[0];
 		return resp ?? null;
 	}
 
-	static async getTraineesInfoForTraineesInterviewsListById(id: string): Promise<TraineeListedEntity | null> {
-		const [resp] = ((await pool.execute(getTraineesInfoForTraineesInterviewsListById, {
-			id,
-		})) as DbResultInterviewsListTraineesInfoById)[0];
+	static async getTraineesInfoForTraineesInterviewsListById(
+		id: string,
+	): Promise<TraineeListedEntity | null> {
+		const [resp] = (
+			(await pool.execute(getTraineesInfoForTraineesInterviewsListById, {
+				id,
+			})) as DbResultInterviewsListTraineesInfoById
+		)[0];
 		return resp ?? null;
 	}
 
 	static async getCountOfTrainees(): Promise<number | null> {
-		const [resp] = ((await pool.execute(getCountOfTrainees)) as DBResultCountOfTrainees)[0];
+		const [resp] = (
+			(await pool.execute(getCountOfTrainees)) as DBResultCountOfTrainees
+		)[0];
 		return resp.count ?? null;
 	}
 
@@ -158,7 +184,8 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 					expectedSalaryTo,
 					id,
 				},
-			)) as DBResultCountOfTrainees)[0];
+			)) as DBResultCountOfTrainees
+		)[0];
 		return resp.count ?? null;
 	}
 
@@ -206,8 +233,8 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 					expectedTypeWork,
 					expectedSalaryFrom,
 					expectedSalaryTo,
-					limit,
-					offsetElement,
+					limit: limit.toString(),
+					offsetElement: offsetElement.toString(),
 					id,
 				},
 			)) as DbResultTraineeListed
@@ -259,11 +286,7 @@ export class TraineeProfileRecord implements TraineeProfileEntity {
 	}
 
 	validation() {
-		if (
-			!this.firstName ||
-			!this.lastName ||
-			!this.projectUrls
-		) {
+		if (!this.firstName || !this.lastName || !this.projectUrls) {
 			throw new ValidationError(incorrectMinimumData, 400);
 		}
 	}
