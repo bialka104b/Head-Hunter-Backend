@@ -54,7 +54,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'HR\'s profile successfully added.',
+					message: "HR's profile successfully added.",
 					data: {
 						hr: await HrProfileRecord.getHrProfileById(user.id),
 					},
@@ -66,6 +66,11 @@ class hrController {
 	}
 
 	static async getHrList(req: Request, res: Response): Promise<void> {
+		const { role } = req.user as UserRecord;
+
+		if (role !== UserRole.admin)
+			throw new ValidationError(notAuthorised, 400);
+
 		try {
 			const count = await HrProfileRecord.getCountOfHr();
 			const limit = Number(req.query.limit) || 10;
@@ -79,7 +84,7 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Hr\'s list successfully fetched.',
+					message: "Hr's list successfully fetched.",
 					data: {
 						count,
 						page,
@@ -93,7 +98,10 @@ class hrController {
 		}
 	}
 
-	static async updateMaxReservedStudents(req: Request, res: Response): Promise<void> {
+	static async updateMaxReservedStudents(
+		req: Request,
+		res: Response,
+	): Promise<void> {
 		const user = req.user as UserRecord;
 		const { id, maxReservedStudents } = req.body;
 		const hrId = String(id);
@@ -118,9 +126,11 @@ class hrController {
 				jsonResponse({
 					code: 200,
 					status: JsonResponseStatus.success,
-					message: 'Hr\'s max reserved student successfully updated.',
+					message: "Hr's max reserved student successfully updated.",
 					data: {
-						maxReservedStudents: (await HrProfileRecord.getHrProfileById(hrId)).maxReservedStudents,
+						maxReservedStudents: (
+							await HrProfileRecord.getHrProfileById(hrId)
+						).maxReservedStudents,
 					},
 				}),
 			);
