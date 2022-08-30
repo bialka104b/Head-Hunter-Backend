@@ -8,13 +8,14 @@ import { getRandomPassword } from '../../utils/getRandomPassword';
 import { TraineeScoreRecord } from '../../records/trainee-score/trainee-score.record';
 import { sendRegisterMail } from '../../mailService/sendMail';
 import { TraineeProfileRecord } from '../../records/trainee-profie/trainee-profile.record';
+import { config } from '../../config/config';
 
 const { readFile } = require('fs').promises;
 
 const { notAuthorised, incorrectId } = ValidationError.messages.auth;
+const { userCantBeDeleted } = ValidationError.messages.demo;
 
 class AdminController {
-
 	static async deleteUser(req: Request, res: Response): Promise<void> {
 		const { id } = req.body;
 		const { role } = req.user as UserRecord;
@@ -27,6 +28,9 @@ class AdminController {
 			throw new ValidationError(incorrectId, 200);
 		}
 
+		if (config.demo.users.includes(id))
+			throw new ValidationError(userCantBeDeleted, 401);
+
 		try {
 			await UserRecord.deleteUserById(id);
 
@@ -38,13 +42,17 @@ class AdminController {
 					data: {
 						deleteUserId: id,
 					},
-				}));
+				}),
+			);
 		} catch (e) {
 			console.log(e);
 		}
 	}
 
-	static async importTraineesFromCsvFile(req: Request, res: Response): Promise<void> {
+	static async importTraineesFromCsvFile(
+		req: Request,
+		res: Response,
+	): Promise<void> {
 		try {
 			const file: string = await readFile(req.file.path, 'utf8');
 			const convertToJSONFile = parse(file, {
@@ -63,25 +71,37 @@ class AdminController {
 			];
 			const csvFileColumnName = convertToJSONFile.meta.fields;
 
-			const JSONListOfImportTrainees = convertToJSONFile.data as UserImport[];
+			const JSONListOfImportTrainees =
+				convertToJSONFile.data as UserImport[];
 			let countOfAddedTrainee = 0;
 			const traineeWithBadData = [];
 
-			if (correctCsvFileColumnName.length !== csvFileColumnName.length || !correctCsvFileColumnName.every((val, i) => val === csvFileColumnName[i]) || JSONListOfImportTrainees.find(el => el.hasOwnProperty('__parsed_extra'))) {
-				res
-					.status(400)
-					.json(jsonResponse({
+			if (
+				correctCsvFileColumnName.length !== csvFileColumnName.length ||
+				!correctCsvFileColumnName.every(
+					(val, i) => val === csvFileColumnName[i],
+				) ||
+				JSONListOfImportTrainees.find((el) =>
+					el.hasOwnProperty('__parsed_extra'),
+				)
+			) {
+				res.status(400).json(
+					jsonResponse({
 						code: 400,
 						status: JsonResponseStatus.failed,
-						message: 'Incorrect column name in csv file. Check that column names are the same as in example',
+						message:
+							'Incorrect column name in csv file. Check that column names are the same as in example',
 						data: {
 							columnName: csvFileColumnName,
 						},
-					}));
+					}),
+				);
 			} else {
 				for (const trainee of JSONListOfImportTrainees) {
 					try {
-						if (!(await UserRecord.findUserByEmail(trainee.email))) {
+						if (
+							!(await UserRecord.findUserByEmail(trainee.email))
+						) {
 							const user = new UserRecord({
 								email: trainee.email,
 								password: getRandomPassword(),
@@ -90,10 +110,16 @@ class AdminController {
 							});
 
 							const traineeScore = new TraineeScoreRecord({
-								courseCompletion: Number(trainee.courseCompletion),
-								courseEngagment: Number(trainee.courseEngagment),
+								courseCompletion: Number(
+									trainee.courseCompletion,
+								),
+								courseEngagment: Number(
+									trainee.courseEngagment,
+								),
 								projectDegree: Number(trainee.projectDegree),
-								teamProjectDegree: Number(trainee.teamProjectDegree),
+								teamProjectDegree: Number(
+									trainee.teamProjectDegree,
+								),
 								bonusProjectUrls: trainee.bonusProjectUrls,
 							});
 
@@ -103,17 +129,21 @@ class AdminController {
 								lastName: 'empty',
 								projectUrls: [],
 								expectedContractType: [],
-							})
+							});
 
 							const userId = await user.insertMe();
 
 							traineeScore.userId = userId;
-							traineeProfile.userId = userId
+							traineeProfile.userId = userId;
 
 							await traineeScore.insertMe();
 							await traineeProfile.insertMe();
 
-							await sendRegisterMail(user.email, userId, user.registerToken);
+							await sendRegisterMail(
+								user.email,
+								userId,
+								user.registerToken,
+							);
 
 							countOfAddedTrainee++;
 						}
@@ -125,17 +155,17 @@ class AdminController {
 					}
 				}
 
-				res
-					.status(200)
-					.json(jsonResponse({
+				res.status(200).json(
+					jsonResponse({
 						code: 200,
 						status: JsonResponseStatus.success,
-						message: 'Trainee\'s profile successfully fetched.',
+						message: "Trainee's profile successfully fetched.",
 						data: {
 							countOfAddedTrainee,
 							traineeWithBadData,
 						},
-					}));
+					}),
+				);
 			}
 		} catch (e) {
 			console.log(e);
@@ -143,6 +173,4 @@ class AdminController {
 	}
 }
 
-export {
-	AdminController,
-};
+export { AdminController };

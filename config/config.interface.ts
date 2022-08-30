@@ -21,4 +21,7 @@ export interface Config {
 		email: string;
 		pass: string;
 	};
+	demo: {
+		users: string[];
+	};
 }
