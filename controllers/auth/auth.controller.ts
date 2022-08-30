@@ -18,6 +18,8 @@ const {
 	userWithThatIdNotExist,
 	incorrectCreatePassword,
 } = ValidationError.messages.auth;
+const { cantChangePassword, cantRestorePassword } =
+	ValidationError.messages.demo;
 
 class AuthController {
 	static async login(req: Request, res: Response): Promise<void> {
@@ -120,6 +122,9 @@ class AuthController {
 			throw new ValidationError(incorrectPassword, 200);
 		}
 
+		if (config.demo.users.includes(id))
+			throw new ValidationError(cantChangePassword, 401);
+
 		try {
 			await AuthRecord.changePassword(id, newPassword);
 
@@ -150,6 +155,9 @@ class AuthController {
 		if (!findUserById) {
 			throw new ValidationError(userWithThatEmailNotExist, 200);
 		}
+
+		if (config.demo.users.includes(findUserById.id))
+			throw new ValidationError(cantRestorePassword, 401);
 
 		try {
 			const user = new UserRecord(findUserById);

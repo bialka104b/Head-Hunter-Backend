@@ -24,4 +24,7 @@ export const config: Config = {
 		email: 'megak.gr7@gmail.com',
 		pass: 'zjefjbxwshlhkxvx',
 	},
+	demo: {
+		users: ['admin1', 'hr1', 'trainee1'],
+	},
 };
