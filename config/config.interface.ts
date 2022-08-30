@@ -1,4 +1,11 @@
 export interface Config {
+	app: {
+		host: string;
+		port: number;
+	};
+	frontend: {
+		host: string;
+	};
 	db: {
 		port: number;
 		host: string;
@@ -13,5 +20,5 @@ export interface Config {
 	email: {
 		email: string;
 		pass: string;
-	},
+	};
 }

@@ -2,3 +2,5 @@
 .idea
 #local playground file for testing:
 playground.ts
+/dist
+/config/config-production.ts

@@ -5,7 +5,7 @@ CREATE TABLE trainee_score
 	courseEngagment   DECIMAL(3,2) NOT NULL,
 	projectDegree     DECIMAL(3,2) NOT NULL,
 	teamProjectDegree DECIMAL(3,2) NOT NULL,
-	bonusProjectUrls  JSON    NOT NULL,
+	bonusProjectUrls  TEXT    NOT NULL,
 	userId            VARCHAR(36),
 	createdAt         DATE    NOT NULL        DEFAULT (NOW()),
 	CONSTRAINT c1_courseCompletion_0to5 CHECK (courseCompletion BETWEEN 0 AND 5),
